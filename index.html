@@ -6,51 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Historical Document Processing</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif; /* Astra's typical font */
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Minimum height to fill the screen */
-            margin: 0; /* Remove default margin */
-        }
-        .header-image {
-            width: 100%;
-            object-fit: cover; /* Ensures the image covers the area without distorting */
-        }
-        .content, .description {
-            padding: 20px;
-        }
-        .navbar, .footer {
-            background-color: #343a40; /* Bootstrap dark background */
-            color: #ffffff; /* White text color */
-        }
-        .navbar a, .footer a {
-            color: #ffffff; /* Ensures links are visible */
-        }
-        .footer {
-            padding: 10px 0;
-            text-align: center;
-        }
-        .image-fluid {
-            max-width: 60%; /* Adjusting image width to be smaller */
-            height: auto;
-            display: block;
-            margin: 0 auto; /* Centering image */
-        }
-        /* Additional styles to align items in the row */
-        .align-items-center {
-            display: flex;
-            align-items: center; /* Vertical alignment */
-        }
-    </style>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Logo</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -68,19 +31,24 @@
     </div>
 </nav>
 
-<!-- Main header image -->
 <div class="container-fluid px-0 mb-5">
     <img src="img/main.png" alt="Web Application for Historical Documents" class="header-image">
 </div>
 
-<!-- Main Content -->
 <div class="container mb-5">
     <div class="row align-items-center mb-3">
         <div class="col-md-6">
             <div class="description">
                 <h2>About This Application</h2>
-                <p>This web application is engineered to process historical handwritten documents, specifically targeting encrypted texts and substitution cipher keys. Built on the .NET platform and integrated with Python for AI simulations, it allows users to classify, transcribe, and decrypt manuscripts effectively. The system facilitates the use of brute-force algorithms or custom cipher keys for decryption, and supports the application of new cipher keys to check compatibility with existing texts.</p>
-                <p>An interactive tutorial guides new users on navigating and utilizing the system, ensuring a seamless onboarding process. The application is designed to encourage students to develop critical thinking skills by solving various design and integration challenges independently.</p>
+                <p>This web application is engineered to process historical handwritten documents, specifically
+                    targeting encrypted texts and substitution cipher keys. Built on the .NET platform and integrated
+                    with Python for AI simulations, it allows users to classify, transcribe, and decrypt manuscripts
+                    effectively. The system facilitates the use of brute-force algorithms or custom cipher keys for
+                    decryption, and supports the application of new cipher keys to check compatibility with existing
+                    texts.</p>
+                <p>An interactive tutorial guides new users on navigating and utilizing the system, ensuring a seamless
+                    onboarding process. The application is designed to encourage students to develop critical thinking
+                    skills by solving various design and integration challenges independently.</p>
             </div>
         </div>
         <div class="col-md-6">
@@ -91,9 +59,17 @@
         <div class="col-md-6 order-md-2">
             <div class="content">
                 <h1>Historical Handwritten Document Processing</h1>
-                <p>Explore this advanced platform that utilizes cutting-edge artificial intelligence to digitize, transcribe, and decrypt historical manuscripts efficiently. Designed to handle complex encrypted texts and faded documents, it supports a variety of ciphers for decryption, aiding researchers in uncovering historical insights.</p>
-                <p>With integration into cloud storage solutions, all processed documents are securely stored and accessible from anywhere, facilitating collaborative research and ensuring the preservation of historical data. The system’s intuitive interface ensures ease of use for both academics and amateur historians alike.</p>
-                <p>The application is continuously updated to incorporate user feedback and the latest advancements in AI and document processing technology, ensuring it remains a vital tool for historical document analysis.</p>
+                <p>Explore this advanced platform that utilizes cutting-edge artificial intelligence to digitize,
+                    transcribe, and decrypt historical manuscripts efficiently. Designed to handle complex encrypted
+                    texts and faded documents, it supports a variety of ciphers for decryption, aiding researchers in
+                    uncovering historical insights.</p>
+                <p>With integration into cloud storage solutions, all processed documents are securely stored and
+                    accessible from anywhere, facilitating collaborative research and ensuring the preservation of
+                    historical data. The system’s intuitive interface ensures ease of use for both academics and amateur
+                    historians alike.</p>
+                <p>The application is continuously updated to incorporate user feedback and the latest advancements in
+                    AI and document processing technology, ensuring it remains a vital tool for historical document
+                    analysis.</p>
             </div>
         </div>
         <div class="col-md-6 order-md-1">
@@ -102,13 +78,11 @@
     </div>
 </div>
 
-<!-- Call to Action for Email -->
 <div class="container mb-5 text-center">
     <p>If you have any questions, please feel free to reach out to us!</p>
     <a href="mailto:xpalfy@stuba.sk" class="btn btn-primary">Send me an Email</a>
 </div>
 
-<!-- Footer -->
 <footer class="footer bg-dark">
     © 2023 Your Company Name: <a href="https://yourcompany.com/">yourcompany.com</a>
 </footer>
