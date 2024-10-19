@@ -1,8 +1,8 @@
 <?php
 
-$servername = "mysql:3306";
-$dbusername = "xpalfy";
-$dbpassword = "Almaspite69";
+$servername = "localhost";
+$dbusername = "root";
+$dbpassword = "";
 $dbname = "tp_timovy_projekt";
 
 function getDatabaseConnection()
