@@ -15,8 +15,10 @@ function loginUser($username, $password): void
         $stmt->bind_result($id, $username, $hash);
         $stmt->fetch();
         if (password_verify($password, $hash)) {
-            $_SESSION['user'] = ['id' => $id, 'username' => $username];
+            $_SESSION['user'] = ['id' => $id, 'username' => $username, 'logged_in' => true];
             $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful!'];
+            header('Location: logged_in/main.php');
+            exit();
         } else {
             $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid password!'];
             header('Location: login.php');
@@ -45,12 +47,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/login.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 </head>
 <body>
+<script>
+    function checkToasts() {
+        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+        if (toast) {
+            toastr[toast.type](toast.message);
+            <?php unset($_SESSION['toast']); ?>
+        }
+    }
 
+    checkToasts();
+</script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="./index.html">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -93,9 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <footer class="footer bg-dark">
     © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
 </footer>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>

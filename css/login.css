@@ -18,7 +18,7 @@ body::before {
     background-size: cover;
     background-position: center;
     filter: blur(5px);
-    z-index: -1; /* Places the background behind the content */
+    z-index: -1;
 }
 
 
