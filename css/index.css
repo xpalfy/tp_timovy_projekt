@@ -12,6 +12,10 @@ body {
     overflow: hidden;
 }
 
+.cont{
+    min-height: 100vh;
+}
+
 .header-image {
     width: 100%;
     height: auto;
@@ -77,9 +81,5 @@ body {
 
     .date {
         font-size: 0.8rem;
-    }
-
-    .image-fluid {
-        max-width: 100%;
     }
 }
