@@ -6,13 +6,17 @@ body {
     margin: 0;
 }
 
-.header-image {
+.header-image-container {
+    position: relative;
     width: 100%;
-    object-fit: cover;
+    overflow: hidden;
 }
 
-.content, .description {
-    padding: 20px;
+.header-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    filter: blur(5px);
 }
 
 .navbar, .footer {
@@ -29,6 +33,10 @@ body {
     text-align: center;
 }
 
+.content, .description {
+    padding: 20px;
+}
+
 .image-fluid {
     max-width: 60%;
     height: auto;
@@ -39,4 +47,39 @@ body {
 .align-items-center {
     display: flex;
     align-items: center;
+}
+
+.digital-clock {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFF;
+    font-size: 3rem;
+    background: rgba(52, 58, 64, 0.75);
+    padding: 30px 50px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+}
+
+.date {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .digital-clock {
+        font-size: 1.5rem;
+        padding: 15px 20px;
+    }
+
+    .date {
+        font-size: 0.8rem;
+    }
+
+    .image-fluid {
+        max-width: 100%;
+    }
 }
