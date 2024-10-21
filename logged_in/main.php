@@ -1,9 +1,10 @@
 <?php
+require '../checkType.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require '../checkType.php';
 check();
 ?>
 

@@ -19,10 +19,26 @@ function isAlreadyUser($conn, $username): void
     }
 }
 
+function isEmailUsed($conn, $email): void
+{
+    $stmt = $conn->prepare('SELECT id FROM users WHERE email = ?');
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+        $stmt->close();
+        $conn->close();
+        header('Location: register.php');
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Email address already in use.'];
+        exit();
+    }
+}
+
 function createUser($username, $password, $email): void
 {
     $conn = getDatabaseConnection();
     isAlreadyUser($conn, $username);
+    isEmailUsed($conn, $email);
     $stmt = $conn->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
     $stmt->bind_param('sss', $username, $email, $password);
     $stmt->execute();
@@ -68,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-
 ?>
 
 <!DOCTYPE html>
@@ -85,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
+    <script src="./js/regex.js"></script>
 </head>
 <body>
 <script>
@@ -119,35 +134,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </ul>
     </div>
 </nav>
-
 <div class="container cont mb-5">
     <div class="form-container">
         <h3 class="mb-3 text-center">Register</h3>
         <form action="register.php" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <input type="text" class="form-control" id="username" name="username" oninput="isValidInput(this)"
+                       required>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                <input type="email" class="form-control" id="email" name="email" oninput="isValidEmail(this)" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input type="password" class="form-control" id="password" name="password"
+                       oninput="isValidPassword(this)" autocomplete="off" required>
             </div>
             <div class="form-group">
                 <label for="password_confirm">Confirm Password</label>
-                <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                <input type="password" class="form-control" id="password_confirm" name="password_confirm"
+                       oninput="isValidPassword(this)" autocomplete="off" required>
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
     </div>
 </div>
-
-
 <footer class="footer bg-dark">
     © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
 </footer>
+<script>
+    let form = document.querySelector('form');
+    form.addEventListener('submit', checkForm);
+</script>
 </body>
 </html>

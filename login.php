@@ -1,10 +1,13 @@
 <?php
+
+use JetBrains\PhpStorm\NoReturn;
+
 require_once 'config.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-function loginUser($username, $password): void
+#[NoReturn] function loginUser($username, $password): void
 {
     $conn = getDatabaseConnection();
     $stmt = $conn->prepare('SELECT id, username, password FROM users WHERE username = ?');
@@ -53,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
+    <script src="js/regex.js"></script>
 </head>
 <body>
 <script>
@@ -87,28 +90,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </ul>
     </div>
 </nav>
-
 <div class="container cont mb-5">
     <div class="form-container">
         <h3 class="mb-3 text-center">Login</h3>
         <form action="login.php" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <input type="text" class="form-control" id="username" name="username" oninput="isValidInput(this)"
+                       required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input type="password" class="form-control" id="password" name="password" oninput="isValidInput(this)"
+                       autocomplete="off" required>
             </div>
             <button type="submit" class="btn btn-primary">Log In</button>
         </form>
     </div>
 </div>
-
-
 <footer class="footer bg-dark">
     © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
 </footer>
-
+<script>
+    let form = document.querySelector('form');
+    form.addEventListener('submit', checkForm);
+</script>
 </body>
 </html>
