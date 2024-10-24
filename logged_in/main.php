@@ -17,7 +17,7 @@ check();
     <title>Main</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/main.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -52,12 +52,69 @@ check();
     </div>
 </nav>
 
-<div class="cont mb-5">
+<div class="background-image"></div>
 
+
+
+<div class="cont mb-5 pt-5">
+    <div class="container">
+        <!-- Main title -->
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1 class="display-4 font-weight-bold mb-4">Dashboard</h1>
+            </div>
+        </div>
+        <!-- Welcome message -->
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2 class="">Welcome back, <span class="text-primary"><?php echo $_SESSION['user']['username']; ?></span></h2>
+            </div>
+        </div>
+        <!-- Main Content: Scan Document section centered and bigger -->
+        <div class="row justify-content-center mt-5">
+            <!-- Card 1: View History -->
+            <div class="col-md">
+                <div class="card shadow-sm h-100 view-history">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">View History</h5>
+                        <p class="card-text text-muted">Review your previous scans and manage your documents.</p>
+                        <a href="#" class="btn btn-outline-primary">View History</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Centered, larger Scan Document card -->
+            <div class="col-md-8">
+                <div class="card shadow-lg h-100 scan-document">
+                    <div class="card-body text-center">
+                        <h4 class="card-title font-weight-bold">Scan Document</h4>
+                        <p class="card-text">Start scanning your handwritten documents now with just one click.</p>
+                        <a href="#" class="btn btn-dark btn-block btn-lg">Upload file</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Account Settings -->
+            <div class="col-md text-right">
+                <div class="card shadow-sm h-100 account-settings">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Account Settings</h5>
+                        <p class="card-text text-muted text-center">Manage your account settings and preferences.</p>
+                        <a href="#" class="btn btn-outline-success btn-block">Account Settings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Additional options (View History and Account Settings) -->
+        <div class="row justify-content-between mt-4">
+
+        </div>
+    </div>
 </div>
 
-<footer class="footer bg-dark">
-    © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
+
+<!-- Footer remains the same -->
+<footer class="footer bg-dark text-center text-white py-3">
+    © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
 </footer>
 
 </body>
