@@ -1,0 +1,137 @@
+.card {
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: black 0 0 100px;
+}
+
+/* Center the scan document button */
+.btn-lg {
+    padding: 10px 30px;
+    font-size: 1.25rem;
+}
+
+/* General typography */
+h1, h2, h4 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.scan-document {
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    background-color: rgba(52, 58, 64, 0.29);
+    color: #040403;
+    padding: 40px;
+    border-radius: 10px;
+    border: #000000 dashed 4px
+}
+
+.scan-document:hover {
+    background-color: rgba(32, 35, 38, 0.29);
+}
+
+.scan-document .card-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.scan-document .card-text {
+    font-size: 1.5rem;
+    color: #484848;
+}
+
+.view-history {
+    background-color: #e9ecef; /* Light gray background for the card */
+    border-left: 5px solid #007bff; /* Blue left border */
+}
+
+.view-history:hover {
+    background-color: #f8f9fa; /* Light gray background for the card */
+}
+
+.view-history .card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
+.account-settings{
+    background-color: #e2f0d6; /* Light green background for the card */
+    border-right: 5px solid #28a745; /* Green left border */
+}
+
+.account-settings:hover {
+    background-color: #f0f9eb; /* Light green background for the card */
+}
+
+.account-settings .card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../img/bg.png");
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px);
+    z-index: -1;
+}
+
+
+.header-image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.cont {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.form-container {
+    background: rgba(52, 58, 64, 0.75);
+    color: #FFF;
+    padding: 40px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    height: 40px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    width: 100%;
+    font-size: 1rem;
+    border-radius: 5px;
+}
