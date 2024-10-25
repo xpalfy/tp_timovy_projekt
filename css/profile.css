@@ -1,0 +1,73 @@
+
+
+/* General typography */
+h1, h2, h4 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.custom-input {
+    display: flex;
+    justify-content: center;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../img/bg.png");
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px);
+    z-index: -1;
+}
+
+
+.header-image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.cont {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.form-container {
+    background: rgba(52, 58, 64, 0.75);
+    color: #FFF;
+    padding: 40px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    height: 40px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    width: 100%;
+    font-size: 1rem;
+    border-radius: 5px;
+}
