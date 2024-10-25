@@ -17,7 +17,7 @@ check();
     <title>Main</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/profile.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -34,6 +34,14 @@ check();
     }
 
     checkToasts();
+
+    function pathButtonPressed(){
+        // get directory path from system
+        // TODO: implement
+
+
+
+    }
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -44,6 +52,9 @@ check();
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <a class="nav-link" href="https://tptimovyprojekt.ddns.net/">Project</a>
+            </li>
+            <li>
+                <a class="nav-link" href="main.php">Home</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../logout.php">Logout</a>
@@ -64,49 +75,32 @@ check();
                 <h1 class="display-4 font-weight-bold mb-4">Dashboard</h1>
             </div>
         </div>
-        <!-- Welcome message -->
         <div class="row">
             <div class="col-md-12 text-center">
                 <h2 class="">Welcome back, <span class="text-primary"><?php echo $_SESSION['user']['username']; ?></span></h2>
             </div>
         </div>
-        <!-- Main Content: Scan Document section centered and bigger -->
-        <div class="row justify-content-center mt-5">
-            <!-- Card 1: View History -->
-            <div class="col-md">
-                <div class="card shadow-sm h-100 view-history">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">View History</h5>
-                        <p class="card-text text-muted">Review your previous scans and manage your documents.</p>
-                        <a href="#" class="btn btn-outline-primary">View History</a>
+        <!-- Welcome message -->
+        <div class="container">
+            <div class="input-group mb-3 col-md-8">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">@</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group col-md-8 mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">New password twice</span>
+                </div>
+                <input type="text" class="form-control" id="password">
+                <input type="text" class="form-control" id="password2">
+            </div>
+                <div class="input-group mb-3 col-md-8">
+                    <input disabled type="text" class="form-control" placeholder="Directory path to stored files" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="button" onclick="pathButtonPressed()">...</button>
                     </div>
                 </div>
-            </div>
-            <!-- Centered, larger Scan Document card -->
-            <div class="col-md-8">
-                <div class="card shadow-lg h-100 scan-document">
-                    <div class="card-body text-center">
-                        <h4 class="card-title font-weight-bold">Scan Document</h4>
-                        <p class="card-text">Start scanning your handwritten documents now with just one click.</p>
-                        <a href="#" class="btn btn-dark btn-block btn-lg">Upload file</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2: Account Settings -->
-            <div class="col-md text-right">
-                <div class="card shadow-sm h-100 account-settings">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Account Settings</h5>
-                        <p class="card-text text-muted text-center">Manage your account settings and preferences.</p>
-                        <a href="profile.php" class="btn btn-outline-success btn-block">Account Settings</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Additional options (View History and Account Settings) -->
-        <div class="row justify-content-between mt-4">
-
         </div>
     </div>
 </div>
