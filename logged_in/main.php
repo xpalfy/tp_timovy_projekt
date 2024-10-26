@@ -34,6 +34,42 @@ check();
     }
 
     checkToasts();
+
+    // Prevent default behavior for drag over event and add hover class
+    function handleDragOver(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+        document.getElementById("imageUploader").classList.add("drag-over");
+    }
+
+    // Remove hover class on drag leave
+    function handleDragLeave() {
+        document.getElementById("imageUploader").classList.remove("drag-over");
+    }
+
+    // Handle file drop event, remove hover class, and show preview
+    async function handleDrop(event) {
+        event.preventDefault();
+        document.getElementById("imageUploader").classList.remove("drag-over");
+
+        const file = event.dataTransfer.files[0]; // Only take the first file
+        if (file && file.type.startsWith("image/")) {
+            previewImage(file);
+        } else {
+            alert("Please upload an image file.");
+        }
+    }
+
+    // Display the selected image in the preview area
+    function previewImage(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imagePreview = document.getElementById("imagePreview");
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    }
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -82,17 +118,6 @@ check();
                     </div>
                 </div>
             </div>
-            <!-- Centered, larger Scan Document card -->
-            <div class="col-md-8">
-                <div class="card shadow-lg h-100 scan-document">
-                    <div class="card-body text-center">
-                        <h4 class="card-title font-weight-bold">Scan Document</h4>
-                        <p class="card-text">Start scanning your handwritten documents now with just one click.</p>
-                        <a href="#" class="btn btn-dark btn-block btn-lg">Upload file</a>
-                    </div>
-                </div>
-            </div>
-
             <!-- Card 2: Account Settings -->
             <div class="col-md text-right">
                 <div class="card shadow-sm h-100 account-settings">
@@ -104,12 +129,42 @@ check();
                 </div>
             </div>
         </div>
+        <div class="row justify-content-center mt-5">
+            <!-- Centered, larger Scan Document card -->
+            <div class="col-md mt-5">
+                <!-- Drag-and-drop image uploader card -->
+                <div class="card shadow-lg h-100 p-4 text-center scan-document"
+                     id="imageUploader"
+                     ondrop="handleDrop(event)"
+                     ondragover="handleDragOver(event)"
+                     ondragleave="handleDragLeave()">
+                    <h4 class="card-title font-weight-bold mb-3">Upload Image</h4>
+                    <p class="card-text">Drag & Drop an image here or click the button below to upload.</p>
+
+                    <!-- Image preview area -->
+                    <div id="previewContainer" style="min-height: 150px; margin-top: 15px;">
+                        <img id="imagePreview" src="" alt="" style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px">
+                    </div>
+
+                    <!-- Button to manually select file -->
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewFile(event)">
+                    <button class="btn btn-secondary mt-3" onclick="document.getElementById('fileInput').click()">Select Image</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
         <!-- Additional options (View History and Account Settings) -->
         <div class="row justify-content-between mt-4">
 
         </div>
     </div>
 </div>
+
+
 
 
 <!-- Footer remains the same -->

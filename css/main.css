@@ -31,6 +31,10 @@ h1, h2, h4 {
     background-color: rgba(32, 35, 38, 0.29);
 }
 
+.drag-over {
+    filter: brightness(0.6) blur(2px);
+}
+
 .scan-document .card-title {
     font-size: 2.5rem;
     font-weight: bold;
