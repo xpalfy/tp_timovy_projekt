@@ -23,6 +23,9 @@ check();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
+    <script src="../js/regex.js"></script>
+    <script src="../js/directory.js"></script>
 
 </head>
 <body>
@@ -38,16 +41,13 @@ check();
     checkToasts();
 
     async function pathButtonPressed() {
-
         try {
             const dirHandle = await window.showDirectoryPicker();
+            const permission = await dirHandle.requestPermission({ mode: "readwrite" });
 
-            const permission = await dirHandle.requestPermission({ mode: 'readwrite' });
-
-            if (permission === 'granted') {
+            if (permission === "granted") {
                 document.getElementById("directoryName").value = dirHandle.name;
-                document.getElementById("directoryHandle").value = JSON.stringify(dirHandle);
-                console.log("Directory access granted and handle saved.");
+                await saveDirectoryHandle(dirHandle); // Save to IndexedDB
             } else {
                 console.error("Permission denied to retain directory access.");
             }
@@ -55,6 +55,8 @@ check();
             console.error("Error while accessing directory:", error);
         }
     }
+
+    useSavedDirectory()
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -100,9 +102,16 @@ check();
             <!-- Username input -->
             <div class="input-group mb-3 col-md-8">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">@</span>
+                    <span class="input-group-text" id="basic-addon1">🇮🇩</span>
                 </div>
                 <input id="username" name="username" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+
+            <div class="input-group mb-3 col-md-8">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">@</span>
+                </div>
+                <input type="email" class="form-control" id="email" name="email" oninput="isValidEmail(this)" placeholder="Email">
             </div>
 
             <!-- Password inputs -->
@@ -111,14 +120,13 @@ check();
                     <span class="input-group-text"><img src="../img/lock.png" width="20" draggable="false"></span>
                 </div>
                 <input type="password" class="form-control" id="password" name="password" placeholder="New Password">
-                <input type="password" class="form-control" id="password2" name="password2" placeholder="New Password Again">
+                <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="New Password Again">
             </div>
 
             <!-- Directory selection -->
             <div class="input-group col-md-8 mb-3">
                 <div class="custom-file">
                     <input type="text" class="form-control" id="directoryName" name="directoryName" placeholder="Select Directory to store files" disabled>
-                    <input type="hidden" id="directoryHandle" name="directoryHandle">
                 </div>
                 <div class="input-group-append">
                     <button class="btn btn-secondary" type="button" onclick="pathButtonPressed()">...</button>

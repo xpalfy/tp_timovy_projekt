@@ -21,6 +21,8 @@ check();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
+    <script src="../js/directory.js"></script>
 
 </head>
 <body>
@@ -62,6 +64,7 @@ check();
 
     // Display the selected image in the preview area
     function previewImage(file) {
+        document.getElementById("SaveBtns").style.display = "flex";
         const reader = new FileReader();
         reader.onload = function(e) {
             const imagePreview = document.getElementById("imagePreview");
@@ -69,6 +72,49 @@ check();
             imagePreview.style.display = "block";
         };
         reader.readAsDataURL(file);
+
+        // save the file name for later use
+        localStorage.setItem("fileName", file.name);
+    }
+
+    function previewImageButton(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+            previewImage(file);
+        } else {
+            alert("Please upload an image file.");
+        }
+    }
+
+    async function getImgFile() {
+        const imgElement = document.getElementById("imagePreview");
+        if (!imgElement || !imgElement.src) {
+            console.error("Image element not found or has no source.");
+            return null;
+        }
+
+        const response = await fetch(imgElement.src);
+        const blob = await response.blob();
+
+        return new File([blob], localStorage.getItem("fileName"), {type: blob.type});
+    }
+
+    async function saveKey() {
+        await saveKeyImageToDirectory(await getImgFile());
+        reloadScanZone();
+    }
+
+    async function saveCipher() {
+        await saveCipherImageToDirectory(await getImgFile());
+        reloadScanZone();
+    }
+
+    function reloadScanZone() {
+        checkToasts();
+        document.getElementById("imagePreview").src = "";
+        document.getElementById("imagePreview").style.display = "none";
+        document.getElementById("SaveBtns").style.display = "none";
+        localStorage.removeItem("fileName");
     }
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -142,13 +188,25 @@ check();
                     <p class="card-text">Drag & Drop an image here or click the button below to upload.</p>
 
                     <!-- Image preview area -->
-                    <div id="previewContainer" style="min-height: 150px; margin-top: 15px;">
-                        <img id="imagePreview" src="" alt="" style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px">
+                    <div id="previewContainer" style="min-height: 150px; margin-top: 15px; display: flex; justify-content: center">
+                        <img id="imagePreview" src="" alt="" style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px">
                     </div>
 
                     <!-- Button to manually select file -->
-                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewFile(event)">
-                    <button class="btn btn-secondary mt-3" onclick="document.getElementById('fileInput').click()">Select Image</button>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImageButton(event)">
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-md-4">
+                            <button class="btn btn-secondary btn-block" onclick="document.getElementById('fileInput').click()">Select Image</button>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mt-3" style="display: none" id="SaveBtns">
+                        <div class="col-md-4">
+                            <button class="btn btn-info btn-block" onclick="saveKey()">Save as Key</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-info btn-block" onclick="saveCipher()">Save as Cipher Text</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
