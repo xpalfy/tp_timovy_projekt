@@ -63,10 +63,23 @@ check();
     }
 
     // Display the selected image in the preview area
-    function previewImage(file) {
-        document.getElementById("SaveBtns").style.display = "flex";
+    async function previewImage(file) {
+        const dirHandle = await getDirectoryHandle();
+        if (dirHandle) {
+            const permission = await dirHandle.requestPermission({mode: "readwrite"});
+            if (permission !== "granted") {
+                document.getElementById("SaveBtns").style.display = "none";
+                document.getElementById("SaveBtnsInfo").style.display = "flex";
+            } else{
+                document.getElementById("SaveBtns").style.display = "flex";
+                document.getElementById("SaveBtnsInfo").style.display = "none";
+            }
+        } else {
+            document.getElementById("SaveBtns").style.display = "none";
+            document.getElementById("SaveBtnsInfo").style.display = "flex";
+        }
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const imagePreview = document.getElementById("imagePreview");
             imagePreview.src = e.target.result;
             imagePreview.style.display = "block";
@@ -205,6 +218,11 @@ check();
                         </div>
                         <div class="col-md-4">
                             <button class="btn btn-info btn-block" onclick="saveCipher()">Save as Cipher Text</button>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mt-3" style="display: none" id="SaveBtnsInfo">
+                        <div class="col-md-8">
+                            <div class="p-3 mb-2 bg-danger text-white" style="border-radius: 10px">Please select a directory to store the image in the Account Settings page.</div>
                         </div>
                     </div>
                 </div>
