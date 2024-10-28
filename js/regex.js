@@ -45,12 +45,12 @@ function isValidInput(inputElement) {
 }
 
 function isValidPassword(inputElement) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)\w{8,}$/;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     return validateInput(
         inputElement,
         regex,
         'Password cannot be empty.',
-        'Password must contain at least one uppercase letter, one lowercase letter, and one number.'
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
     );
 }
 
