@@ -2,8 +2,8 @@
 
 $servername = "localhost";
 $dbusername = "root";
-$dbpassword = "";
-$dbname = "tp_timovy_projekt";
+$dbpassword = "NemTudokJobbJelszavat123.";
+$dbname = "TP_timovy_projekt";
 
 function getDatabaseConnection()
 {
