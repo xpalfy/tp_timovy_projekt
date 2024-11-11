@@ -1,5 +1,5 @@
 <?php
-define('PYTHON_EXECUTABLE', 'C:\\Python312\\python.exe');
+define('PYTHON_EXECUTABLE', 'python3');
 define('PYTHON_SCRIPT', 'test.py');
 
 $x = "as";
@@ -8,5 +8,5 @@ echo $output;
 ?>
 
 <footer class="footer bg-dark">
-    © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
+    © Proje      ct Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
 </footer>
