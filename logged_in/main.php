@@ -37,98 +37,99 @@ check();
 
     checkToasts();
 
-    // Prevent default behavior for drag over event and add hover class
+    function handleDrop(event) {
+        event.preventDefault();
+        let file = event.dataTransfer.files[0];
+        if (file.type.match('image.*')) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let image = document.getElementById('imagePreview');
+                document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
+                image.src = e.target.result;
+                image.style.display = 'block';
+                document.getElementById('SaveBtns').style.display = 'block';
+                document.getElementById('SaveBtnsInfo').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            toastr.error('Please upload an image file.');
+        }
+    }
+
     function handleDragOver(event) {
         event.preventDefault();
-        event.dataTransfer.dropEffect = "copy";
-        document.getElementById("imageUploader").classList.add("drag-over");
+        document.getElementById('imageUploader').style.border = '2px dashed #007bff';
     }
 
-    // Remove hover class on drag leave
     function handleDragLeave() {
-        document.getElementById("imageUploader").classList.remove("drag-over");
-    }
-
-    // Handle file drop event, remove hover class, and show preview
-    async function handleDrop(event) {
-        event.preventDefault();
-        document.getElementById("imageUploader").classList.remove("drag-over");
-
-        const file = event.dataTransfer.files[0]; // Only take the first file
-        if (file && file.type.startsWith("image/")) {
-            previewImage(file);
-        } else {
-            alert("Please upload an image file.");
-        }
-    }
-
-    // Display the selected image in the preview area
-    async function previewImage(file) {
-        const dirHandle = await getDirectoryHandle();
-        if (dirHandle) {
-            const permission = await dirHandle.requestPermission({mode: "readwrite"});
-            if (permission !== "granted") {
-                document.getElementById("SaveBtns").style.display = "none";
-                document.getElementById("SaveBtnsInfo").style.display = "flex";
-            } else{
-                document.getElementById("SaveBtns").style.display = "flex";
-                document.getElementById("SaveBtnsInfo").style.display = "none";
-            }
-        } else {
-            document.getElementById("SaveBtns").style.display = "none";
-            document.getElementById("SaveBtnsInfo").style.display = "flex";
-        }
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const imagePreview = document.getElementById("imagePreview");
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-
-        // save the file name for later use
-        localStorage.setItem("fileName", file.name);
+        document.getElementById('imageUploader').style.border = 'none';
     }
 
     function previewImageButton(event) {
-        const file = event.target.files[0];
-        if (file && file.type.startsWith("image/")) {
-            previewImage(file);
+        let file = event.target.files[0];
+        if (file.type.match('image.*')) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let image = document.getElementById('imagePreview');
+                document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
+                image.src = e.target.result;
+                image.style.display = 'block';
+                document.getElementById('SaveBtns').style.display = 'block';
+                document.getElementById('SaveBtnsInfo').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
         } else {
-            alert("Please upload an image file.");
+            toastr.error('Please upload an image file.');
         }
     }
 
-    async function getImgFile() {
-        const imgElement = document.getElementById("imagePreview");
-        if (!imgElement || !imgElement.src) {
-            console.error("Image element not found or has no source.");
-            return null;
-        }
-
-        const response = await fetch(imgElement.src);
-        const blob = await response.blob();
-
-        return new File([blob], localStorage.getItem("fileName"), {type: blob.type});
+    function saveKey() {
+        let image = document.getElementById('imagePreview');
+        let data = image.src;
+        fetch('saveKey.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: data,
+                data_name: document.getElementById('image_name').innerHTML,
+                id: <?php echo $_SESSION['user']['id']?>
+            })
+        }).then((response) => {
+            console.log( response.json());
+        }).then((data) => {
+            console.log(data);
+            if (data.success) {
+                toastr.success('Image saved as key.');
+            } else {
+                toastr.error('Failed to save image as key.');
+            }
+        });
+    
     }
 
-    async function saveKey() {
-        await saveKeyImageToDirectory(await getImgFile());
-        reloadScanZone();
+    function saveCipher() {
+        let image = document.getElementById('imagePreview');
+        let data = image.src;
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'saveCipher.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    toastr.success('Image saved as cipher text.');
+                } else {
+                    toastr.error('Failed to save image as cipher text.');
+                }
+            }
+        };
+        xhr.send(JSON.stringify({data: data}));
     }
 
-    async function saveCipher() {
-        await saveCipherImageToDirectory(await getImgFile());
-        reloadScanZone();
-    }
 
-    function reloadScanZone() {
-        checkToasts();
-        document.getElementById("imagePreview").src = "";
-        document.getElementById("imagePreview").style.display = "none";
-        document.getElementById("SaveBtns").style.display = "none";
-        localStorage.removeItem("fileName");
-    }
+    
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -228,6 +229,8 @@ check();
                 </div>
             </div>
         </div>
+
+        <p id="image_name" style="display: none"></p>
 
 
 
