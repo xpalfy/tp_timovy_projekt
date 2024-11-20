@@ -96,11 +96,13 @@ check();
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo '<div class="card-pic">';
-                    echo '<img src="..' . $row['path'] . '" class="" alt="..." width=50px>';
+                    echo '<img src="..' . $row['path'] . '" class="" alt="..." >';
                     echo '<div class="card-body">';
                     echo '<h5 class="card-title">' . pathinfo($row['path'], PATHINFO_FILENAME) . '</h5>';
+                    echo '<div class="card-buttons">';
                     echo '<a href="edit.php?id=' . $row['id'] . '" class="btn btn-primary">Edit</a>';
                     echo '<a href="delete.php?id=' . $row['id'] . '" class="btn btn-danger">Delete</a>';
+                    echo '</div>';
                     echo '</div>';
                     echo '</div>';
                 }
