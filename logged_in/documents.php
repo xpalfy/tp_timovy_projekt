@@ -20,11 +20,11 @@ check();
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/documents.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
-    <script src="../js/regex.js"></script>
 
 </head>
 <body>
@@ -69,48 +69,50 @@ check();
         <!-- Main title -->
         <div class="row">
             <div class="col-md-12 text-center">
-                <h1 class="display-4 font-weight-bold mb-4">Profile</h1>
+                <h1 class="display-4 font-weight-bold mb-4">My Documents</h1>
             </div>
         </div>
 
         <!-- Welcome message -->
         <div class="row">
             <div class="col-md-12 text-center">
-                <h2>Welcome back, <span class="text-primary"><?php echo $_SESSION['user']['username']; ?></span></h2>
+                <h2>View and edit your documents here</h2>
             </div>
         </div>
 
-        <!-- Form -->
-        <form class="container mt-4" style="display: flex; flex-direction: column; align-items: center; flex-wrap: wrap;" action="profileUpdate.php" method="post">
-            <!-- Username input -->
-            <div class="input-group mb-3 col-md-8">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">🇮🇩</span>
-                </div>
-                <input id="username" name="username" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-            </div>
+        <!-- Document list -->
+        <div class="cont">
+            <?php
+            require '../config.php';
 
-            <div class="input-group mb-3 col-md-8">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">@</span>
-                </div>
-                <input type="email" class="form-control" id="email" name="email" oninput="isValidEmail(this)" placeholder="Email">
-            </div>
+            $conn = getDatabaseConnection();
 
-            <!-- Password inputs -->
-            <div class="input-group col-md-8 mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text"><img src="../img/lock.png" width="20" draggable="false"></span>
-                </div>
-                <input type="password" class="form-control" id="password" name="password" placeholder="New Password">
-                <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="New Password Again">
-            </div>
+            $sql = "SELECT path FROM pictures WHERE creator = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $_SESSION['user']['id']);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-            <!-- Submit button -->
-            <div class="input-group col-md-3 justify-content-center mb-3">
-                <button type="submit" class="btn btn-secondary mb-3">Submit</button>
-            </div>
-        </form>
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo '<div class="card-pic">';
+                    echo '<img src="..' . $row['path'] . '" class="" alt="..." width=50px>';
+                    echo '<div class="card-body">';
+                    echo '<h5 class="card-title">' . pathinfo($row['path'], PATHINFO_FILENAME) . '</h5>';
+                    echo '<a href="edit.php?id=' . $row['id'] . '" class="btn btn-primary">Edit</a>';
+                    echo '<a href="delete.php?id=' . $row['id'] . '" class="btn btn-danger">Delete</a>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<div class="alert alert-info" role="alert">No documents found</div>';
+            }
+
+            $stmt->close();
+            $conn->close(); 
+
+            ?>
+        </div>
     </div>
 </div>
 

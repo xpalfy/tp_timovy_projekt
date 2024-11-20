@@ -22,7 +22,6 @@ check();
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
-    <script src="../js/directory.js"></script>
 
 </head>
 <body>
@@ -47,7 +46,7 @@ check();
                 document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
                 image.src = e.target.result;
                 image.style.display = 'block';
-                document.getElementById('SaveBtns').style.display = 'block';
+                document.getElementById('SaveBtns').style.display = 'flex';
                 document.getElementById('SaveBtnsInfo').style.display = 'none';
             };
             reader.readAsDataURL(file);
@@ -74,7 +73,7 @@ check();
                 document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
                 image.src = e.target.result;
                 image.style.display = 'block';
-                document.getElementById('SaveBtns').style.display = 'block';
+                document.getElementById('SaveBtns').style.display = 'flex';
                 document.getElementById('SaveBtnsInfo').style.display = 'none';
             };
             reader.readAsDataURL(file);
@@ -86,7 +85,7 @@ check();
     function saveKey() {
         let image = document.getElementById('imagePreview');
         let data = image.src;
-        fetch('saveKey.php', {
+        fetch('savePicture.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -95,38 +94,45 @@ check();
                 data: data,
                 data_name: document.getElementById('image_name').innerHTML,
                 user_name: '<?php echo $_SESSION['user']['username']?>',
+                type: 'KEYS',
                 id: <?php echo $_SESSION['user']['id']?>
             })
-        }).then((response) => {
-            console.log( response.json());
-        }).then((data) => {
-            console.log(data);
-            if (data.success) {
-                toastr.success('Image saved as key.');
-            } else {
-                toastr.error('Failed to save image as key.');
-            }
-        });
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    toastr.success(data.message);
+                } else {
+                    toastr.error(data.error);
+                }
+            });
     
     }
 
     function saveCipher() {
         let image = document.getElementById('imagePreview');
         let data = image.src;
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'saveCipher.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    toastr.success('Image saved as cipher text.');
+        fetch('savePicture.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: data,
+                data_name: document.getElementById('image_name').innerHTML,
+                user_name: '<?php echo $_SESSION['user']['username']?>',
+                type: 'CIPHER',
+                id: <?php echo $_SESSION['user']['id']?>
+            })
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    toastr.success(data.message);
                 } else {
-                    toastr.error('Failed to save image as cipher text.');
+                    toastr.error(data.error);
                 }
-            }
-        };
-        xhr.send(JSON.stringify({data: data}));
+            });
     }
 
 
@@ -173,9 +179,9 @@ check();
             <div class="col-md">
                 <div class="card shadow-sm h-100 view-history">
                     <div class="card-body text-center">
-                        <h5 class="card-title">View History</h5>
+                        <h5 class="card-title">View Documents</h5>
                         <p class="card-text text-muted">Review your previous scans and manage your documents.</p>
-                        <a href="#" class="btn btn-outline-primary">View History</a>
+                        <a href="documents.php" class="btn btn-outline-primary">View History</a>
                     </div>
                 </div>
             </div>
