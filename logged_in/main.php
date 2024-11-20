@@ -94,6 +94,7 @@ check();
             body: JSON.stringify({
                 data: data,
                 data_name: document.getElementById('image_name').innerHTML,
+                user_name: '<?php echo $_SESSION['user']['username']?>',
                 id: <?php echo $_SESSION['user']['id']?>
             })
         }).then((response) => {
