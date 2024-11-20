@@ -17,7 +17,7 @@ require_once '../config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post = json_decode(file_get_contents('php://input'), true);
 
-    if (empty($post['data']) || empty($post['data_name']) || empty($post['user_name']) || empty($post['id'])) {
+    if (empty($post['data']) || empty($post['data_name']) || empty($post['user_name']) || empty($post['id']) || empty($post['type'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid input data']);
         exit;
@@ -39,14 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data_name = $post['data_name'];
     $user_name = $post['user_name'];
     $id = $post['id'];
+    $type = $post['type'];
 
     if (strpos($data, 'data:image/png;base64,') === 0) {
         $data = explode(',', $data)[1]; 
     }
     $data = base64_decode($data);
 
-    $directory_path = realpath(__DIR__ . '/..') . '/KEYS/' . $user_name;
-    echo $directory_path;
+    $directory_path = realpath(__DIR__.'/..') . '/' . $type . '/' . $user_name;
     if (!is_dir($directory_path)) {
         if(mkdir($directory_path, 0777, true)){
             echo 'Directory created';
@@ -57,9 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $file_path = $directory_path . '/' . $data_name . '.png';
+    $file_path = '/' . $type . '/' . $user_name . '/' . $data_name . '.png';
 
-    // check if picture is in DB
     $conn = getDatabaseConnection();
     $stmt = $conn->prepare('SELECT * FROM pictures WHERE creator = ? AND path = ?');
     $stmt->bind_param('is', $id, $file_path);
@@ -73,13 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $stmt = $conn->prepare('INSERT INTO pictures (creator, path) VALUES (?, ?)');
-    $stmt->bind_param('is', $id, $file_path);
+    $stmt = $conn->prepare('INSERT INTO pictures (creator, path, type) VALUES (?, ?, ?)');
+    $stmt->bind_param('iss', $id, $file_path, $type);
     $stmt->execute();
     
     
-    if (file_put_contents($file_path, $data) !== false) {
-        echo json_encode(['success' => 'File saved', 'filename' => $data_name]);
+    if (file_put_contents('../'.$file_path, $data) !== false) {
+        echo json_encode(['success' => 'True', 'message' => 'File saved']);
     } else {
         http_response_code(400);
         echo json_encode(['error' => 'Failed to save file']);
@@ -91,8 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->close();
         exit;
     }
+    
 
     $stmt->close();
     $conn->close();
+
+    
 }
+
+header('Location: ./main.php');
+
 ?>
