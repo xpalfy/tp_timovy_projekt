@@ -87,7 +87,7 @@ check();
 
             $conn = getDatabaseConnection();
 
-            $sql = "SELECT path FROM pictures WHERE creator = ?";
+            $sql = "SELECT ID ,path FROM pictures WHERE creator = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $_SESSION['user']['id']);
             $stmt->execute();
@@ -100,8 +100,8 @@ check();
                     echo '<div class="card-body">';
                     echo '<h5 class="card-title">' . pathinfo($row['path'], PATHINFO_FILENAME) . '</h5>';
                     echo '<div class="card-buttons">';
-                    echo '<a href="edit.php?id=' . $row['id'] . '" class="btn btn-primary">Edit</a>';
-                    echo '<a href="delete.php?id=' . $row['id'] . '" class="btn btn-danger">Delete</a>';
+                    echo '<a href="editDocument.php?id=' . $row['ID'] . '&user=' . $_SESSION['user']['id'] . '" class="btn btn-primary">Edit</a>';
+                    echo '<a href="deleteDocument.php?id=' . $row['ID'] . '&user=' . $_SESSION['user']['id'] . '" class="btn btn-danger">Delete</a>';
                     echo '</div>';
                     echo '</div>';
                     echo '</div>';

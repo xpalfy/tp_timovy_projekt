@@ -181,7 +181,7 @@ check();
                     <div class="card-body text-center">
                         <h5 class="card-title">View Documents</h5>
                         <p class="card-text text-muted">Review your previous scans and manage your documents.</p>
-                        <a href="documents.php" class="btn btn-outline-primary">View History</a>
+                        <a href="documents.php" class="btn btn-outline-primary">View Documents</a>
                     </div>
                 </div>
             </div>

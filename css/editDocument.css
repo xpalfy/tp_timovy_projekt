@@ -1,0 +1,289 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../img/bg.png");
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px);
+    z-index: -1;
+}
+
+.card-pic {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    border: 2px solid #ddd;
+    /* Border for the card */
+    border-radius: 10px;
+    /* Rounded corners */
+    overflow: hidden;
+    /* Ensures content stays inside the card */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for a modern look */
+    margin: 20px;
+    background: #f9f9f9;
+    /* Fallback background color */
+}
+
+.card-pic img {
+    width: -webkit-fill-available;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-pic .card-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures the image covers the card without distortion */
+    filter: brightness(70%);
+    /* Darkens the image slightly for text contrast */
+}
+
+.card-body {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background for text */
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #a71d2a;
+}
+
+.card-buttons {
+    display: flex;
+    justify-content: space-around;
+    /* Spaces buttons evenly */
+    gap: 10px;
+    /* Adds space between the buttons */
+}
+
+.btn {
+    flex: 1;
+    /* Makes both buttons take up the same amount of space */
+    text-align: center;
+    /* Centers the button text */
+    padding: 10px;
+    /* Adjusts the padding inside the button */
+    font-size: 0.9em;
+    /* Adjusts font size */
+    border: none;
+    border-radius: 5px;
+    /* Adds rounded corners */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    /* Removes underline for anchor buttons */
+}
+
+
+.cont {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.edit-cont {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+}
+
+.left {
+    border: black 5px solid;
+    border-radius: 20px;
+}
+
+.left img {
+    max-width: 50vw;
+    border-radius: 15px;
+}
+
+.right .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: max-content;
+}
+
+/* Form container */
+.form-container {
+    width: 35vw;
+    min-width: 300px;
+    margin: 20px auto; /* Centers the form on the page */
+    padding: 20px;
+    background: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Modern shadow effect */
+}
+
+/* Form labels */
+.form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333; /* Darker text for readability */
+}
+
+/* Form inputs */
+.form-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none; /* Removes default outline */
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    justify-content: space-between; /* Ensures buttons are spaced evenly */
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.btn-save {
+    background-color: #28a745; /* Green button for Save */
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
+
+.btn-reset {
+    background-color: #dc3545; /* Red button for Reset */
+}
+
+.btn-reset:hover {
+    background-color: #c82333;
+}
+
+.share-zone {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.btn-add {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add:hover {
+    background-color: #0056b3;
+}
+
+/* Capsules for Added Users */
+.user-capsules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.user-capsule {
+    display: flex;
+    align-items: center;
+    background-color: #e9ecef;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.user-capsule .remove-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-weight: bold;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.user-capsule .remove-btn:hover {
+    color: #a71d2a;
+}
+
+datalist {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
