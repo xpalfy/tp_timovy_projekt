@@ -72,12 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $stmt = $conn->prepare('INSERT INTO pictures (creator, path, type) VALUES (?, ?, ?)');
-    $stmt->bind_param('iss', $id, $file_path, $type);
+    $stmt = $conn->prepare('INSERT INTO pictures (creator, path, type, name) VALUES (?, ?, ?, ?)');
+    $stmt->bind_param('isss', $id, $file_path, $type, $data_name);
     $stmt->execute();
     
     
     if (file_put_contents('../'.$file_path, $data) !== false) {
+        http_response_code(200);
         echo json_encode(['success' => 'True', 'message' => 'File saved']);
     } else {
         http_response_code(400);
