@@ -49,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $directory_path = realpath(__DIR__.'/..') . '/' . $type . '/' . $user_name;
     if (!is_dir($directory_path)) {
         if(mkdir($directory_path, 0777, true)){
-            echo 'Directory created';
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Failed to create directory']);
@@ -80,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (file_put_contents('../'.$file_path, $data) !== false) {
         http_response_code(200);
         echo json_encode(['success' => 'True', 'message' => 'File saved']);
+        exit;
     } else {
         http_response_code(400);
         echo json_encode(['error' => 'Failed to save file']);
@@ -91,10 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->close();
         exit;
     }
-    
-
-    $stmt->close();
-    $conn->close();
 
     
 }
