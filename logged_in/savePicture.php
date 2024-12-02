@@ -43,7 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (strpos($data, 'data:image/png;base64,') === 0) {
         $data = explode(',', $data)[1]; 
+        $extension = '.png';
+    } elseif (strpos($data, 'data:image/jpeg;base64,') === 0) {
+        $data = explode(',', $data)[1];
+        $extension = '.jpg';
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Unsupported image format.']);
+        exit;
     }
+
     $data = base64_decode($data);
 
     $directory_path = realpath(__DIR__.'/..') . '/' . $type . '/' . $user_name;
@@ -56,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $file_path = '/' . $type . '/' . $user_name . '/' . $data_name . '.png';
+    $file_path = '/' . $type . '/' . $user_name . '/' . $data_name . $extension;
 
     $conn = getDatabaseConnection();
     $stmt = $conn->prepare('SELECT * FROM pictures WHERE creator = ? AND path = ?');
