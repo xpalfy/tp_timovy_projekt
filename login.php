@@ -49,7 +49,7 @@ function loginUser($username, $password): array {
         $stmt->fetch();
         if (password_verify($password, $hash)) {
             $token = generateToken($id, $fetchedUsername);
-            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful'];
+            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful!'];
             $_SESSION['token'] = $token;
             header('Location: ./logged_in/main.php');
         } else {
