@@ -1,17 +1,47 @@
 <?php
-function check(): void
-{
-    if (!isset($_SESSION['user']) || !is_array($_SESSION['user'])) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'There is no user logged in!'];
-        header('Location: ../login.php');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+require 'vendor/autoload.php';
+
+function getJwtSecret(): string {
+    $secret = include 'jwt.php';
+    if (empty($secret['secret'])) {
+        throw new Exception('JWT secret is not configured');
+    }
+    return $secret['secret'];
+}
+
+function validateToken() {
+    $token = $_SESSION['token'] ?? null;
+
+    if (!$token) {
+        http_response_code(401);
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Unauthorized: Token not found'];
+        header('Location: login.php');
         exit();
     }
-    $logged_in = $_SESSION['user']['logged_in'];
-    if (!$logged_in) {
-        session_unset();
-        session_destroy();
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'You do not have permission to access this page!'];
-        header('Location: ../login.php');
+
+    try {
+        $secret = getJwtSecret();
+        $decoded = JWT::decode($token, new Key($secret, 'HS256'));
+
+        if (
+            $decoded->iss !== 'https://test.tptimovyprojekt.software/xpalfy' ||
+            $decoded->aud !== 'https://test.tptimovyprojekt.software/xpalfy'
+        ) {
+            throw new Exception('Invalid issuer or audience');
+        }
+
+        return (array)$decoded->data;
+    } catch (Exception $e) {
+        http_response_code(401);
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Unauthorized: Invalid token'];
+        header('Location: login.php');
         exit();
     }
 }

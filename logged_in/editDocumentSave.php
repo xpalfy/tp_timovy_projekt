@@ -1,16 +1,18 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
-require_once '../checkType.php';
-
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-check();
+require '../checkType.php';
+require '../config.php';
+
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: login.php');
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -29,10 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!empty($pictureName)) {
-        require_once '../config.php';
         $conn = getDatabaseConnection();
 
-        // check if the new picture name exists
         $stmt = $conn->prepare("SELECT * FROM pictures WHERE name = ? AND creator = ? AND ID != ?");
         $stmt->bind_param('sii', $pictureName, $creatorId, $pictureId);
         $stmt->execute();
@@ -65,8 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $new_picture_path = str_replace($old_picture_name, $pictureName, $old_picture_path);
 
-                if (file_exists('../'.$old_picture_path) && is_writable(dirname('../'.$old_picture_path))) {
-                    rename('../'.$old_picture_path, '../'.$new_picture_path);
+                if (file_exists('../' . $old_picture_path) && is_writable(dirname('../' . $old_picture_path))) {
+                    rename('../' . $old_picture_path, '../' . $new_picture_path);
                 } else {
                     $_SESSION['toast'] = [
                         'message' => 'Failed to rename file: Path is invalid or not writable.',

@@ -1,11 +1,18 @@
 <?php
-require '../checkType.php';
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-check();
+require '../checkType.php';
+
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: login.php');
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -26,22 +33,12 @@ check();
 </head>
 <body>
 <script>
-    function checkToasts() {
-        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
-        if (toast) {
-            toastr[toast.type](toast.message);
-            <?php unset($_SESSION['toast']); ?>
-        }
-    }
-
-    checkToasts();
-
     function handleDrop(event) {
         event.preventDefault();
         let file = event.dataTransfer.files[0];
         if (file.type.match('image.*')) {
             let reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 let image = document.getElementById('imagePreview');
                 document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
                 image.src = e.target.result;
@@ -68,7 +65,7 @@ check();
         let file = event.target.files[0];
         if (file.type.match('image.*')) {
             let reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 let image = document.getElementById('imagePreview');
                 document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
                 image.src = e.target.result;
@@ -93,9 +90,9 @@ check();
             body: JSON.stringify({
                 data: data,
                 data_name: document.getElementById('image_name').innerHTML,
-                user_name: '<?php echo $_SESSION['user']['username']?>',
+                user_name: <?php echo json_encode($userData['username']); ?>,
                 type: 'KEYS',
-                id: <?php echo $_SESSION['user']['id']?>
+                id: <?php echo json_encode($userData['id']); ?>
             })
         }).then(response => response.json())
             .then(data => {
@@ -106,7 +103,7 @@ check();
                     toastr.error(data.error);
                 }
             });
-    
+
     }
 
     function saveCipher() {
@@ -120,9 +117,9 @@ check();
             body: JSON.stringify({
                 data: data,
                 data_name: document.getElementById('image_name').innerHTML,
-                user_name: '<?php echo $_SESSION['user']['username']?>',
+                user_name: <?php echo json_encode($userData['username']); ?>,
                 type: 'CIPHER',
-                id: <?php echo $_SESSION['user']['id']?>
+                id: <?php echo json_encode($userData['id']); ?>
             })
         }).then(response => response.json())
             .then(data => {
@@ -135,8 +132,15 @@ check();
             });
     }
 
+    function checkToasts() {
+        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+        if (toast) {
+            toastr[toast.type](toast.message);
+            <?php unset($_SESSION['toast']); ?>
+        }
+    }
 
-    
+    checkToasts();
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -158,24 +162,20 @@ check();
 <div class="background-image"></div>
 
 
-
 <div class="cont mb-5 pt-5">
     <div class="container">
-        <!-- Main title -->
         <div class="row">
             <div class="col-md-12 text-center">
                 <h1 class="display-4 font-weight-bold mb-4">Dashboard</h1>
             </div>
         </div>
-        <!-- Welcome message -->
         <div class="row">
             <div class="col-md-12 text-center">
-                <h2 class="">Welcome back, <span class="text-primary"><?php echo $_SESSION['user']['username']; ?></span></h2>
+                <h2 class="">Welcome back, <span class="text-primary"
+                                                 id="username"><?php echo $userData['username']; ?></span>!</h2>
             </div>
         </div>
-        <!-- Main Content: Scan Document section centered and bigger -->
         <div class="row justify-content-center mt-5">
-            <!-- Card 1: View History -->
             <div class="col-md">
                 <div class="card shadow-sm h-100 view-history">
                     <div class="card-body text-center">
@@ -185,7 +185,6 @@ check();
                     </div>
                 </div>
             </div>
-            <!-- Card 2: Account Settings -->
             <div class="col-md text-right">
                 <div class="card shadow-sm h-100 account-settings">
                     <div class="card-body">
@@ -197,9 +196,7 @@ check();
             </div>
         </div>
         <div class="row justify-content-center mt-5">
-            <!-- Centered, larger Scan Document card -->
             <div class="col-md mt-5">
-                <!-- Drag-and-drop image uploader card -->
                 <div class="card shadow-lg h-100 p-4 text-center scan-document"
                      id="imageUploader"
                      ondrop="handleDrop(event)"
@@ -208,16 +205,19 @@ check();
                     <h4 class="card-title font-weight-bold mb-3">Upload Image</h4>
                     <p class="card-text">Drag & Drop an image here or click the button below to upload.</p>
 
-                    <!-- Image preview area -->
-                    <div id="previewContainer" style="min-height: 150px; margin-top: 15px; display: flex; justify-content: center">
-                        <img id="imagePreview" src="" alt="" style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px">
+                    <div id="previewContainer"
+                         style="min-height: 150px; margin-top: 15px; display: flex; justify-content: center">
+                        <img id="imagePreview" src="" alt=""
+                             style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px">
                     </div>
 
-                    <!-- Button to manually select file -->
-                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImageButton(event)">
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;"
+                           onchange="previewImageButton(event)">
                     <div class="row justify-content-center mt-3">
                         <div class="col-md-4">
-                            <button class="btn btn-secondary btn-block" onclick="document.getElementById('fileInput').click()">Select Image</button>
+                            <button class="btn btn-secondary btn-block"
+                                    onclick="document.getElementById('fileInput').click()">Select Image
+                            </button>
                         </div>
                     </div>
                     <div class="row justify-content-center mt-3" style="display: none" id="SaveBtns">
@@ -230,7 +230,9 @@ check();
                     </div>
                     <div class="row justify-content-center mt-3" style="display: none" id="SaveBtnsInfo">
                         <div class="col-md-8">
-                            <div class="p-3 mb-2 bg-danger text-white" style="border-radius: 10px">Please select a directory to store the image in the Account Settings page.</div>
+                            <div class="p-3 mb-2 bg-danger text-white" style="border-radius: 10px">Please select a
+                                directory to store the image in the Account Settings page.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,21 +241,12 @@ check();
 
         <p id="image_name" style="display: none"></p>
 
-
-
-
-
-        <!-- Additional options (View History and Account Settings) -->
         <div class="row justify-content-between mt-4">
 
         </div>
     </div>
 </div>
 
-
-
-
-<!-- Footer remains the same -->
 <footer class="footer bg-dark text-center text-white py-3">
     © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
 </footer>

@@ -1,12 +1,17 @@
 <?php
-require '../checkType.php';
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-check();
+require '../checkType.php';
 
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: login.php');
+}
 
 ?>
 
@@ -39,7 +44,7 @@ check();
 
     checkToasts();
 
-    
+
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -66,47 +71,46 @@ check();
 
 <div class="cont mb-5 pt-5">
     <div class="container mb-5 pt-5">
-        <!-- Main title -->
         <div class="row">
             <div class="col-md-12 text-center">
                 <h1 class="display-4 font-weight-bold mb-4">Profile</h1>
             </div>
         </div>
 
-        <!-- Welcome message -->
         <div class="row">
             <div class="col-md-12 text-center">
                 <h2>Welcome back, <span class="text-primary"><?php echo $_SESSION['user']['username']; ?></span></h2>
             </div>
         </div>
 
-        <!-- Form -->
-        <form class="container mt-4" style="display: flex; flex-direction: column; align-items: center; flex-wrap: wrap;" action="profileUpdate.php" method="post">
-            <!-- Username input -->
+        <form class="container mt-4"
+              style="display: flex; flex-direction: column; align-items: center; flex-wrap: wrap;"
+              action="profileUpdate.php" method="post">
             <div class="input-group mb-3 col-md-8">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">🇮🇩</span>
                 </div>
-                <input id="username" name="username" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                <input id="username" name="username" type="text" class="form-control" placeholder="Username"
+                       aria-label="Username" aria-describedby="basic-addon1">
             </div>
 
             <div class="input-group mb-3 col-md-8">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">@</span>
                 </div>
-                <input type="email" class="form-control" id="email" name="email" oninput="isValidEmail(this)" placeholder="Email">
+                <input type="email" class="form-control" id="email" name="email" oninput="isValidEmail(this)"
+                       placeholder="Email">
             </div>
 
-            <!-- Password inputs -->
             <div class="input-group col-md-8 mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><img src="../img/lock.png" width="20" draggable="false"></span>
                 </div>
                 <input type="password" class="form-control" id="password" name="password" placeholder="New Password">
-                <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="New Password Again">
+                <input type="password" class="form-control" id="password_confirm" name="password_confirm"
+                       placeholder="New Password Again">
             </div>
 
-            <!-- Submit button -->
             <div class="input-group col-md-3 justify-content-center mb-3">
                 <button type="submit" class="btn btn-secondary mb-3">Submit</button>
             </div>
@@ -114,13 +118,10 @@ check();
     </div>
 </div>
 
-
-
-
-<!-- Footer remains the same -->
 <footer class="footer bg-dark text-center text-white py-3">
     © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
 </footer>
+
 
 </body>
 </html>

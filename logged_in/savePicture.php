@@ -1,18 +1,19 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
-require '../checkType.php';
-
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-check();
-
+require '../checkType.php';
 require_once '../config.php';
+
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: login.php');
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post = json_decode(file_get_contents('php://input'), true);
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = $post['type'];
 
     if (strpos($data, 'data:image/png;base64,') === 0) {
-        $data = explode(',', $data)[1]; 
+        $data = explode(',', $data)[1];
         $extension = '.png';
     } elseif (strpos($data, 'data:image/jpeg;base64,') === 0) {
         $data = explode(',', $data)[1];
@@ -54,9 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $data = base64_decode($data);
 
-    $directory_path = realpath(__DIR__.'/..') . '/' . $type . '/' . $user_name;
+    $directory_path = realpath(__DIR__ . '/..') . '/' . $type . '/' . $user_name;
     if (!is_dir($directory_path)) {
-        if(mkdir($directory_path, 0777, true)){
+        if (mkdir($directory_path, 0777, true)) {
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Failed to create directory']);
@@ -82,9 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare('INSERT INTO pictures (creator, path, type, name) VALUES (?, ?, ?, ?)');
     $stmt->bind_param('isss', $id, $file_path, $type, $data_name);
     $stmt->execute();
-    
-    
-    if (file_put_contents('../'.$file_path, $data) !== false) {
+
+
+    if (file_put_contents('../' . $file_path, $data) !== false) {
         http_response_code(200);
         echo json_encode(['success' => 'True', 'message' => 'File saved']);
         exit;
@@ -100,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    
+
 }
 
 header('Location: ./main.php');
