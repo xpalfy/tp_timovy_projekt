@@ -1,44 +1,86 @@
 <?php
-
-use JetBrains\PhpStorm\NoReturn;
-
-require_once 'config.php';
-if (session_status() === PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-#[NoReturn] function loginUser($username, $password): void
-{
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+require_once 'config.php';
+require_once 'vendor/autoload.php';
+
+function getJwtSecret(): string {
+    $config = include 'jwt.php';
+    if (!isset($config['secret']) || empty($config['secret'])) {
+        throw new Exception('JWT secret is not configured');
+    }
+    return $config['secret'];
+}
+
+function generateToken($userId, $username): string {
+    $secret = getJwtSecret();
+    $payload = [
+        'iss' => 'https://test.tptimovyprojekt.software/xpalfy', 
+        'aud' => 'https://test.tptimovyprojekt.software/xpalfy',
+        'iat' => time(),                                         
+        'exp' => time() + 3600,                             
+        'data' => [
+            'id' => $userId,
+            'username' => $username,
+        ],
+    ];
+
+    return JWT::encode($payload, $secret, 'HS256');
+}
+
+function loginUser($username, $password): array {
     $conn = getDatabaseConnection();
     $stmt = $conn->prepare('SELECT id, username, password FROM users WHERE username = ?');
+    if (!$stmt) {
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Database error: Unable to prepare statement'];
+    }
+
     $stmt->bind_param('s', $username);
     $stmt->execute();
     $stmt->store_result();
+
     if ($stmt->num_rows === 1) {
-        $stmt->bind_result($id, $username, $hash);
+        $stmt->bind_result($id, $fetchedUsername, $hash);
         $stmt->fetch();
         if (password_verify($password, $hash)) {
-            $_SESSION['user'] = ['id' => $id, 'username' => $username, 'logged_in' => true];
-            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful!'];
-            header('Location: logged_in/main.php');
-            exit();
+            $token = generateToken($id, $fetchedUsername);
+            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful'];
+            $_SESSION['token'] = $token;
+            header('Location: ./logged_in/main.php');
         } else {
             $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid password!'];
             header('Location: login.php');
-            exit();
         }
     } else {
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid username!'];
         header('Location: login.php');
-        exit();
     }
+    $stmt->close();
     $conn->close();
 }
 
+$response = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    loginUser($username, $password);
+    $username = $_POST['username'] ?? null;
+    $password = $_POST['password'] ?? null;
+
+    if ($username && $password) {
+        try {
+            $response = loginUser($username, $password);
+        } catch (Exception $e) {
+            $_SESSION['toast'] = ['type' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()];
+            header('Location: login.php');
+        }
+    } else {
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid request: Missing username or password'];
+        header('Location: login.php');
+    }
 }
 ?>
 
@@ -56,7 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="js/regex.js"></script>
 </head>
 <body>
 <script>
@@ -70,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     checkToasts();
 </script>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="./index.html">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -79,9 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="https://tptimovyprojekt.ddns.net/">Project</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="./login.php">Login</a>
             </li>
             <li class="nav-item">
@@ -90,30 +129,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </ul>
     </div>
 </nav>
+
 <div class="container cont mb-5">
     <div class="form-container">
         <h3 class="mb-3 text-center">Login</h3>
         <form action="login.php" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username"
-                       required>
+                <input type="text" class="form-control" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password"
-                       autocomplete="off" required>
+                <input type="password" class="form-control" id="password" name="password" autocomplete="off" required>
             </div>
             <button type="submit" class="btn btn-primary">Log In</button>
         </form>
     </div>
 </div>
+
 <footer class="footer bg-dark">
-    © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
+    © Project Site <a href="https://test.tptimovyprojekt.software/xpalfy/">tptimovyprojekt.software</a>
 </footer>
-<script>
-    let form = document.querySelector('form');
-    form.addEventListener('submit', checkForm);
-</script>
 </body>
 </html>

@@ -1,12 +1,19 @@
 <?php
-require_once '../config.php';
-require '../checkType.php';
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-check();
+require '../checkType.php';
+require_once '../config.php';
+
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: login.php');
+}
+
 
 function isAlreadyUser($conn, $username): void
 {
@@ -42,12 +49,10 @@ function UpdateUser($username, $new_username, $password, $email): void
 {
     $conn = getDatabaseConnection();
 
-    // Base query
     $query = 'UPDATE users SET ';
     $params = [];
     $types = '';
 
-    // Add fields based on input
     if ($new_username !== '') {
         isAlreadyUser($conn, $new_username);
         $query .= 'username = ?, ';
@@ -67,21 +72,17 @@ function UpdateUser($username, $new_username, $password, $email): void
         $types .= 's';
     }
 
-    // Remove trailing comma and space, and add WHERE clause
     $query = rtrim($query, ', ') . ' WHERE username = ?';
     $params[] = $username;
     $types .= 's';
 
-    // Prepare and bind the statement
     $stmt = $conn->prepare($query);
     if (!$stmt) {
         die("Statement preparation failed: " . $conn->error);
     }
 
-    // Dynamically bind parameters
     $stmt->bind_param($types, ...$params);
 
-    // Execute the query and handle errors
     if (!$stmt->execute()) {
         die("Execution failed: " . $stmt->error);
     }
@@ -99,13 +100,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email', FILTER_UNSAFE_RAW);
     $confirmPassword = filter_input(INPUT_POST, 'password_confirm', FILTER_UNSAFE_RAW);
 
-    if($new_username === '' && $password === '' && $email === ''){
+    if ($new_username === '' && $password === '' && $email === '') {
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'No fields were updated.'];
         header('Location: profile.php');
         exit();
     }
 
-    if($password !== '' && $confirmPassword === '' || $password === '' && $confirmPassword !== ''){
+    if ($password !== '' && $confirmPassword === '' || $password === '' && $confirmPassword !== '') {
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'Please fill out both password tiles.'];
         header('Location: profile.php');
         exit();
@@ -136,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     UpdateUser($username, $new_username, $password, $email);
-    if ($new_username !== ''){
+    if ($new_username !== '') {
         $_SESSION['user']['username'] = $new_username;
     }
     $_SESSION['toast'] = ['type' => 'success', 'message' => 'Update successful!'];

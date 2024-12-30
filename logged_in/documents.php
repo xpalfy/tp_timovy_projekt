@@ -1,12 +1,17 @@
 <?php
-require '../checkType.php';
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-check();
+require '../checkType.php';
 
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: login.php');
+}
 
 ?>
 
@@ -38,8 +43,6 @@ check();
     }
 
     checkToasts();
-
-    
 </script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -66,21 +69,16 @@ check();
 
 <div class="cont mb-5 pt-5">
     <div class="container mb-5 pt-5">
-        <!-- Main title -->
         <div class="row">
             <div class="col-md-12 text-center">
                 <h1 class="display-4 font-weight-bold mb-4">My Documents</h1>
             </div>
         </div>
-
-        <!-- Welcome message -->
         <div class="row">
             <div class="col-md-12 text-center">
                 <h2>View and edit your documents here</h2>
             </div>
         </div>
-
-        <!-- Document list -->
         <div class="cont">
             <?php
             require '../config.php';
@@ -111,20 +109,14 @@ check();
             }
 
             $stmt->close();
-            $conn->close(); 
+            $conn->close();
 
             ?>
         </div>
     </div>
 </div>
-
-
-
-
-<!-- Footer remains the same -->
 <footer class="footer bg-dark text-center text-white py-3">
     © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
 </footer>
-
 </body>
 </html>

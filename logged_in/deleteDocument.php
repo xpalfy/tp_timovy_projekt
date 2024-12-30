@@ -1,16 +1,19 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
-require_once '../checkType.php';
-
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-check();
+require '../checkType.php';
+require_once '../config.php';
+
+
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: login.php');
+}
 
 $pictureId = $_GET['id'];
 $userId = $_GET['user'];
@@ -33,7 +36,6 @@ if ($userId != $_SESSION['user']['id']) {
     exit();
 }
 
-require_once '../config.php';
 
 $conn = getDatabaseConnection();
 
@@ -51,7 +53,7 @@ if ($result->num_rows > 0) {
     $stmt->bind_param('i', $pictureId);
     $stmt->execute();
     $stmt->close();
-    unlink('../'.$path);
+    unlink('../' . $path);
     $_SESSION['toast'] = [
         'message' => 'Document deleted',
         'type' => 'success'
@@ -66,7 +68,6 @@ if ($result->num_rows > 0) {
     header('Location: documents.php');
     exit();
 }
-
 
 
 ?>
