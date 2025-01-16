@@ -48,7 +48,7 @@ try {
 
 
     </script>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="transition: top 0.3s;" id="navbar">
         <a class="navbar-brand" href="main.php" style="font-size: xx-large; display: flex; align-items: center;">
             <img src="../img/logo.png" alt="Logo" style="width: 40px; height: 40px; margin-right: 15px;">
             HandScript
@@ -91,6 +91,23 @@ try {
             </ul>
         </div>
     </nav>
+
+    <script>
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', function () {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            if (currentScroll > lastScrollTop) {    
+                // Scrolling down
+                navbar.style.top = '-80px';
+            } else {
+                // Scrolling up
+                navbar.style.top = '0';
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Avoid negative values
+        });
+    </script>
 
     <div class="background-image"></div>
 
