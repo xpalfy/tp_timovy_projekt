@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pictureName = $_POST['name'];
     $sharedUsers = explode(',', $_POST['sharedUsers']);
 
-    if ($creatorId != $_SESSION['user']['id']) {
+    if ($creatorId != $userData['id']) {
         $_SESSION['toast'] = [
             'message' => 'You can only edit your own documents',
             'type' => 'error'

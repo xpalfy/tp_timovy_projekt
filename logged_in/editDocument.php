@@ -26,7 +26,7 @@ if ($userId == null || $pictureId == null) {
     exit();
 }
 
-if ($userId != $_SESSION['user']['id']) {
+if ($userId != $userData['id']) {
     $_SESSION['toast'] = [
         'message' => 'You can only edit your own documents',
         'type' => 'error'
@@ -81,171 +81,196 @@ $conn->close();
 </head>
 
 <body>
-    
-<script>
 
-    function checkToasts() {
-        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
-        if (toast) {
-            toastr[toast.type](toast.message);
-            <?php unset($_SESSION['toast']); ?>
+    <script>
+
+        function checkToasts() {
+            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+            if (toast) {
+                toastr[toast.type](toast.message);
+                <?php unset($_SESSION['toast']); ?>
+            }
         }
-    }
 
-    checkToasts();
+        checkToasts();
 
 
-    let sharedUsers = [];
+        let sharedUsers = [];
 
-    function addUser() {
-        const inputField = document.getElementById('share');
-        const userCapsulesContainer = document.getElementById('userCapsules');
-        const username = inputField.value.trim();
-        const sharedUsersInput = document.getElementById('sharedUsers');
+        function addUser() {
+            const inputField = document.getElementById('share');
+            const userCapsulesContainer = document.getElementById('userCapsules');
+            const username = inputField.value.trim();
+            const sharedUsersInput = document.getElementById('sharedUsers');
 
-        if (username && !sharedUsers.includes(username)) {
-            sharedUsers.push(username);
+            if (username && !sharedUsers.includes(username)) {
+                sharedUsers.push(username);
+                sharedUsersInput.value = sharedUsers.join(',');
+
+                const capsule = document.createElement('div');
+                capsule.className = 'user-capsule';
+                capsule.innerHTML = `${username} <button type="button" class="remove-btn" onclick="removeUser('${username}')">&times;</button>`;
+
+                userCapsulesContainer.appendChild(capsule);
+                inputField.value = '';
+            }
+        }
+
+        function removeUser(username) {
+            const userCapsulesContainer = document.getElementById('userCapsules');
+            const sharedUsersInput = document.getElementById('sharedUsers');
+            sharedUsers = sharedUsers.filter(user => user !== username);
             sharedUsersInput.value = sharedUsers.join(',');
 
-            const capsule = document.createElement('div');
-            capsule.className = 'user-capsule';
-            capsule.innerHTML = `${username} <button type="button" class="remove-btn" onclick="removeUser('${username}')">&times;</button>`;
+            Array.from(userCapsulesContainer.children).forEach(capsule => {
+                if (capsule.textContent == username) {
+                    capsule.remove();
+                }
+            });
 
-            userCapsulesContainer.appendChild(capsule);
-            inputField.value = '';
+            userCapsulesContainer.innerHTML = '';
+            sharedUsers.forEach(user => {
+                const capsule = document.createElement('div');
+                capsule.className = 'user-capsule';
+                capsule.innerHTML = `${user} <button type="button" class="remove-btn" onclick="removeUser('${user}')">&times;</button>`;
+                userCapsulesContainer.appendChild(capsule);
+            });
+
         }
-    }
 
-    function removeUser(username) {
-        const userCapsulesContainer = document.getElementById('userCapsules');
-        const sharedUsersInput = document.getElementById('sharedUsers');
-        sharedUsers = sharedUsers.filter(user => user !== username);
-        sharedUsersInput.value = sharedUsers.join(',');
+        function resetUsers() {
+            const userCapsulesContainer = document.getElementById('userCapsules');
+            const sharedUsersInput = document.getElementById('sharedUsers');
+            sharedUsers = [];
+            sharedUsersInput.value = '';
+            userCapsulesContainer.innerHTML = '';
+        }
 
-        Array.from(userCapsulesContainer.children).forEach(capsule => {
-            if (capsule.textContent == username) {
-                capsule.remove();
-            }
+
+        $(document).ready(function () {
+            $("#share").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "fetchUsernames.php",
+                        type: "GET",
+                        data: {
+                            query: request.term,
+                            picture_id: <?php echo $pictureId; ?>
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            response(data.map(user => user.username));
+                        },
+                        error: function (xhr) {
+                            console.error("Error fetching suggestions:", xhr);
+                        }
+                    });
+                },
+                minLength: 1,
+                select: function (event, ui) {
+                    $("#share").val(ui.item.value);
+
+                    return false;
+                }
+            });
         });
 
-        userCapsulesContainer.innerHTML = '';
-        sharedUsers.forEach(user => {
-            const capsule = document.createElement('div');
-            capsule.className = 'user-capsule';
-            capsule.innerHTML = `${user} <button type="button" class="remove-btn" onclick="removeUser('${user}')">&times;</button>`;
-            userCapsulesContainer.appendChild(capsule);
-        });
-
-    }
-
-    function resetUsers() {
-        const userCapsulesContainer = document.getElementById('userCapsules');
-        const sharedUsersInput = document.getElementById('sharedUsers');
-        sharedUsers = [];
-        sharedUsersInput.value = '';
-        userCapsulesContainer.innerHTML = '';
-    }
-
-
-    $(document).ready(function () {
-        $("#share").autocomplete({
-            source: function (request, response) {
-                $.ajax({
-                    url: "fetchUsernames.php",
-                    type: "GET",
-                    data: {
-                        query: request.term,
-                        picture_id: <?php echo $pictureId; ?>
-                    },
-                    dataType: "json",
-                    success: function (data) {
-                        response(data.map(user => user.username));
-                    },
-                    error: function (xhr) {
-                        console.error("Error fetching suggestions:", xhr);
-                    }
-                });
-            },
-            minLength: 1,
-            select: function (event, ui) {
-                $("#share").val(ui.item.value);
-
-                return false;
-            }
-        });
-    });
-
-</script>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+    </script>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="main.php" style="font-size: xx-large; display: flex; align-items: center;">
+            <img src="../img/logo.png" alt="Logo" style="width: 40px; height: 40px; margin-right: 15px;">
+            HandScript
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="https://tptimovyprojekt.ddns.net/">Project</a>
-            </li>
-            <li>
-                <a class="nav-link" href="main.php">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="../logout.php">Logout</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div class="background-image"></div>
-<div class="cont mb-5 pt-5">
-    <div class="container mb-5 pt-5">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <h1 class="display-4 font-weight-bold mb-4"><?php echo $picture['name'] ?></h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <h2>Edit your document here</h2>
-            </div>
-        </div>
-        <div class="edit-cont">
-            <div class="left">
-                <img src="<?php echo '/' . explode("/", explode("htdocs/", __DIR__)[1])[0] . $picture['path']; ?>"
-                     alt="Document">
-            </div>
-            <div class="form-container">
-                <form action="editDocumentSave.php" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="<?php echo $picture['ID'] ?>">
-                    <input type="hidden" name="user" value="<?php echo $picture['creator'] ?>">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
 
-                    <div class="form-group">
-                        <label for="name" class="form-label">Document Name</label>
-                        <input type="text" class="form-input" id="name" name="name"
-                               value="<?php echo $picture['name'] ?>" placeholder="Name of the file">
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link " href="profile.php">
+                        Profile
+                        <img src="../img/account.png" alt="profile"
+                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="documents.php">
+                        Documents
+                        <img src="../img/document.png" alt="document"
+                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://tptimovyprojekt.ddns.net/">
+                        Project
+                        <img src="../img/web.png" alt="Project"
+                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link  " href="../logout.php">
+                        Logout
+                        <img src="../img/logout.png" alt="logout"
+                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="background-image"></div>
+    <div class="cont mb-5 pt-5">
+        <div class="container mb-5 pt-5">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1 class="display-4 font-weight-bold mb-4"><?php echo $picture['name'] ?></h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h2>Edit your document here</h2>
+                </div>
+            </div>
+            <div class="edit-cont">
+                <div class="left">
+                    <img src="<?php echo '/' . explode("/", explode("htdocs/", __DIR__)[1])[0] . $picture['path']; ?>"
+                        alt="Document">
+                </div>
+                <div class="form-container">
+                    <form action="editDocumentSave.php" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="<?php echo $picture['ID'] ?>">
+                        <input type="hidden" name="user" value="<?php echo $picture['creator'] ?>">
 
-                    <div class="form-group">
-                        <label for="share" class="form-label">Share with</label>
-                        <div class="share-zone">
-                            <input type="text" id="share" class="form-input" placeholder="Enter username">
-                            <input type="hidden" name="sharedUsers" id="sharedUsers">
-                            <button type="button" class="btn btn-add" onclick="addUser()">Add</button>
+                        <div class="form-group">
+                            <label for="name" class="form-label">Document Name</label>
+                            <input type="text" class="form-input" id="name" name="name"
+                                value="<?php echo $picture['name'] ?>" placeholder="Name of the file">
                         </div>
-                        <div class="user-capsules" id="userCapsules"></div>
-                    </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-save">Save</button>
-                        <button type="reset" class="btn btn-reset" onclick="resetUsers()">Reset</button>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label for="share" class="form-label">Share with</label>
+                            <div class="share-zone">
+                                <input type="text" id="share" class="form-input" placeholder="Enter username">
+                                <input type="hidden" name="sharedUsers" id="sharedUsers">
+                                <button type="button" class="btn btn-add" onclick="addUser()">Add</button>
+                            </div>
+                            <div class="user-capsules" id="userCapsules"></div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-save">Save</button>
+                            <button type="reset" class="btn btn-reset" onclick="resetUsers()">Reset</button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
-
         </div>
     </div>
-</div>
-<footer class="footer bg-dark text-center text-white py-3">
-    © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
-</footer>
+    <footer class="footer bg-dark text-center text-white py-3">
+        © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
+    </footer>
 </body>
+
 </html>
