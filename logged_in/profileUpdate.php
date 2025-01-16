@@ -94,7 +94,7 @@ function UpdateUser($username, $new_username, $password, $email): void
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_SESSION['user']['username'];
+    $username = $userData['username'];
     $new_username = filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW);
     $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
     $email = filter_input(INPUT_POST, 'email', FILTER_UNSAFE_RAW);
@@ -141,6 +141,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user']['username'] = $new_username;
     }
     $_SESSION['toast'] = ['type' => 'success', 'message' => 'Update successful!'];
+
+    //TODO update token with new username
+
     header('Location: profile.php');
     exit();
 }

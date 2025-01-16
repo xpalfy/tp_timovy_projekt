@@ -23,7 +23,7 @@ if (isset($_GET['query'])) {
     $conn = getDatabaseConnection();
 
     $stmt = $conn->prepare("SELECT username FROM users WHERE username LIKE (CONCAT( ? , '%')) AND username != ? AND id NOT IN (SELECT user_id FROM users_pictures WHERE picture_id = ?) LIMIT 10");
-    $stmt->bind_param("ssi", $query, $_SESSION['user']['username'], $id);
+    $stmt->bind_param("ssi", $query, $userData['username'], $id);
     $stmt->execute();
     $result = $stmt->get_result();
 
