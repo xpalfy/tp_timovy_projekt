@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (file_put_contents('../' . $file_path, $data) !== false) {
         http_response_code(200);
-        echo json_encode(['success' => 'True', 'message' => 'File saved']);
+        echo json_encode(['success' => 'True', 'message' => 'File saved', 'path' => $file_path]);
         exit;
     } else {
         http_response_code(400);
