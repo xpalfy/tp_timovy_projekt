@@ -35,9 +35,7 @@ try {
 
 <body>
     <script>
-        function handleDrop(event) {
-            event.preventDefault();
-            let file = event.dataTransfer.files[0];
+        function handleFile(file) {
             if (file.type.match('image.*')) {
                 let reader = new FileReader();
                 reader.onload = function (e) {
@@ -47,11 +45,23 @@ try {
                     image.style.display = 'block';
                     document.getElementById('SaveBtns').style.display = 'flex';
                     document.getElementById('SaveBtnsInfo').style.display = 'none';
+                    saveImage();
                 };
                 reader.readAsDataURL(file);
             } else {
                 toastr.error('Please upload an image file.');
             }
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            let file = event.dataTransfer.files[0];
+            handleFile(file);
+        }
+
+        function previewImageButton(event) {
+            let file = event.target.files[0];
+            handleFile(file);
         }
 
         function handleDragOver(event) {
@@ -63,28 +73,10 @@ try {
             document.getElementById('imageUploader').style.border = 'none';
         }
 
-        function previewImageButton(event) {
-            let file = event.target.files[0];
-            if (file.type.match('image.*')) {
-                let reader = new FileReader();
-                reader.onload = function (e) {
-                    let image = document.getElementById('imagePreview');
-                    document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
-                    image.src = e.target.result;
-                    image.style.display = 'block';
-                    document.getElementById('SaveBtns').style.display = 'flex';
-                    document.getElementById('SaveBtnsInfo').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                toastr.error('Please upload an image file.');
-            }
-        }
-
-        function saveKey() {
+        function saveData(type) {
             let image = document.getElementById('imagePreview');
             let data = image.src;
-            fetch('savePicture.php', {
+            fetch('movePicture.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -93,24 +85,36 @@ try {
                     data: data,
                     data_name: document.getElementById('image_name').innerHTML,
                     user_name: <?php echo json_encode($userData['username']); ?>,
-                    type: 'KEYS',
+                    type: type, // Use the passed 'type' parameter
                     id: <?php echo json_encode($userData['id']); ?>
                 })
-            }).then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if (data.success) {
-                        toastr.success(data.message);
-                    } else {
-                        toastr.error(data.error);
-                    }
-                });
-
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    toastr.success(data.message);
+                } else {
+                    toastr.error(data.error);
+                }
+            });
         }
 
+        // To save keys:
+        function saveKey() {
+            saveData('KEYS');
+        }
+
+        // To save cipher:
         function saveCipher() {
+            saveData('CIPHER');
+        }
+
+        function saveImage() {
             let image = document.getElementById('imagePreview');
             let data = image.src;
+            let data_name = document.getElementById('image_name').innerHTML;
+            console.log("Data Name:", data_name); // Add this line to debug
             fetch('savePicture.php', {
                 method: 'POST',
                 headers: {
@@ -120,7 +124,7 @@ try {
                     data: data,
                     data_name: document.getElementById('image_name').innerHTML,
                     user_name: <?php echo json_encode($userData['username']); ?>,
-                    type: 'CIPHER',
+                    type: 'temp',
                     id: <?php echo json_encode($userData['id']); ?>
                 })
             }).then(response => response.json())
