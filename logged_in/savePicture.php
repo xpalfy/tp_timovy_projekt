@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if ($post['user_name'] !== $_SESSION['user']['username'] || $post['id'] !== $_SESSION['user']['id']) {
+    if ($post['user_name'] !== $userData['username'] || $post['id'] !== $userData['id']) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid user']);
         exit;
