@@ -132,10 +132,45 @@ try {
                     console.log(data);
                     if (data.success) {
                         toastr.success(data.message);
+                        let path = data.path;
+                        let classification_score = classifyPicture(path);
+
                     } else {
                         toastr.error(data.error);
                     }
                 });
+        }
+        async function classifyPicture(path) {
+            const url = 'http://localhost:5000/classify';
+            console.log("Sending request to Flask server...");
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',  
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ path })  // Sending JSON data
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.classification) {
+                    console.log("Classification:", data.classification);
+                    toastr.success(`Classification: ${data.classification}`);
+                    // Add styling based on classification score
+                    applyClassificationStyle(data.classification);
+                    return data.classification;
+                } else {
+                    console.error("Error in classification response.");
+                }
+            } catch (error) {
+                console.error("Error sending request to Flask server:", error.message);
+            }
         }
 
         function checkToasts() {
@@ -143,6 +178,41 @@ try {
             if (toast) {
                 toastr[toast.type](toast.message);
                 <?php unset($_SESSION['toast']); ?>
+            }
+        }
+        function applyClassificationStyle(classification_score) {
+            let saveCipherBtn = document.querySelector(".btn-info[onclick='saveCipher()']");
+            let saveKeyBtn = document.querySelector(".btn-info[onclick='saveKey()']");
+            let messageContainer = document.getElementById('classificationMessage');
+
+            // Reset styles
+            saveCipherBtn.style.border = "none";
+            saveCipherBtn.style.padding = "8px";
+            saveKeyBtn.style.border = "none";
+            saveKeyBtn.style.padding = "8px";
+
+            // Create or move message container
+            if (!messageContainer) {
+                messageContainer = document.createElement("p");
+                messageContainer.id = "classificationMessage";
+                messageContainer.style.textAlign = "center";
+                messageContainer.style.fontWeight = "bold";
+                messageContainer.style.marginTop = "15px";
+                messageContainer.style.width = "100%";
+                
+                // Append message container below the buttons
+                let saveBtnsParent = document.getElementById('SaveBtns').parentNode;
+                saveBtnsParent.appendChild(messageContainer);
+            }
+
+            if (classification_score > 50) {
+                saveCipherBtn.style.border = "3px solid green";
+                saveCipherBtn.style.padding = "10px";
+                messageContainer.innerHTML = `The classifier thinks the image is ${classification_score}% ciphertext.`;
+            } else {
+                saveKeyBtn.style.border = "3px solid green";
+                saveKeyBtn.style.padding = "10px";
+                messageContainer.innerHTML = `The classifier thinks the image is ${classification_score}% key.`;
             }
         }
 
