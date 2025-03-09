@@ -35,6 +35,7 @@ try {
 
 <body>
     <script>
+        let currentImageId = null; // Store the image ID to track unsaved images
         function handleFile(file) {
             if (file.type.match('image.*')) {
                 let reader = new FileReader();
@@ -45,6 +46,13 @@ try {
                     image.style.display = 'block';
                     document.getElementById('SaveBtns').style.display = 'flex';
                     document.getElementById('SaveBtnsInfo').style.display = 'none';
+                    console.log("currentImageId:", currentImageId);
+
+                    if (currentImageId) { // Delete previous unsaved image if exists
+                        console.log("Deleting previous unsaved image...");
+                        deleteUnsavedImage(currentImageId);
+                    }
+
                     saveImage();
                 };
                 reader.readAsDataURL(file);
@@ -94,6 +102,8 @@ try {
                 console.log(data);
                 if (data.success) {
                     toastr.success(data.message);
+                    console.log("Image saved successfully.");
+                    currentImageId = null; // Image is saved, no need to delete it
                 } else {
                     toastr.error(data.error);
                 }
@@ -132,13 +142,29 @@ try {
                     console.log(data);
                     if (data.success) {
                         toastr.success(data.message);
-                        let path = data.path;
-                        let classification_score = classifyPicture(path);
+
+                        currentImageId = data.picture_id; // Store the temporary image ID
+                        console.log("Image uploaded successfully. ID:", currentImageId);
+                        classifyPicture(data.path);
 
                     } else {
                         toastr.error(data.error);
                     }
                 });
+        }
+        function deleteUnsavedImage(imageId) {
+            console.log("Deleting unsaved image...");
+            fetch(`deleteDocument.php?id=${imageId}&user=${<?php echo json_encode($userData['id']); ?>}`, {
+                method: 'GET'
+            }).then(response => {
+                if (response.ok) {
+                    console.log("Unsaved image deleted successfully.");
+                } else {
+                    console.error("Failed to delete unsaved image.");
+                }
+            }).catch(error => {
+                console.error("Error deleting unsaved image:", error);
+            });
         }
         async function classifyPicture(path) {
             const url = 'http://localhost:5000/classify';
@@ -215,6 +241,13 @@ try {
                 messageContainer.innerHTML = `The classifier thinks the image is ${classification_score}% key.`;
             }
         }
+        window.addEventListener("beforeunload", function () {
+            console.log("Page is being unloaded..., deleting currentImageId:", currentImageId);
+
+            if (currentImageId) {
+                deleteUnsavedImage(currentImageId);
+            }
+        });
 
         checkToasts();
     </script>
