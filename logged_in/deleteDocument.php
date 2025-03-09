@@ -27,7 +27,7 @@ if ($userId == null || $pictureId == null) {
     exit();
 }
 
-if ($userId != $_SESSION['user']['id']) {
+if ($userId != $userData['id']) {
     $_SESSION['toast'] = [
         'message' => 'You can only delete your own documents',
         'type' => 'error'

@@ -83,11 +83,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare('INSERT INTO pictures (creator, path, type, name) VALUES (?, ?, ?, ?)');
     $stmt->bind_param('isss', $id, $file_path, $type, $data_name);
     $stmt->execute();
+    $picture_id = $conn->insert_id; // Get the inserted picture ID
 
 
     if (file_put_contents('../' . $file_path, $data) !== false) {
         http_response_code(200);
-        echo json_encode(['success' => 'True', 'message' => 'File saved', 'path' => $file_path]);
+        echo json_encode(['success' => 'True', 'message' => 'File saved', 'path' => $file_path, 'picture_id' => $picture_id]);
         exit;
     } else {
         http_response_code(400);
