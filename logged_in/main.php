@@ -167,7 +167,7 @@ try {
             });
         }
         async function classifyPicture(path) {
-            const url = 'http://localhost:5000/classify';
+            const url = 'https://python.tptimovyprojekt.software/classify';
             console.log("Sending request to Flask server...");
 
             try {
@@ -238,7 +238,7 @@ try {
             } else {
                 saveKeyBtn.style.border = "3px solid green";
                 saveKeyBtn.style.padding = "10px";
-                messageContainer.innerHTML = `The classifier thinks the image is ${classification_score}% key.`;
+                messageContainer.innerHTML = `The classifier thinks the image is ${100 - classification_score}% key.`;
             }
         }
         window.addEventListener("beforeunload", function () {
