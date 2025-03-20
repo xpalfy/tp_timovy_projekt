@@ -97,17 +97,17 @@ try {
                     id: <?php echo json_encode($userData['id']); ?>
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.success) {
-                    toastr.success(data.message);
-                    console.log("Image saved successfully.");
-                    currentImageId = null; // Image is saved, no need to delete it
-                } else {
-                    toastr.error(data.error);
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.success) {
+                        toastr.success(data.message);
+                        console.log("Image saved successfully.");
+                        currentImageId = null; // Image is saved, no need to delete it
+                    } else {
+                        toastr.error(data.error);
+                    }
+                });
         }
 
         // To save keys:
@@ -172,7 +172,7 @@ try {
 
             try {
                 const response = await fetch(url, {
-                    method: 'POST',  
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -225,7 +225,7 @@ try {
                 messageContainer.style.fontWeight = "bold";
                 messageContainer.style.marginTop = "15px";
                 messageContainer.style.width = "100%";
-                
+
                 // Append message container below the buttons
                 let saveBtnsParent = document.getElementById('SaveBtns').parentNode;
                 saveBtnsParent.appendChild(messageContainer);
@@ -251,7 +251,9 @@ try {
 
         checkToasts();
     </script>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="transition: top 0.3s;" id="navbar">
+    <div id="navbar-container" style="background: black; position: absolute; width: 100%; height: 100px;"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="transition: top 0.3s;" id="navbar">
         <a class="navbar-brand" href="main.php" style="font-size: xx-large; display: flex; align-items: center;">
             <img src="../img/logo.png" alt="Logo" style="width: 40px; height: 40px; margin-right: 15px;">
             HandScript
@@ -295,13 +297,14 @@ try {
         </div>
     </nav>
 
+
     <script>
         let lastScrollTop = 0;
         const navbar = document.getElementById('navbar');
 
         window.addEventListener('scroll', function () {
             const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-            if (currentScroll > lastScrollTop) {    
+            if (currentScroll > lastScrollTop) {
                 // Scrolling down
                 navbar.style.top = '-80px';
             } else {
@@ -314,8 +317,142 @@ try {
 
     <div class="background-image"></div>
 
+    <!-- Welcome Section with Tutorial -->
+    <div id="welcome-section" class="text-center">
+        <h1 class="display-4">Welcome, <?php echo $userData['username']; ?>!</h1>
+        <p class="lead">Explore the key features of HandScript.</p>
 
-    <div class="cont mb-5 pt-5">
+        <div id="tutorialCarousel" class="carousel slide mt-4" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#tutorialCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#tutorialCarousel" data-slide-to="1"></li>
+                <li data-target="#tutorialCarousel" data-slide-to="2"></li>
+                <li data-target="#tutorialCarousel" data-slide-to="3"></li>
+                <li data-target="#tutorialCarousel" data-slide-to="4"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="carousel-content">
+                        <h3>🚀 What is HandScript?</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in suscipit magna. Pellentesque
+                            tincidunt cursus neque, a molestie dui vestibulum sit amet. Duis ut ante nibh. Nulla a nisl
+                            quis augue elementum rhoncus quis quis libero. Mauris nec eros at lacus semper viverra in et
+                            felis. Praesent ac massa turpis. Nam augue magna, semper sit amet erat vel, sollicitudin
+                            sodales nisi. Sed rutrum nibh eu dapibus suscipit. Phasellus sed suscipit est. Pellentesque
+                            elit felis, facilisis in lacus in, interdum tempor elit.</p>
+
+                        <p>Suspendisse tincidunt tincidunt leo a mattis. Aenean convallis, justo a mollis fermentum,
+                            sapien ante vestibulum turpis, at malesuada ante quam eu dolor. Integer ullamcorper pharetra
+                            turpis. Vestibulum at scelerisque nulla. Cras rutrum porta tortor, eu accumsan augue auctor
+                            eget. Fusce nec felis hendrerit, fringilla mi a, suscipit justo. Fusce egestas eros sit amet
+                            justo dignissim fringilla.</p>
+
+                        <p>Sed aliquam lacus ut erat efficitur, eu pharetra justo scelerisque. Vestibulum ante ipsum
+                            primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam efficitur id libero
+                            fringilla gravida. Nunc ultrices ligula lacus. Nunc imperdiet neque ac lorem vestibulum
+                            pharetra. In tincidunt dolor nisi, nec accumsan sem consequat eget. Mauris lacinia ante
+                            gravida, mattis leo vel, fringilla diam. Ut ut blandit sem. Curabitur maximus faucibus
+                            lobortis. Nulla dolor odio, mattis eu nunc non, iaculis venenatis nunc. Duis faucibus
+                            aliquet mi ac congue. Vestibulum tristique nisi et vehicula elementum. Morbi ut arcu neque.
+                            Donec semper rutrum orci quis posuere. Quisque in ornare quam. Nullam et justo libero.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="carousel-content">
+                        <h3>📂 Uploading Documents</h3>
+                        <p>You can **drag and drop** or select a file to upload encrypted documents.</p>
+                        <p>Documents containing encryption keys can be stored separately for later use.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="carousel-content">
+                        <h3>🔑 Multi-stage Decryption</h3>
+                        <p>After uploading, the system allows for **multi-stage decryption of encrypted files**.</p>
+                        <p>Users can **pause and resume** decryption anytime.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="carousel-content">
+                        <h3>💾 Secure Storage</h3>
+                        <p>All user data is securely stored in a **MySQL database**.</p>
+                        <p>Passwords are encrypted and data is protected.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="carousel-content">
+                        <h3>🛠️ Technology Used</h3>
+                        <p>HandScript is built using **PHP, Bootstrap, and JavaScript**.</p>
+                        <p>Back-end: **PHP & MySQL** | Front-end: **Bootstrap & jQuery**.</p>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#tutorialCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#tutorialCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+
+    <a href="#Dashboard" style="text-align: center;"><img src="../img/arrow_down.png" alt="Try now" style="width: 50px;"></a>
+
+    <!-- Styling for better visibility -->
+    <style>
+        #tutorialCarousel {
+            width: 60%;
+            margin: 30px auto 0px auto;
+            background: rgba(0, 0, 0, 0.6);
+            /* Transparent effect */
+            border-radius: 10px;
+
+
+            /* Glassmorphism effect */
+            padding: 20px;
+        }
+
+        .carousel-content {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 2px solid white;
+            border-radius: 10px;
+            color: #fff;
+            text-align: center;
+            min-height: 66vh;
+        }
+
+
+
+        /* Adjust the welcome section */
+        #welcome-section {
+            background: linear-gradient(rgba(0, 0, 0, 1), rgba(255, 255, 255, 0));
+            color: white;
+            padding: 10px 50px 0px 50px;
+        }
+
+        #welcome-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        #welcome-section p {
+            font-size: 1.2rem;
+        }
+
+        #navbar {
+            background: rgba(52, 58, 64, 0.6);
+            /* Transparent effect */
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            /* Glassmorphism effect */
+            backdrop-filter: blur(10px);
+        }
+    </style>
+
+    <div id="Dashboard" class="cont mb-5 pt-5">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
