@@ -335,12 +335,8 @@ try {
                                     Text</button>
                             </div>
                         </div>
-                        <div class="row justify-content-center mt-3" style="display: none" id="SaveBtnsInfo">
-                            <div class="col-md-8">
-                                <div class="p-3 mb-2 bg-danger text-white" style="border-radius: 10px">Please select a
-                                    directory to store the image in the Account Settings page.
-                                </div>
-                            </div>
+                        <div class="row justify-content-center mt-3" id="SaveBtnsInfo">
+                            <p id="classificationMessage" style="display: none;">Test</p>
                         </div>
                     </div>
                 </div>
@@ -400,6 +396,8 @@ try {
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
             }
+            applyClassificationStyle(classificationScores);
+            
         }
 
         function previewImageButton(event) {
@@ -411,6 +409,7 @@ try {
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
             }
+            applyClassificationStyle(classificationScores);
         }
 
         function handleDragOver(event) {
@@ -507,8 +506,7 @@ try {
 
                         currentImageId.push(data.picture_id); // Store the temporary image ID
                         console.log("Image uploaded successfully. ID:", currentImageId);
-                        classifyPicture(data.path);
-
+                        classificationScores.push(classifyPicture(data.path));
                     } else {
                         toastr.error(data.error);
                     }
@@ -561,8 +559,6 @@ try {
                 if (data.classification) {
                     console.log("Classification:", data.classification);
                     toastr.success(`Classification: ${data.classification}`);
-                    // Add styling based on classification score
-                    applyClassificationStyle(data.classification);
                     return data.classification;
                 } else {
                     console.error("Error in classification response.");
@@ -584,34 +580,26 @@ try {
             let saveKeyBtn = document.querySelector(".btn-info[onclick='saveKey()']");
             let messageContainer = document.getElementById('classificationMessage');
 
+            score = 0;
+            for (let i = 0; i < classification_score.length; i++) {
+                score += classification_score[i];
+            }
+            classification_score = score / classification_score.length;
+
             // Reset styles
             saveCipherBtn.style.border = "none";
             saveCipherBtn.style.padding = "8px";
             saveKeyBtn.style.border = "none";
             saveKeyBtn.style.padding = "8px";
 
-            // Create or move message container
-            if (!messageContainer) {
-                messageContainer = document.createElement("p");
-                messageContainer.id = "classificationMessage";
-                messageContainer.style.textAlign = "center";
-                messageContainer.style.fontWeight = "bold";
-                messageContainer.style.marginTop = "15px";
-                messageContainer.style.width = "100%";
-
-                // Append message container below the buttons
-                let saveBtnsParent = document.getElementById('SaveBtns').parentNode;
-                saveBtnsParent.appendChild(messageContainer);
-            }
-
             if (classification_score > 50) {
                 saveCipherBtn.style.border = "3px solid green";
                 saveCipherBtn.style.padding = "10px";
-                messageContainer.innerHTML = `The classifier thinks the image is ${classification_score}% ciphertext.`;
+                messageContainer.innerHTML = `The classifier thinks the images are ${classification_score}% ciphertexts.`;
             } else {
                 saveKeyBtn.style.border = "3px solid green";
                 saveKeyBtn.style.padding = "10px";
-                messageContainer.innerHTML = `The classifier thinks the image is ${100 - classification_score}% key.`;
+                messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
             }
         }
         window.addEventListener("beforeunload", function () {
