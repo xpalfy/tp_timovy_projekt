@@ -328,10 +328,12 @@ try {
                         </div>
                         <div class="row justify-content-center mt-3" style="display: none" id="SaveBtns">
                             <div class="col-md-4">
-                                <button class="btn btn-block" onclick="saveKey()" style="background-color: #007bff;">Save as Key</button>
+                                <button class="btn btn-block" onclick="saveKey()" id="saveKey"
+                                    style="background-color: #007bff; color: white;">Save as Key</button>
                             </div>
                             <div class="col-md-4">
-                                <button class="btn btn-block" onclick="saveCipher()" style="background-color: #007bff;">Save as Cipher
+                                <button class="btn btn-block" onclick="saveCipher()" id="saveCipher"
+                                    style="background-color: #007bff; color: white;">Save as Cipher
                                     Text</button>
                             </div>
                         </div>
@@ -377,7 +379,7 @@ try {
                         document.getElementById('SaveBtns').style.display = 'flex';
                         document.getElementById('SaveBtnsInfo').style.display = 'none';
                     }
-                    
+
                     saveImage(e.target.result, image_name);
                 };
                 reader.readAsDataURL(file);
@@ -397,7 +399,7 @@ try {
                 handleFile(files[i], i === files.length - 1, i === 0);
             }
             applyClassificationStyle(classificationScores);
-            
+
         }
 
         function previewImageButton(event) {
@@ -576,8 +578,8 @@ try {
             }
         }
         function applyClassificationStyle(classification_score) {
-            let saveCipherBtn = document.querySelector(".btn-info[onclick='saveCipher()']");
-            let saveKeyBtn = document.querySelector(".btn-info[onclick='saveKey()']");
+            let saveCipherBtn = document.getElementById('saveCipher');
+            let saveKeyBtn = document.getElementById('saveKey');
             let messageContainer = document.getElementById('classificationMessage');
 
             score = 0;
