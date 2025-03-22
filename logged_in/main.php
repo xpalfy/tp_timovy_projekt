@@ -368,7 +368,9 @@ try {
             if (file.type.match('image.*')) {
                 let reader = new FileReader();
                 reader.onload = function (e) {
-                    previewImages.push(e.target.result);
+                    image_name = file.name.split('.')[0].split(' ').join('_').toLowerCase();
+                    previewImages.push([e.target.result, image_name]);
+                    console.log("Image uploaded:", previewImages);
                     if (shouldShow) {
                         currentPreviewIndex = previewImages.length - 1;
                         updatePreview();
@@ -380,8 +382,8 @@ try {
                         console.log("Deleting previous unsaved images...");
                         deleteUnsavedImage(currentImageId);
                     }
-                    image_name = file.name.split('.')[0].split(' ').join('_').toLowerCase();
-                    saveImage(image_name);
+
+                    saveImage(e.target.result, image_name);
                 };
                 reader.readAsDataURL(file);
             } else {
@@ -424,7 +426,7 @@ try {
         function updatePreview() {
             const imageElement = document.getElementById('imagePreview');
             if (previewImages.length > 0) {
-                imageElement.src = previewImages[currentPreviewIndex];
+                imageElement.src = previewImages[currentPreviewIndex][0];
                 imageElement.style.display = 'block';
             } else {
                 imageElement.style.display = 'none';
@@ -444,31 +446,36 @@ try {
         });
 
         function saveData(type) {
-            let image = document.getElementById('imagePreview');
-            let data = image.src;
-            fetch('movePicture.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    data: data,
-                    data_name: document.getElementById('image_name').innerHTML,
-                    user_name: <?php echo json_encode($userData['username']); ?>,
-                    type: type, // Use the passed 'type' parameter
-                    id: <?php echo json_encode($userData['id']); ?>
+            console.log(previewImages);
+            if (previewImages.length === 0) {
+                toastr.error('Please upload an image first.');
+                return;
+            }
+            for (let [data, image_name] of previewImages) {
+                fetch('movePicture.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: data,
+                        data_name: image_name,
+                        user_name: <?php echo json_encode($userData['username']); ?>,
+                        type: type, // Use the passed 'type' parameter
+                        id: <?php echo json_encode($userData['id']); ?>
+                    })
                 })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        toastr.success(data.message);
-                        console.log("Image saved successfully.");
-                        currentImageId = null; // Image is saved, no need to delete it
-                    } else {
-                        toastr.error(data.error);
-                    }
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            toastr.success(data.message);
+                            console.log("Image saved successfully.");
+                            currentImageId = null; // Image is saved, no need to delete it
+                        } else {
+                            toastr.error(data.error);
+                        }
+                    });
+            }
         }
 
         // To save keys:
@@ -481,9 +488,7 @@ try {
             saveData('CIPHER');
         }
 
-        function saveImage(image_name) {
-            let image = document.getElementById('imagePreview');
-            let data = image.src;
+        function saveImage(data, image_name) {
             fetch('savePicture.php', {
                 method: 'POST',
                 headers: {
@@ -510,6 +515,7 @@ try {
                     }
                 });
         }
+
         function deleteUnsavedImage(imageId) {
             console.log("Deleting unsaved images...");
             for (let id of imageId) {
@@ -525,7 +531,7 @@ try {
                     console.error("Error deleting unsaved image:", error);
                 });
             }
-            imageId = [];
+            currentImageId = [];
         }
 
         async function classifyPicture(path) {
