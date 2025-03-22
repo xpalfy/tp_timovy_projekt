@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Update DB with new file path and type
     $new_db_path = '/' . $type . '/' . $user_name . '/' . basename($old_file_path);
+    // TODO: Check if picture already exists (problem 2 DB records 1 picture)
     $stmt = $conn->prepare('UPDATE pictures SET path = ?, type = ? WHERE creator = ? AND name = ?');
     $stmt->bind_param('ssis', $new_db_path, $type, $id, $data_name);
     $stmt->execute();
