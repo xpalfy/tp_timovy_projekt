@@ -510,7 +510,7 @@ try {
                         currentImageId.push(data.picture_id); // Store the temporary image ID
                         console.log("Image uploaded successfully. ID:", currentImageId);
                         classificationScores.push(classifyPicture(data.path));
-                        if (classificationScores.length === numOfFiles) {
+                        if (classificationScores.length === numOfFiles && classificationScores.length > 0) {
                             applyClassificationStyle(classificationScores);
                         }
                     } else {
