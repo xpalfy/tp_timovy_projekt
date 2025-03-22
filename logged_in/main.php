@@ -30,6 +30,7 @@ try {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
 </head>
 
@@ -339,6 +340,13 @@ try {
                         </div>
                         <div class="row justify-content-center mt-3" id="SaveBtnsInfo">
                             <p id="classificationMessage" style="display: none;">Test</p>
+                            <div id="loading-cont" style="width: 50px; height: 50px; overflow: hidden; display: none;">
+                            <dotlottie-player
+                                src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                                background="transparent" speed="1" style="width: 100px; height: 100px; margin: -25px 0 0 -25px;" loop
+                                autoplay></dotlottie-player>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -377,8 +385,6 @@ try {
                     if (shouldShow) {
                         currentPreviewIndex = previewImages.length - 1;
                         updatePreview();
-                        document.getElementById('SaveBtns').style.display = 'flex';
-                        document.getElementById('classificationMessage').style.display = 'block';
                     }
 
                     saveImage(e.target.result, image_name);
@@ -511,12 +517,18 @@ try {
                         console.log("Image uploaded successfully. ID:", currentImageId);
                         classificationScores.push(classifyPicture(data.path));
                         if (classificationScores.length === numOfFiles && classificationScores.length > 0) {
+                            showBtns();
+                            document.getElementById('loading-cont').style.display = 'block';
                             applyClassificationStyle(classificationScores);
                         }
                     } else {
                         toastr.error(data.error);
                     }
                 });
+        }
+
+        function showBtns() {
+            document.getElementById('SaveBtns').style.display = 'block';
         }
 
         function deleteUnsavedImage(imageId) {
@@ -591,7 +603,6 @@ try {
                 for (let i = 0; i < value.length; i++) {
                     score += value[i];
                 }
-                console.log("TEST TEST TEST TEST");
                 classification_score = score / classification_score.length;
 
                 // Reset styles
@@ -609,6 +620,7 @@ try {
                     saveKeyBtn.style.padding = "9px";
                     messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
                 }
+                document.getElementById('loading-cont').style.display = 'none';
                 messageContainer.style.display = 'block';
             })
         }
