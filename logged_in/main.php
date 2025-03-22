@@ -328,10 +328,10 @@ try {
                         </div>
                         <div class="row justify-content-center mt-3" style="display: none" id="SaveBtns">
                             <div class="col-md-4">
-                                <button class="btn btn-info btn-block" onclick="saveKey()">Save as Key</button>
+                                <button class="btn btn-block" onclick="saveKey()" style="background-color: #007bff;">Save as Key</button>
                             </div>
                             <div class="col-md-4">
-                                <button class="btn btn-info btn-block" onclick="saveCipher()">Save as Cipher
+                                <button class="btn btn-block" onclick="saveCipher()" style="background-color: #007bff;">Save as Cipher
                                     Text</button>
                             </div>
                         </div>
@@ -534,7 +534,7 @@ try {
             currentPreviewIndex = 0;
             updatePreview();
             document.getElementById('SaveBtns').style.display = 'none';
-            document.getElementById('SaveBtnsInfo').style.display = 'block';
+            document.getElementById('classificationMessage').style.display = 'none';
         }
 
         async function classifyPicture(path) {
@@ -581,26 +581,29 @@ try {
             let messageContainer = document.getElementById('classificationMessage');
 
             score = 0;
-            for (let i = 0; i < classification_score.length; i++) {
-                score += classification_score[i];
-            }
+            Promise.all(classificationScores).then(value => {
+                for (let i = 0; i < value.length; i++) {
+                    score += value[i];
+                }
+            })
             classification_score = score / classification_score.length;
 
             // Reset styles
             saveCipherBtn.style.border = "none";
-            saveCipherBtn.style.padding = "8px";
+            saveCipherBtn.style.padding = "11px";
             saveKeyBtn.style.border = "none";
-            saveKeyBtn.style.padding = "8px";
+            saveKeyBtn.style.padding = "11px";
 
             if (classification_score > 50) {
-                saveCipherBtn.style.border = "3px solid green";
-                saveCipherBtn.style.padding = "10px";
+                saveCipherBtn.style.border = "2px solid green";
+                saveCipherBtn.style.padding = "9px";
                 messageContainer.innerHTML = `The classifier thinks the images are ${classification_score}% ciphertexts.`;
             } else {
-                saveKeyBtn.style.border = "3px solid green";
-                saveKeyBtn.style.padding = "10px";
+                saveKeyBtn.style.border = "2px solid green";
+                saveKeyBtn.style.padding = "9px";
                 messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
             }
+            messageContainer.style.display = 'block';
         }
         window.addEventListener("beforeunload", function () {
             console.log("Page is being unloaded..., deleting currentImageId:", currentImageId);
