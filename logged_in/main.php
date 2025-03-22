@@ -239,7 +239,7 @@ try {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
+            width: 70%;
         }
 
         .step {
@@ -288,7 +288,7 @@ try {
                             id="username"><?php echo $userData['username']; ?></span>!</h2>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row mt-3 justify-content-center">
                 <div class="step-progress-container">
                     <div class="step active">1</div>
                     <div class="line"></div>
@@ -368,21 +368,20 @@ try {
             if (file.type.match('image.*')) {
                 let reader = new FileReader();
                 reader.onload = function (e) {
+                    if (currentImageId.length > 0 && first) {
+                        console.log("Deleting previous unsaved images...");
+                        deleteUnsavedImage(currentImageId);
+                    }
                     image_name = file.name.split('.')[0].split(' ').join('_').toLowerCase();
                     previewImages.push([e.target.result, image_name]);
                     console.log("Image uploaded:", previewImages);
                     if (shouldShow) {
                         currentPreviewIndex = previewImages.length - 1;
                         updatePreview();
+                        document.getElementById('SaveBtns').style.display = 'flex';
+                        document.getElementById('SaveBtnsInfo').style.display = 'none';
                     }
-                    document.getElementById('SaveBtns').style.display = 'flex';
-                    document.getElementById('SaveBtnsInfo').style.display = 'none';
-
-                    if (currentImageId.length > 0 && first) {
-                        console.log("Deleting previous unsaved images...");
-                        deleteUnsavedImage(currentImageId);
-                    }
-
+                    
                     saveImage(e.target.result, image_name);
                 };
                 reader.readAsDataURL(file);
@@ -532,6 +531,12 @@ try {
                 });
             }
             currentImageId = [];
+            previewImages = [];
+            classificationScores = [];
+            currentPreviewIndex = 0;
+            updatePreview();
+            document.getElementById('SaveBtns').style.display = 'none';
+            document.getElementById('SaveBtnsInfo').style.display = 'block';
         }
 
         async function classifyPicture(path) {
