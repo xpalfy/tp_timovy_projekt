@@ -305,6 +305,13 @@ try {
                 <div class="col-md mt-5">
                     <div class="card shadow-lg h-100 p-4 text-center scan-document" id="imageUploader"
                         ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave()">
+                        <div id="loading-cont"
+                            style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; background-color:rgba(115, 124, 133, 0.52); z-index: 2;">
+                            <dotlottie-player
+                                src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                                background="transparent" speed="1" style="width: 150px; height: 150px;" loop
+                                autoplay></dotlottie-player>
+                        </div>
                         <h4 class="card-title font-weight-bold mb-3">Upload Images</h4>
                         <p class="card-text">Drag & Drop an images here or click the button below to upload.</p>
 
@@ -340,13 +347,6 @@ try {
                         </div>
                         <div class="row justify-content-center mt-3" id="SaveBtnsInfo">
                             <p id="classificationMessage" style="display: none;">Test</p>
-                            <div id="loading-cont" style="width: 50px; height: 50px; overflow: hidden; display: none;">
-                            <dotlottie-player
-                                src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
-                                background="transparent" speed="1" style="width: 100px; height: 100px; margin: -25px 0 0 -25px;" loop
-                                autoplay></dotlottie-player>
-                            </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -398,6 +398,7 @@ try {
         function handleDrop(event) {
             event.preventDefault();
             const files = event.dataTransfer.files;
+            showLoading();
             numOfFiles = files.length;
             if (files.length > 1) {
                 document.getElementById('prevBtn').style.visibility = 'visible';
@@ -411,6 +412,7 @@ try {
 
         function previewImageButton(event) {
             const files = event.target.files;
+            showLoading();
             numOfFiles = files.length;
             if (files.length > 1) {
                 document.getElementById('prevBtn').style.visibility = 'visible';
@@ -528,7 +530,7 @@ try {
         }
 
         function showBtns() {
-            document.getElementById('SaveBtns').style.display = 'block';
+            document.getElementById('SaveBtns').style.display = 'flex';
         }
 
         function deleteUnsavedImage(imageId) {
@@ -620,7 +622,7 @@ try {
                     saveKeyBtn.style.padding = "9px";
                     messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
                 }
-                document.getElementById('loading-cont').style.display = 'none';
+                hideLoading();
                 messageContainer.style.display = 'block';
             })
         }
@@ -653,6 +655,16 @@ try {
                 }
             });
         }
+
+        function showLoading() {
+            document.getElementById('loading-cont').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-cont').style.display = 'none';
+        }
+
+        hideLoading();
 
         // index starts at 0
         setStep(0);
