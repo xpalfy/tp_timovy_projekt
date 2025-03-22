@@ -34,223 +34,11 @@ try {
 </head>
 
 <body>
-    <script>
-        let currentImageId = null; // Store the image ID to track unsaved images
-        function handleFile(file) {
-            if (file.type.match('image.*')) {
-                let reader = new FileReader();
-                reader.onload = function (e) {
-                    let image = document.getElementById('imagePreview');
-                    document.getElementById('image_name').innerHTML = file.name.split('.')[0].split(' ').join('_').toLowerCase();
-                    image.src = e.target.result;
-                    image.style.display = 'block';
-                    document.getElementById('SaveBtns').style.display = 'flex';
-                    document.getElementById('SaveBtnsInfo').style.display = 'none';
-                    console.log("currentImageId:", currentImageId);
 
-                    if (currentImageId) { // Delete previous unsaved image if exists
-                        console.log("Deleting previous unsaved image...");
-                        deleteUnsavedImage(currentImageId);
-                    }
 
-                    saveImage();
-                };
-                reader.readAsDataURL(file);
-            } else {
-                toastr.error('Please upload an image file.');
-            }
-        }
+    
 
-        function handleDrop(event) {
-            event.preventDefault();
-            let file = event.dataTransfer.files[0];
-            handleFile(file);
-        }
 
-        function previewImageButton(event) {
-            let file = event.target.files[0];
-            handleFile(file);
-        }
-
-        function handleDragOver(event) {
-            event.preventDefault();
-            document.getElementById('imageUploader').style.border = '2px dashed #007bff';
-        }
-
-        function handleDragLeave() {
-            document.getElementById('imageUploader').style.border = 'none';
-        }
-
-        function saveData(type) {
-            let image = document.getElementById('imagePreview');
-            let data = image.src;
-            fetch('movePicture.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    data: data,
-                    data_name: document.getElementById('image_name').innerHTML,
-                    user_name: <?php echo json_encode($userData['username']); ?>,
-                    type: type, // Use the passed 'type' parameter
-                    id: <?php echo json_encode($userData['id']); ?>
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if (data.success) {
-                        toastr.success(data.message);
-                        console.log("Image saved successfully.");
-                        currentImageId = null; // Image is saved, no need to delete it
-                    } else {
-                        toastr.error(data.error);
-                    }
-                });
-        }
-
-        // To save keys:
-        function saveKey() {
-            saveData('KEYS');
-        }
-
-        // To save cipher:
-        function saveCipher() {
-            saveData('CIPHER');
-        }
-
-        function saveImage() {
-            let image = document.getElementById('imagePreview');
-            let data = image.src;
-            let data_name = document.getElementById('image_name').innerHTML;
-            console.log("Data Name:", data_name); // Add this line to debug
-            fetch('savePicture.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    data: data,
-                    data_name: document.getElementById('image_name').innerHTML,
-                    user_name: <?php echo json_encode($userData['username']); ?>,
-                    type: 'temp',
-                    id: <?php echo json_encode($userData['id']); ?>
-                })
-            }).then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if (data.success) {
-                        toastr.success(data.message);
-
-                        currentImageId = data.picture_id; // Store the temporary image ID
-                        console.log("Image uploaded successfully. ID:", currentImageId);
-                        classifyPicture(data.path);
-
-                    } else {
-                        toastr.error(data.error);
-                    }
-                });
-        }
-        function deleteUnsavedImage(imageId) {
-            console.log("Deleting unsaved image...");
-            fetch(`deleteDocument.php?id=${imageId}&user=${<?php echo json_encode($userData['id']); ?>}`, {
-                method: 'GET'
-            }).then(response => {
-                if (response.ok) {
-                    console.log("Unsaved image deleted successfully.");
-                } else {
-                    console.error("Failed to delete unsaved image.");
-                }
-            }).catch(error => {
-                console.error("Error deleting unsaved image:", error);
-            });
-        }
-        async function classifyPicture(path) {
-            const url = 'https://python.tptimovyprojekt.software/classify';
-            console.log("Sending request to Flask server...");
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ path })  // Sending JSON data
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data.classification) {
-                    console.log("Classification:", data.classification);
-                    toastr.success(`Classification: ${data.classification}`);
-                    // Add styling based on classification score
-                    applyClassificationStyle(data.classification);
-                    return data.classification;
-                } else {
-                    console.error("Error in classification response.");
-                }
-            } catch (error) {
-                console.error("Error sending request to Flask server:", error.message);
-            }
-        }
-
-        function checkToasts() {
-            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
-            if (toast) {
-                toastr[toast.type](toast.message);
-                <?php unset($_SESSION['toast']); ?>
-            }
-        }
-        function applyClassificationStyle(classification_score) {
-            let saveCipherBtn = document.querySelector(".btn-info[onclick='saveCipher()']");
-            let saveKeyBtn = document.querySelector(".btn-info[onclick='saveKey()']");
-            let messageContainer = document.getElementById('classificationMessage');
-
-            // Reset styles
-            saveCipherBtn.style.border = "none";
-            saveCipherBtn.style.padding = "8px";
-            saveKeyBtn.style.border = "none";
-            saveKeyBtn.style.padding = "8px";
-
-            // Create or move message container
-            if (!messageContainer) {
-                messageContainer = document.createElement("p");
-                messageContainer.id = "classificationMessage";
-                messageContainer.style.textAlign = "center";
-                messageContainer.style.fontWeight = "bold";
-                messageContainer.style.marginTop = "15px";
-                messageContainer.style.width = "100%";
-
-                // Append message container below the buttons
-                let saveBtnsParent = document.getElementById('SaveBtns').parentNode;
-                saveBtnsParent.appendChild(messageContainer);
-            }
-
-            if (classification_score > 50) {
-                saveCipherBtn.style.border = "3px solid green";
-                saveCipherBtn.style.padding = "10px";
-                messageContainer.innerHTML = `The classifier thinks the image is ${classification_score}% ciphertext.`;
-            } else {
-                saveKeyBtn.style.border = "3px solid green";
-                saveKeyBtn.style.padding = "10px";
-                messageContainer.innerHTML = `The classifier thinks the image is ${100 - classification_score}% key.`;
-            }
-        }
-        window.addEventListener("beforeunload", function () {
-            console.log("Page is being unloaded..., deleting currentImageId:", currentImageId);
-
-            if (currentImageId) {
-                deleteUnsavedImage(currentImageId);
-            }
-        });
-
-        checkToasts();
-    </script>
     <div id="navbar-container" style="background: black; position: absolute; width: 100%; height: 100px;"></div>
 
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="transition: top 0.3s;" id="navbar">
@@ -397,7 +185,8 @@ try {
         </div>
     </div>
 
-    <a href="#Dashboard" style="text-align: center;"><img src="../img/arrow_down.png" alt="Try now" style="width: 50px;"></a>
+    <a href="#Dashboard" style="text-align: center;"><img src="../img/arrow_down.png" alt="Try now"
+            style="width: 50px;"></a>
 
     <!-- Styling for better visibility -->
     <style>
@@ -473,14 +262,18 @@ try {
                         <h4 class="card-title font-weight-bold mb-3">Upload Image</h4>
                         <p class="card-text">Drag & Drop an image here or click the button below to upload.</p>
 
-                        <div id="previewContainer"
-                            style="min-height: 150px; margin-top: 15px; display: flex; justify-content: center">
-                            <img id="imagePreview" src="" alt=""
-                                style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px">
+                        <div id="previewContainer" class="position-relative"
+                            style="min-height: 200px; margin-top: 15px; display: flex; justify-content: center; align-items: center;">
+                            <button id="prevBtn" class="btn btn-light position-absolute"
+                                style="left: 10px; z-index: 10;">❮</button>
+                            <img id="imagePreview" src="" alt="Preview"
+                                style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px;">
+                            <button id="nextBtn" class="btn btn-light position-absolute"
+                                style="right: 10px; z-index: 10;">❯</button>
                         </div>
 
                         <input type="file" id="fileInput" accept="image/*" style="display: none;"
-                            onchange="previewImageButton(event)">
+                            onchange="previewImageButton(event)" multiple>
                         <div class="row justify-content-center mt-3">
                             <div class="col-md-4">
                                 <button class="btn btn-secondary btn-block"
@@ -519,6 +312,253 @@ try {
     <footer class="footer bg-dark text-center text-white py-3">
         © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
     </footer>
+
+
+    <script>
+        let currentImageId = []; // Store the image IDs to track unsaved images
+        let previewImages = [];
+        let currentPreviewIndex = 0;
+        function handleFile(file, shouldShow, first) {
+            if (file.type.match('image.*')) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImages.push(e.target.result);
+                    if (shouldShow) {
+                        currentPreviewIndex = previewImages.length - 1;
+                        updatePreview();
+                    }
+                    document.getElementById('SaveBtns').style.display = 'flex';
+                    document.getElementById('SaveBtnsInfo').style.display = 'none';
+
+                    if (currentImageId.length > 0 && first) {
+                        console.log("Deleting previous unsaved images...");
+                        deleteUnsavedImage(currentImageId);
+                    }
+                    image_name = file.name.split('.')[0].split(' ').join('_').toLowerCase();
+                    saveImage(image_name);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                toastr.error('Please upload an image file.');
+            }
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            for (let i = 0; i < files.length; i++) {
+                handleFile(files[i], i === files.length - 1, i === 0);
+            }
+        }
+
+        function previewImageButton(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                handleFile(files[i], i === files.length - 1, i === 0);
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            document.getElementById('imageUploader').style.border = '2px dashed #007bff';
+        }
+
+        function handleDragLeave() {
+            document.getElementById('imageUploader').style.border = '#000000 dashed 4px';
+        }
+
+        function updatePreview() {
+            const imageElement = document.getElementById('imagePreview');
+            if (previewImages.length > 0) {
+                imageElement.src = previewImages[currentPreviewIndex];
+                imageElement.style.display = 'block';
+            } else {
+                imageElement.style.display = 'none';
+            }
+        }
+
+        document.getElementById('prevBtn').addEventListener('click', function () {
+            if (previewImages.length === 0) return;
+            currentPreviewIndex = (currentPreviewIndex - 1 + previewImages.length) % previewImages.length;
+            updatePreview();
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', function () {
+            if (previewImages.length === 0) return;
+            currentPreviewIndex = (currentPreviewIndex + 1) % previewImages.length;
+            updatePreview();
+        });
+
+        function saveData(type) {
+            let image = document.getElementById('imagePreview');
+            let data = image.src;
+            fetch('movePicture.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: data,
+                    data_name: document.getElementById('image_name').innerHTML,
+                    user_name: <?php echo json_encode($userData['username']); ?>,
+                    type: type, // Use the passed 'type' parameter
+                    id: <?php echo json_encode($userData['id']); ?>
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success(data.message);
+                        console.log("Image saved successfully.");
+                        currentImageId = null; // Image is saved, no need to delete it
+                    } else {
+                        toastr.error(data.error);
+                    }
+                });
+        }
+
+        // To save keys:
+        function saveKey() {
+            saveData('KEYS');
+        }
+
+        // To save cipher:
+        function saveCipher() {
+            saveData('CIPHER');
+        }
+
+        function saveImage(image_name) {
+            let image = document.getElementById('imagePreview');
+            let data = image.src;
+            fetch('savePicture.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: data,
+                    data_name: image_name,
+                    user_name: <?php echo json_encode($userData['username']); ?>,
+                    type: 'temp',
+                    id: <?php echo json_encode($userData['id']); ?>
+                })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success(data.message);
+
+                        currentImageId.push(data.picture_id); // Store the temporary image ID
+                        console.log("Image uploaded successfully. ID:", currentImageId);
+                        classifyPicture(data.path);
+
+                    } else {
+                        toastr.error(data.error);
+                    }
+                });
+        }
+        function deleteUnsavedImage(imageId) {
+            console.log("Deleting unsaved images...");
+            for (let id of imageId) {
+                fetch(`deleteDocument.php?id=${id}&user=${<?php echo json_encode($userData['id']); ?>}`, {
+                    method: 'GET'
+                }).then(response => {
+                    if (response.ok) {
+                        console.log("Unsaved image deleted successfully.");
+                    } else {
+                        console.error("Failed to delete unsaved image.");
+                    }
+                }).catch(error => {
+                    console.error("Error deleting unsaved image:", error);
+                });
+            }
+        }
+
+        async function classifyPicture(path) {
+            const url = 'https://python.tptimovyprojekt.software/classify';
+            console.log("Sending request to Flask server...");
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ path })  // Sending JSON data
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.classification) {
+                    console.log("Classification:", data.classification);
+                    toastr.success(`Classification: ${data.classification}`);
+                    // Add styling based on classification score
+                    applyClassificationStyle(data.classification);
+                    return data.classification;
+                } else {
+                    console.error("Error in classification response.");
+                }
+            } catch (error) {
+                console.error("Error sending request to Flask server:", error.message);
+            }
+        }
+
+        function checkToasts() {
+            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+            if (toast) {
+                toastr[toast.type](toast.message);
+                <?php unset($_SESSION['toast']); ?>
+            }
+        }
+        function applyClassificationStyle(classification_score) {
+            let saveCipherBtn = document.querySelector(".btn-info[onclick='saveCipher()']");
+            let saveKeyBtn = document.querySelector(".btn-info[onclick='saveKey()']");
+            let messageContainer = document.getElementById('classificationMessage');
+
+            // Reset styles
+            saveCipherBtn.style.border = "none";
+            saveCipherBtn.style.padding = "8px";
+            saveKeyBtn.style.border = "none";
+            saveKeyBtn.style.padding = "8px";
+
+            // Create or move message container
+            if (!messageContainer) {
+                messageContainer = document.createElement("p");
+                messageContainer.id = "classificationMessage";
+                messageContainer.style.textAlign = "center";
+                messageContainer.style.fontWeight = "bold";
+                messageContainer.style.marginTop = "15px";
+                messageContainer.style.width = "100%";
+
+                // Append message container below the buttons
+                let saveBtnsParent = document.getElementById('SaveBtns').parentNode;
+                saveBtnsParent.appendChild(messageContainer);
+            }
+
+            if (classification_score > 50) {
+                saveCipherBtn.style.border = "3px solid green";
+                saveCipherBtn.style.padding = "10px";
+                messageContainer.innerHTML = `The classifier thinks the image is ${classification_score}% ciphertext.`;
+            } else {
+                saveKeyBtn.style.border = "3px solid green";
+                saveKeyBtn.style.padding = "10px";
+                messageContainer.innerHTML = `The classifier thinks the image is ${100 - classification_score}% key.`;
+            }
+        }
+        window.addEventListener("beforeunload", function () {
+            console.log("Page is being unloaded..., deleting currentImageId:", currentImageId);
+
+            if (currentImageId) {
+                deleteUnsavedImage(currentImageId);
+            }
+        });
+
+        checkToasts();
+    </script>
+
 
 </body>
 
