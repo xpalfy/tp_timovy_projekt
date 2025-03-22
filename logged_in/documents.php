@@ -156,6 +156,64 @@ try {
                 ?>
             </div>
         </div>
+        <div class="container mb-5 pt-5">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1 class="display-4 font-weight-bold mb-4">Shared Documents</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h2>View and edit documents shared with you here</h2>
+                </div>
+            </div>
+            <div class="cont">
+                <?php
+                require '../config.php';
+
+                $conn = getDatabaseConnection();
+
+                $sql = "SELECT picture_id FROM users_pictures WHERE user_id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $userData['id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $sql = "SELECT ID ,path FROM pictures WHERE ID = ?";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("i", $row['picture_id']);
+                        $stmt->execute();
+                        $result2 = $stmt->get_result();
+
+                        if ($result2->num_rows > 0) {
+                            while ($row2 = $result2->fetch_assoc()) {
+                                echo '<div class="card-pic">';
+                                echo '<img src="..' . $row2['path'] . '" class="" alt="..." >';
+                                echo '<div class="card-body">';
+                                echo '<h5 class="card-title">' . pathinfo($row2['path'], PATHINFO_FILENAME) . '</h5>';
+                                echo '<div class="card-buttons">';
+                                echo '<a href="editDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
+                                echo '<a href="deleteDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-danger">Delete</a>';
+                                echo '</div>';
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                        }
+                    }
+                } else {
+                    echo '<div class="alert alert-info" role="alert">No documents found</div>';
+                }
+
+
+                $stmt->close();
+                $conn->close();
+
+                ?>
+                
+            </div>
+        </div>
     </div>
     <footer class="footer bg-dark text-center text-white py-3">
         © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
