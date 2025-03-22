@@ -362,6 +362,7 @@ try {
         let previewImages = [];
         let classificationScores = [];
         let currentPreviewIndex = 0;
+        let numOfFiles = 0;
         function handleFile(file, shouldShow, first) {
             if (file.type.match('image.*')) {
                 let reader = new FileReader();
@@ -391,6 +392,7 @@ try {
         function handleDrop(event) {
             event.preventDefault();
             const files = event.dataTransfer.files;
+            numOfFiles = files.length;
             if (files.length > 1) {
                 document.getElementById('prevBtn').style.visibility = 'visible';
                 document.getElementById('nextBtn').style.visibility = 'visible';
@@ -398,12 +400,12 @@ try {
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
             }
-            applyClassificationStyle(classificationScores);
 
         }
 
         function previewImageButton(event) {
             const files = event.target.files;
+            numOfFiles = files.length;
             if (files.length > 1) {
                 document.getElementById('prevBtn').style.visibility = 'visible';
                 document.getElementById('nextBtn').style.visibility = 'visible';
@@ -411,7 +413,6 @@ try {
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
             }
-            applyClassificationStyle(classificationScores);
         }
 
         function handleDragOver(event) {
@@ -509,6 +510,9 @@ try {
                         currentImageId.push(data.picture_id); // Store the temporary image ID
                         console.log("Image uploaded successfully. ID:", currentImageId);
                         classificationScores.push(classifyPicture(data.path));
+                        if (classificationScores.length === numOfFiles) {
+                            applyClassificationStyle(classificationScores);
+                        }
                     } else {
                         toastr.error(data.error);
                     }
