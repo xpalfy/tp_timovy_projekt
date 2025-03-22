@@ -34,11 +34,6 @@ try {
 </head>
 
 <body>
-
-
-    
-
-
     <div id="navbar-container" style="background: black; position: absolute; width: 100%; height: 100px;"></div>
 
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="transition: top 0.3s;" id="navbar">
@@ -239,6 +234,45 @@ try {
             /* Glassmorphism effect */
             backdrop-filter: blur(10px);
         }
+
+        .step-progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            background-color: #212529;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.3s;
+        }
+
+        .step.active {
+            background-color: #007bff;
+        }
+
+        .line {
+            flex: 1;
+            height: 4px;
+            background-color: #ccc;
+            margin: 0 10px;
+            z-index: 0;
+            transition: background-color 0.3s;
+        }
+
+        .step.active+.line {
+            background-color: #007bff;
+        }
     </style>
 
     <div id="Dashboard" class="cont mb-5 pt-5">
@@ -254,22 +288,33 @@ try {
                             id="username"><?php echo $userData['username']; ?></span>!</h2>
                 </div>
             </div>
+            <div class="row mt-3">
+                <div class="step-progress-container">
+                    <div class="step active">1</div>
+                    <div class="line"></div>
+                    <div class="step">2</div>
+                    <div class="line"></div>
+                    <div class="step">3</div>
+                    <div class="line"></div>
+                    <div class="step">4</div>
+                </div>
+            </div>
 
-            <div class="row justify-content-center mt-5">
+            <div class="row justify-content-center">
                 <div class="col-md mt-5">
                     <div class="card shadow-lg h-100 p-4 text-center scan-document" id="imageUploader"
                         ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave()">
-                        <h4 class="card-title font-weight-bold mb-3">Upload Image</h4>
-                        <p class="card-text">Drag & Drop an image here or click the button below to upload.</p>
+                        <h4 class="card-title font-weight-bold mb-3">Upload Images</h4>
+                        <p class="card-text">Drag & Drop an images here or click the button below to upload.</p>
 
                         <div id="previewContainer" class="position-relative"
                             style="min-height: 200px; margin-top: 15px; display: flex; justify-content: center; align-items: center;">
                             <button id="prevBtn" class="btn btn-light position-absolute"
-                                style="left: 10px; z-index: 10;">❮</button>
+                                style="left: 10px; z-index: 10; visibility: hidden;">❮</button>
                             <img id="imagePreview" src="" alt="Preview"
                                 style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px;">
                             <button id="nextBtn" class="btn btn-light position-absolute"
-                                style="right: 10px; z-index: 10;">❯</button>
+                                style="right: 10px; z-index: 10; visibility: hidden;">❯</button>
                         </div>
 
                         <input type="file" id="fileInput" accept="image/*" style="display: none;"
@@ -277,7 +322,7 @@ try {
                         <div class="row justify-content-center mt-3">
                             <div class="col-md-4">
                                 <button class="btn btn-secondary btn-block"
-                                    onclick="document.getElementById('fileInput').click()">Select Image
+                                    onclick="document.getElementById('fileInput').click()">Select Images
                                 </button>
                             </div>
                         </div>
@@ -317,6 +362,7 @@ try {
     <script>
         let currentImageId = []; // Store the image IDs to track unsaved images
         let previewImages = [];
+        let classificationScores = [];
         let currentPreviewIndex = 0;
         function handleFile(file, shouldShow, first) {
             if (file.type.match('image.*')) {
@@ -346,6 +392,10 @@ try {
         function handleDrop(event) {
             event.preventDefault();
             const files = event.dataTransfer.files;
+            if (files.length > 1) {
+                document.getElementById('prevBtn').style.visibility = 'visible';
+                document.getElementById('nextBtn').style.visibility = 'visible';
+            }
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
             }
@@ -353,6 +403,10 @@ try {
 
         function previewImageButton(event) {
             const files = event.target.files;
+            if (files.length > 1) {
+                document.getElementById('prevBtn').style.visibility = 'visible';
+                document.getElementById('nextBtn').style.visibility = 'visible';
+            }
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
             }
@@ -471,6 +525,7 @@ try {
                     console.error("Error deleting unsaved image:", error);
                 });
             }
+            imageId = [];
         }
 
         async function classifyPicture(path) {
@@ -555,6 +610,31 @@ try {
                 deleteUnsavedImage(currentImageId);
             }
         });
+
+        function setStep(index) {
+            const steps = document.querySelectorAll('.step');
+            const lines = document.querySelectorAll('.line');
+
+            steps.forEach((step, i) => {
+                if (i <= index) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            lines.forEach((line, i) => {
+                if (i < index) {
+                    line.style.backgroundColor = '#007bff';
+                } else {
+                    line.style.backgroundColor = '#212529';
+                }
+            });
+        }
+
+        // index starts at 0
+        setStep(0);
+
 
         checkToasts();
     </script>
