@@ -377,7 +377,7 @@ try {
                         currentPreviewIndex = previewImages.length - 1;
                         updatePreview();
                         document.getElementById('SaveBtns').style.display = 'flex';
-                        document.getElementById('SaveBtnsInfo').style.display = 'none';
+                        document.getElementById('classificationMessage').style.display = 'block';
                     }
 
                     saveImage(e.target.result, image_name);
