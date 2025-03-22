@@ -346,7 +346,7 @@ try {
                             </div>
                         </div>
                         <div class="row justify-content-center mt-3" id="SaveBtnsInfo">
-                            <p id="classificationMessage" style="display: none;">Test</p>
+                            <p class="fs-3 " id="classificationMessage" style="display: none;">Test</p>
                         </div>
                     </div>
                 </div>
@@ -391,7 +391,7 @@ try {
                 };
                 reader.readAsDataURL(file);
             } else {
-                toastr.error('Please upload an image file.');
+                handleError('Please upload an image file.');
             }
         }
 
@@ -401,8 +401,9 @@ try {
             showLoading();
             numOfFiles = files.length;
             if (files.length > 1) {
-                document.getElementById('prevBtn').style.visibility = 'visible';
-                document.getElementById('nextBtn').style.visibility = 'visible';
+                showScrollBtns();
+            } else {
+                hideScrollBtns();
             }
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
@@ -415,8 +416,9 @@ try {
             showLoading();
             numOfFiles = files.length;
             if (files.length > 1) {
-                document.getElementById('prevBtn').style.visibility = 'visible';
-                document.getElementById('nextBtn').style.visibility = 'visible';
+                showScrollBtns();
+            } else {
+                hideScrollBtns();
             }
             for (let i = 0; i < files.length; i++) {
                 handleFile(files[i], i === files.length - 1, i === 0);
@@ -457,7 +459,7 @@ try {
         function saveData(type) {
             console.log(previewImages);
             if (previewImages.length === 0) {
-                toastr.error('Please upload an image first.');
+                handleError('Please upload an image first.');
                 return;
             }
             for (let [data, image_name] of previewImages) {
@@ -481,7 +483,7 @@ try {
                             console.log("Image saved successfully.");
                             currentImageId = null; // Image is saved, no need to delete it
                         } else {
-                            toastr.error(data.error);
+                            handleError(data.error);
                         }
                     });
             }
@@ -524,7 +526,7 @@ try {
                             applyClassificationStyle(classificationScores);
                         }
                     } else {
-                        toastr.error(data.error);
+                        handleError(data.error);
                     }
                 });
         }
@@ -545,7 +547,7 @@ try {
                         console.error("Failed to delete unsaved image.");
                     }
                 }).catch(error => {
-                    console.error("Error deleting unsaved image:", error);
+                    handleError("Error deleting unsaved image:" + error);
                 });
             }
             currentImageId = [];
@@ -572,6 +574,7 @@ try {
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
+                    handleError();
                 }
 
                 const data = await response.json();
@@ -582,9 +585,11 @@ try {
                     return data.classification;
                 } else {
                     console.error("Error in classification response.");
+                    handleError();
                 }
             } catch (error) {
                 console.error("Error sending request to Flask server:", error.message);
+                handleError();
             }
         }
 
@@ -608,10 +613,10 @@ try {
                 classification_score = score / classification_score.length;
 
                 // Reset styles
-                saveCipherBtn.style.border = "none";
-                saveCipherBtn.style.padding = "11px";
-                saveKeyBtn.style.border = "none";
-                saveKeyBtn.style.padding = "11px";
+                saveCipherBtn.style.border = "2px solidrgb(0, 0, 0)";
+                saveCipherBtn.style.padding = "9px";
+                saveKeyBtn.style.border = "2px solidrgb(0, 0, 0)";
+                saveKeyBtn.style.padding = "9px";
 
                 if (classification_score > 50) {
                     saveCipherBtn.style.border = "2px solid green";
@@ -662,6 +667,30 @@ try {
 
         function hideLoading() {
             document.getElementById('loading-cont').style.display = 'none';
+        }
+
+        function showScrollBtns() {
+            document.getElementById('prevBtn').style.visibility = 'visible';
+            document.getElementById('nextBtn').style.visibility = 'visible';
+        }
+
+        function hideScrollBtns() {
+            document.getElementById('prevBtn').style.visibility = 'hidden';
+            document.getElementById('nextBtn').style.visibility = 'hidden';
+        }
+
+        function handleError(error_message) {
+            // If something mega bad happens set everything back to normal
+            hideLoading();
+            hideScrollBtns();
+            document.getElementById('SaveBtns').style.display = 'none';
+            document.getElementById('classificationMessage').style.display = 'none';
+            previewImages = [];
+            currentImageId = [];
+            classificationScores = [];
+            currentPreviewIndex = 0;
+            updatePreview();
+            toastr.error(error_message || 'An error occurred. Please try again.');
         }
 
         hideLoading();
