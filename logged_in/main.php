@@ -591,26 +591,28 @@ try {
                 for (let i = 0; i < value.length; i++) {
                     score += value[i];
                 }
+                console.log("TEST TEST TEST TEST");
+                classification_score = score / classification_score.length;
+
+                // Reset styles
+                saveCipherBtn.style.border = "none";
+                saveCipherBtn.style.padding = "11px";
+                saveKeyBtn.style.border = "none";
+                saveKeyBtn.style.padding = "11px";
+
+                if (classification_score > 50) {
+                    saveCipherBtn.style.border = "2px solid green";
+                    saveCipherBtn.style.padding = "9px";
+                    messageContainer.innerHTML = `The classifier thinks the images are ${classification_score}% ciphertexts.`;
+                } else {
+                    saveKeyBtn.style.border = "2px solid green";
+                    saveKeyBtn.style.padding = "9px";
+                    messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
+                }
+                messageContainer.style.display = 'block';
             })
-            classification_score = score / classification_score.length;
-
-            // Reset styles
-            saveCipherBtn.style.border = "none";
-            saveCipherBtn.style.padding = "11px";
-            saveKeyBtn.style.border = "none";
-            saveKeyBtn.style.padding = "11px";
-
-            if (classification_score > 50) {
-                saveCipherBtn.style.border = "2px solid green";
-                saveCipherBtn.style.padding = "9px";
-                messageContainer.innerHTML = `The classifier thinks the images are ${classification_score}% ciphertexts.`;
-            } else {
-                saveKeyBtn.style.border = "2px solid green";
-                saveKeyBtn.style.padding = "9px";
-                messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
-            }
-            messageContainer.style.display = 'block';
         }
+
         window.addEventListener("beforeunload", function () {
             console.log("Page is being unloaded..., deleting currentImageId:", currentImageId);
 
