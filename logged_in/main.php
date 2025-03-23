@@ -10,7 +10,7 @@ try {
 } catch (Exception $e) {
     http_response_code(500);
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
-    header('Location: login.php');
+    header('Location: ../login.php');
 }
 
 ?>
@@ -100,9 +100,10 @@ try {
     </script>
 
     <div class="background-image"></div>
+    <div class="gradient-effect"></div>
 
     <!-- Welcome Section with Tutorial -->
-    <div id="welcome-section" class="text-center">
+    <div id="welcome-section" class="text-center container">
         <h1 class="display-4">Welcome, <?php echo $userData['username']; ?>!</h1>
         <p class="lead">Explore the key features of HandScript.</p>
 
@@ -181,21 +182,46 @@ try {
         </div>
     </div>
 
-    <a href="#Dashboard" style="text-align: center;"><img src="../img/arrow_down.png" alt="Try now"
-            style="width: 50px;"></a>
+    <a href="#Dashboard" style="text-align: center;" ><img src="../img/arrow_down.png" alt="Try now"
+            style="width: 50px;" id="arrow_down"></a>
 
     <!-- Styling for better visibility -->
     <style>
         #tutorialCarousel {
-            width: 60%;
             margin: 30px auto 0px auto;
             background: rgba(0, 0, 0, 0.6);
             /* Transparent effect */
             border-radius: 10px;
+        }
 
+        #arrow_down{
+            animation: zoom_and_point_down 9s infinite;
+        }
 
-            /* Glassmorphism effect */
-            padding: 20px;
+        
+
+        @keyframes zoom_and_point_down {
+            0% {
+                transform: scale(1);
+            }
+            5.55% {
+                transform: scale(1.2);
+            }
+            11.1% {
+                transform: scale(1);
+            }
+            16.65%{
+                transform: translateY(+10px);
+            }
+            22.2% {
+                transform: translateY(0);
+            }
+            27.75% {
+                transform: translateY(+10px);
+            }
+            33.3% {
+                transform: translateY(0);
+            }
         }
 
         .carousel-content {
@@ -212,9 +238,9 @@ try {
 
         /* Adjust the welcome section */
         #welcome-section {
-            background: linear-gradient(rgba(0, 0, 0, 1), rgba(255, 255, 255, 0));
+            
             color: white;
-            padding: 10px 50px 0px 50px;
+            padding: 10px 0 0 0;
         }
 
         #welcome-section h1 {
@@ -273,6 +299,17 @@ try {
 
         .step.active+.line {
             background-color: #007bff;
+        }
+
+        .gradient-effect {
+            position: absolute;
+            max-height: 100vh;
+            top: 100px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 1), rgba(255, 255, 255, 0));
+            z-index: -1;
         }
     </style>
 
@@ -346,7 +383,7 @@ try {
                             </div>
                         </div>
                         <div class="row justify-content-center mt-3" id="SaveBtnsInfo">
-                            <p class="fs-3 " id="classificationMessage" style="display: none;">Test</p>
+                            <p class="fs-3 " id="classificationMessage" style="display: none;"></p>
                         </div>
                     </div>
                 </div>
