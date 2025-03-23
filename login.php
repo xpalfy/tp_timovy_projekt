@@ -6,8 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-require_once 'config.php';
 require_once 'vendor/autoload.php';
+require_once 'config.php';
 
 function getJwtSecret(): string {
     $config = include 'jwt.php';
@@ -20,10 +20,10 @@ function getJwtSecret(): string {
 function generateToken($userId, $username): string {
     $secret = getJwtSecret();
     $payload = [
-        'iss' => 'https://test.tptimovyprojekt.software/xpalfy', 
-        'aud' => 'https://test.tptimovyprojekt.software/xpalfy',
-        'iat' => time(),                                         
-        'exp' => time() + 3600,                             
+        'iss' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
+        'aud' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
+        'iat' => time(),
+        'exp' => time() + 3600,
         'data' => [
             'id' => $userId,
             'username' => $username,
@@ -33,11 +33,13 @@ function generateToken($userId, $username): string {
     return JWT::encode($payload, $secret, 'HS256');
 }
 
-function loginUser($username, $password): array {
+function loginUser($username, $password): void {
     $conn = getDatabaseConnection();
     $stmt = $conn->prepare('SELECT id, username, password FROM users WHERE username = ?');
     if (!$stmt) {
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'Database error: Unable to prepare statement'];
+        header('Location: login.php');
+        exit();
     }
 
     $stmt->bind_param('s', $username);
@@ -60,11 +62,24 @@ function loginUser($username, $password): array {
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid username!'];
         header('Location: login.php');
     }
+
     $stmt->close();
     $conn->close();
 }
 
-$response = null;
+$client = new Google\Client();
+try {
+    $client->setAuthConfig('./Google/credentials.json');
+} catch (\Google\Exception $e) {
+    // Handle exception or logging
+}
+
+$redirect_uri = "https://test.tptimovyprojekt.software/tp_timovy_projekt/Google/redirect.php";
+$client->setRedirectUri($redirect_uri);
+$client->addScope("email");
+$client->addScope("profile");
+
+$auth_url = $client->createAuthUrl();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? null;
@@ -72,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($username && $password) {
         try {
-            $response = loginUser($username, $password);
+            loginUser($username, $password);
         } catch (Exception $e) {
             $_SESSION['toast'] = ['type' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()];
             header('Location: login.php');
@@ -81,35 +96,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid request: Missing username or password'];
         header('Location: login.php');
     }
+    exit();
 }
+
+$toast = $_SESSION['toast'] ?? null;
+unset($_SESSION['toast']);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/login.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 <body>
+
 <script>
-    function checkToasts() {
-        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+    $(document).ready(function () {
+        let toast = <?php echo json_encode($toast); ?>;
         if (toast) {
             toastr[toast.type](toast.message);
-            <?php unset($_SESSION['toast']); ?>
         }
-    }
-
-    checkToasts();
+    });
 </script>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -120,12 +135,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="./login.php">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="./register.php">Register</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="./login.php">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="./register.php">Register</a></li>
         </ul>
     </div>
 </nav>
@@ -142,13 +153,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" autocomplete="off" required>
             </div>
-            <button type="submit" class="btn btn-primary">Log In</button>
+            <button type="submit" class="btn btn-primary btn-block">Log In</button>
         </form>
+
+        <hr class="my-4">
+        <a href="<?php echo htmlspecialchars($auth_url); ?>" class="btn btn-danger btn-block">Login with Google</a>
     </div>
 </div>
 
-<footer class="footer bg-dark">
-    © Project Site <a href="https://test.tptimovyprojekt.software/xpalfy/">tptimovyprojekt.software</a>
+<footer class="footer bg-dark text-center text-light py-3">
+    © Project Site <a href="https://test.tptimovyprojekt.software/tp_timovy_projekt/" class="text-light">tptimovyprojekt.software</a>
 </footer>
+
 </body>
 </html>
