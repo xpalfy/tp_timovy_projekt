@@ -140,6 +140,7 @@ try {
                         echo '<h5 class="card-title">' . pathinfo($row['path'], PATHINFO_FILENAME) . '</h5>';
                         echo '<div class="card-buttons">';
                         echo '<a href="editDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
+                        echo '<a href="deleteDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-danger">Delete</a>';
                         echo '</div>';
                         echo '</div>';
                         echo '</div>';
@@ -194,7 +195,6 @@ try {
                                 echo '<h5 class="card-title">' . pathinfo($row2['path'], PATHINFO_FILENAME) . '</h5>';
                                 echo '<div class="card-buttons">';
                                 echo '<a href="editDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
-                                echo '<a href="deleteDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-danger">Delete</a>';
                                 echo '</div>';
                                 echo '</div>';
                                 echo '</div>';
