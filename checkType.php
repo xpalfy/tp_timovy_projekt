@@ -41,7 +41,7 @@ function validateToken() {
     } catch (Exception $e) {
         http_response_code(401);
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'Unauthorized: Invalid token'];
-        header('Location: login.php');
+        header('Location: ../login.php');
         exit();
     }
 }
