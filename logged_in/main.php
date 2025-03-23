@@ -31,6 +31,7 @@ try {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <script src="../js/segment-rect.js" type="module"></script>
 
 </head>
 
@@ -80,24 +81,6 @@ try {
             </ul>
         </div>
     </nav>
-
-
-    <script>
-        let lastScrollTop = 0;
-        const navbar = document.getElementById('navbar');
-
-        window.addEventListener('scroll', function () {
-            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-            if (currentScroll > lastScrollTop) {
-                // Scrolling down
-                navbar.style.top = '-80px';
-            } else {
-                // Scrolling up
-                navbar.style.top = '0';
-            }
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Avoid negative values
-        });
-    </script>
 
     <div class="background-image"></div>
     <div class="gradient-effect"></div>
@@ -182,8 +165,8 @@ try {
         </div>
     </div>
 
-    <a href="#Dashboard" style="text-align: center;" ><img src="../img/arrow_down.png" alt="Try now"
-            style="width: 50px;" id="arrow_down"></a>
+    <a href="#Dashboard" style="text-align: center;"><img src="../img/arrow_down.png" alt="Try now" style="width: 50px;"
+            id="arrow_down"></a>
 
     <!-- Styling for better visibility -->
     <style>
@@ -194,31 +177,37 @@ try {
             border-radius: 10px;
         }
 
-        #arrow_down{
+        #arrow_down {
             animation: zoom_and_point_down 9s infinite;
         }
 
-        
+
 
         @keyframes zoom_and_point_down {
             0% {
                 transform: scale(1);
             }
+
             5.55% {
                 transform: scale(1.2);
             }
+
             11.1% {
                 transform: scale(1);
             }
-            16.65%{
+
+            16.65% {
                 transform: translateY(+10px);
             }
+
             22.2% {
                 transform: translateY(0);
             }
+
             27.75% {
                 transform: translateY(+10px);
             }
+
             33.3% {
                 transform: translateY(0);
             }
@@ -238,7 +227,7 @@ try {
 
         /* Adjust the welcome section */
         #welcome-section {
-            
+
             color: white;
             padding: 10px 0 0 0;
         }
@@ -281,7 +270,7 @@ try {
             font-weight: bold;
             position: relative;
             z-index: 1;
-            transition: background-color 0.3s;
+            transition: background-color 1s;
         }
 
         .step.active {
@@ -294,7 +283,7 @@ try {
             background-color: #ccc;
             margin: 0 10px;
             z-index: 0;
-            transition: background-color 0.3s;
+            transition: background-color 1s;
         }
 
         .step.active+.line {
@@ -322,8 +311,9 @@ try {
             </div>
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <h2 class="">Welcome back, <span class="text-primary"
-                            id="username"><?php echo $userData['username']; ?></span>!</h2>
+                    <h2 id="instruction_message">Welcome back, <span class="text-primary"
+                            id="username"><?php echo $userData['username']; ?></span>!<br>Please Upload your images.
+                    </h2>
                 </div>
             </div>
             <div class="row mt-3 justify-content-center">
@@ -339,10 +329,10 @@ try {
             </div>
 
             <div class="row justify-content-center">
-                <div class="col-md mt-5">
+                <div class="col-md mt-5" id="UPLOAD-DOCUMENT-STEP">
                     <div class="card shadow-lg h-100 p-4 text-center scan-document" id="imageUploader"
                         ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave()">
-                        <div id="loading-cont"
+                        <div class="loading-cont"
                             style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; background-color:rgba(115, 124, 133, 0.52); z-index: 2;">
                             <dotlottie-player
                                 src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
@@ -354,11 +344,11 @@ try {
 
                         <div id="previewContainer" class="position-relative"
                             style="min-height: 200px; margin-top: 15px; display: flex; justify-content: center; align-items: center;">
-                            <button id="prevBtn" class="btn btn-light position-absolute"
+                            <button class="prevBtn btn btn-light position-absolute"
                                 style="left: 10px; z-index: 10; visibility: hidden;">❮</button>
-                            <img id="imagePreview" src="" alt="Preview"
+                            <img class="imagePreview" src="" alt="Preview"
                                 style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px;">
-                            <button id="nextBtn" class="btn btn-light position-absolute"
+                            <button class="nextBtn btn btn-light position-absolute"
                                 style="right: 10px; z-index: 10; visibility: hidden;">❯</button>
                         </div>
 
@@ -373,18 +363,40 @@ try {
                         </div>
                         <div class="row justify-content-center mt-3" style="display: none" id="SaveBtns">
                             <div class="col-md-4">
-                                <button class="btn btn-block" onclick="saveKey()" id="saveKey"
-                                    style="background-color: #007bff; color: white;">Save as Key</button>
+                                <button class="btn btn-block" onclick="segmentKey()" id="saveKey"
+                                    style="background-color: #007bff; color: white;">Process Images as Key</button>
                             </div>
                             <div class="col-md-4">
-                                <button class="btn btn-block" onclick="saveCipher()" id="saveCipher"
-                                    style="background-color: #007bff; color: white;">Save as Cipher
+                                <button class="btn btn-block" onclick="segmentCipher()" id="saveCipher"
+                                    style="background-color: #007bff; color: white;">Process Images as Cipher
                                     Text</button>
                             </div>
                         </div>
                         <div class="row justify-content-center mt-3" id="SaveBtnsInfo">
                             <p class="fs-3 " id="classificationMessage" style="display: none;"></p>
                         </div>
+                    </div>
+                </div>
+                <div class="col-md mt-5" id="SEGMENT-DOCUMENT-STEP" style="display: none;">
+                    <div class="card shadow-lg h-100 text-center segment-document" style="background-color:  rgba(52, 58, 64, 0.29);">
+                        <div class="loading-cont"
+                            style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; background-color:rgba(115, 124, 133, 0.52); z-index: 2; border-radius: 10px;">
+                            <dotlottie-player
+                                src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                                background="transparent" speed="1" style="width: 150px; height: 150px;" loop
+                                autoplay></dotlottie-player>
+                        </div>
+                        <div id="previewContainerSegment" class="position-relative"
+                            style="min-height: 200px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">
+                            <button class="prevBtn btn btn-light position-absolute"
+                                style="left: 10px; z-index: 10; visibility: hidden;">❮</button>
+                            <img class="imagePreview" src="" alt="Preview"
+                                style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px;">
+                            <button class="nextBtn btn btn-light position-absolute"
+                                style="right: 10px; z-index: 10; visibility: hidden;">❯</button>
+                        </div>
+                        <!-- ONLY TEST -->
+                        <segment-rect x1="100" y1="10" x2="150" y2="10" x3="150" y3="70" x4="100" y4="70"></segment-rect>
                     </div>
                 </div>
             </div>
@@ -396,6 +408,8 @@ try {
             </div>
         </div>
     </div>
+
+    <button class="btn btn-primary" onclick="segmentCipher()">TEST</button>
 
     <footer class="footer bg-dark text-center text-white py-3">
         © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
@@ -472,26 +486,35 @@ try {
         }
 
         function updatePreview() {
-            const imageElement = document.getElementById('imagePreview');
-            if (previewImages.length > 0) {
-                imageElement.src = previewImages[currentPreviewIndex][0];
-                imageElement.style.display = 'block';
-            } else {
-                imageElement.style.display = 'none';
+            let imageElements = document.getElementsByClassName('imagePreview');
+            for (imageElement of imageElements) {
+                if (previewImages.length > 0) {
+                    imageElement.src = previewImages[currentPreviewIndex][0];
+                    imageElement.style.display = 'block';
+                } else {
+                    imageElement.style.display = 'none';
+                }
             }
+
         }
 
-        document.getElementById('prevBtn').addEventListener('click', function () {
-            if (previewImages.length === 0) return;
-            currentPreviewIndex = (currentPreviewIndex - 1 + previewImages.length) % previewImages.length;
-            updatePreview();
-        });
+        buttons = document.getElementsByClassName('prevBtn');
+        for (let button of buttons) {
+            button.addEventListener('click', function () {
+                if (previewImages.length === 0) return;
+                currentPreviewIndex = (currentPreviewIndex - 1 + previewImages.length) % previewImages.length;
+                updatePreview();
+            });
+        }
 
-        document.getElementById('nextBtn').addEventListener('click', function () {
-            if (previewImages.length === 0) return;
-            currentPreviewIndex = (currentPreviewIndex + 1) % previewImages.length;
-            updatePreview();
-        });
+        buttons = document.getElementsByClassName('nextBtn');
+        for (let button of buttons) {
+            button.addEventListener('click', function () {
+                if (previewImages.length === 0) return;
+                currentPreviewIndex = (currentPreviewIndex + 1) % previewImages.length;
+                updatePreview();
+            });
+        }
 
         function saveData(type) {
             console.log(previewImages);
@@ -559,7 +582,6 @@ try {
                         classificationScores.push(classifyPicture(data.path));
                         if (classificationScores.length === numOfFiles && classificationScores.length > 0) {
                             showBtns();
-                            document.getElementById('loading-cont').style.display = 'block';
                             applyClassificationStyle(classificationScores);
                         }
                     } else {
@@ -699,21 +721,39 @@ try {
         }
 
         function showLoading() {
-            document.getElementById('loading-cont').style.display = 'flex';
+            loadings = document.getElementsByClassName('loading-cont');
+            for (let loading of loadings) {
+                loading.style.display = 'flex';
+            }
         }
 
         function hideLoading() {
-            document.getElementById('loading-cont').style.display = 'none';
+            loadings = document.getElementsByClassName('loading-cont');
+            for (let loading of loadings) {
+                loading.style.display = 'none';
+            }
         }
 
         function showScrollBtns() {
-            document.getElementById('prevBtn').style.visibility = 'visible';
-            document.getElementById('nextBtn').style.visibility = 'visible';
+            buttons = document.getElementsByClassName('prevBtn');
+            for (let button of buttons) {
+                button.style.visibility = 'visible';
+            }
+            buttons = document.getElementsByClassName('nextBtn');
+            for (let button of buttons) {
+                button.style.visibility = 'visible';
+            }
         }
 
         function hideScrollBtns() {
-            document.getElementById('prevBtn').style.visibility = 'hidden';
-            document.getElementById('nextBtn').style.visibility = 'hidden';
+            buttons = document.getElementsByClassName('prevBtn');
+            for (let button of buttons) {
+                button.style.visibility = 'hidden';
+            }
+            buttons = document.getElementsByClassName('nextBtn');
+            for (let button of buttons) {
+                button.style.visibility = 'hidden';
+            }
         }
 
         function handleError(error_message) {
@@ -730,10 +770,67 @@ try {
             toastr.error(error_message || 'An error occurred. Please try again.');
         }
 
+        function segmentCipher() {
+            setStep(1);
+            document.getElementById('UPLOAD-DOCUMENT-STEP').style.display = 'none';
+            document.getElementById('SEGMENT-DOCUMENT-STEP').style.display = 'block';
+            document.getElementById('instruction_message').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
+            // got to #Dashboard
+            scrollToDashboard();
+            updatePreview();
+            CalculateSegmentation();
+        }
+
+        function CalculateSegmentation(){
+            // TODO: Implement image segmentation
+            // For now, just wait 5secs and hide loading, then show the buttons and rect
+            showLoading();
+            let wait = true;
+            setTimeout(() => {
+                wait = false;
+            }, 5000);
+            setInterval(() => {
+                if (!wait) {
+                    hideLoading();
+                }
+            }, 1000);
+        }
+
+        function scrollEvent() {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            if (currentScroll > lastScrollTop) {
+                // Scrolling down
+                navbar.style.top = '-80px';
+            } else {
+                // Scrolling up
+                navbar.style.top = '0';
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Avoid negative values
+        }
+
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', scrollEvent);
+
+        function scrollToDashboard() {
+            // temporarly turn off scroll event listener
+            window.removeEventListener('scroll', scrollEvent);
+            document.getElementById('Dashboard').scrollIntoView({ behavior: 'smooth' });
+            // turn on scroll event listener
+            setTimeout(() => {
+                window.addEventListener('scroll', scrollEvent);
+            }, 500);
+        }
+
+        //segmentCipher();
         hideLoading();
 
         // index starts at 0
         setStep(0);
+
+
+
 
 
         checkToasts();
