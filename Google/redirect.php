@@ -16,8 +16,8 @@ function getJwtSecret(): string {
 function generateToken($userId, $username): string {
     $secret = getJwtSecret();
     $payload = [
-        'iss' => 'https://test.tptimovyprojekt.software/xpalfy',
-        'aud' => 'https://test.tptimovyprojekt.software/xpalfy',
+        'iss' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
+        'aud' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
         'iat' => time(),
         'exp' => time() + 3600,
         'data' => [
@@ -38,7 +38,7 @@ try {
     exit();
 }
 
-$client->setRedirectUri("https://test.tptimovyprojekt.software/xpalfy/Google/redirect.php");
+$client->setRedirectUri("https://test.tptimovyprojekt.software/tp_timovy_projekt/Google/redirect.php");
 $client->addScope("email");
 $client->addScope("profile");
 
