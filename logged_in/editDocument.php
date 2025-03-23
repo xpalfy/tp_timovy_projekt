@@ -3,15 +3,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require '../checkType.php';
-require '../config.php';
+require_once '../checkType.php';
+require_once '../config.php';
 
 try {
     $userData = validateToken();
 } catch (Exception $e) {
     http_response_code(500);
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
-    header('Location: login.php');
+    header('Location: ../login.php');
 }
 
 $userId = $_GET['user'];
@@ -44,12 +44,32 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows == 0) {
-    $_SESSION['toast'] = [
-        'message' => 'Document not found',
-        'type' => 'error'
-    ];
-    header('Location: documents.php');
-    exit();
+    // check if document exists in shared documents
+    $sql = "SELECT * FROM users_pictures WHERE picture_id = $pictureId AND user_id = $userId";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 0) {
+        $_SESSION['toast'] = [
+            'message' => 'Document not found',
+            'type' => 'error'
+        ];
+        header('Location: documents.php');
+        exit();
+    }
+
+    $sql = "SELECT * FROM pictures WHERE ID = $pictureId";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 0) {
+        $_SESSION['toast'] = [
+            'message' => 'Document not found',
+            'type' => 'error'
+        ];
+        header('Location: documents.php');
+        exit();
+    }
 }
 
 $picture = $result->fetch_assoc();

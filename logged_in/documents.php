@@ -25,7 +25,6 @@ try {
     <title>Main</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="../css/profile.css">
     <link rel="stylesheet" href="../css/documents.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -123,7 +122,7 @@ try {
             </div>
             <div class="cont">
                 <?php
-                require '../config.php';
+                require_once '../config.php';
 
                 $conn = getDatabaseConnection();
 
@@ -141,7 +140,6 @@ try {
                         echo '<h5 class="card-title">' . pathinfo($row['path'], PATHINFO_FILENAME) . '</h5>';
                         echo '<div class="card-buttons">';
                         echo '<a href="editDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
-                        echo '<a href="deleteDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-danger">Delete</a>';
                         echo '</div>';
                         echo '</div>';
                         echo '</div>';
@@ -169,7 +167,8 @@ try {
             </div>
             <div class="cont">
                 <?php
-                require '../config.php';
+                require_once '../config.php';
+                
 
                 $conn = getDatabaseConnection();
 
