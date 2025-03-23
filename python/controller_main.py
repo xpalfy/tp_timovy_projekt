@@ -4,7 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from entities.users import User
 from entities.base import Base
 from entities.tag import Tag
-from entities.document import Document
+from entities.item import Item
+from entities.document import Document, DocumentType, DocumentStatus
 
 
 # Database credentials from config.php
@@ -37,27 +38,37 @@ def get_or_create(session, model, defaults=None, **kwargs):
 alice = get_or_create(session, User, username="Alice", email="alice@example.com")
 bob = get_or_create(session, User, username="Bob", email="bob@example.com")
 
+alice_copy: User = session.query(User).filter_by(username="Alice").first()
+
 # Get or create tags
 tag1 = get_or_create(session, Tag, name="Work")
 tag2 = get_or_create(session, Tag, name="Important")
 
 # Create a document with an author
 # Get or create document
-doc = session.query(Document).filter_by(title="Project Plan", author=alice).first()
-if not doc:
-    doc = Document(title="Project Plan", description="Details about the project", author=alice)
+doc: Document = session.query(Document).filter_by(title="Project Plan", author=alice).first()
+if doc:
+    doc.status = DocumentStatus.INACTIVE
+    doc.doc_type = DocumentType.KEY
+    doc.description = "This is a key document"
+    doc.author = bob
+    doc.shared_with = [alice]
+
+else:
+    doc = Document(
+        title="Project Plan",
+        author=alice,
+        status=DocumentStatus.ACTIVE,
+        doc_type=DocumentType.CIPHER,
+    )
     session.add(doc)
-    session.commit()
 
-# Ensure Bob is in shared_with
-if bob not in doc.shared_with:
-    doc.shared_with.append(bob)
-
-# Ensure tags are assigned
-for tag in [tag1, tag2]:
-    if tag not in doc.tags:
-        doc.tags.append(tag)
-
+item1 = Item(
+    title="Item 1",
+    description="Description 1",
+    status="uploaded",
+    document=doc
+)
 session.commit()
 
 # Query all documents with a specific tag

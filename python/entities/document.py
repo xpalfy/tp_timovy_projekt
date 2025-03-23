@@ -3,6 +3,9 @@ from sqlalchemy import create_engine, Column, Integer, String, Enum, Table, Fore
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from entities.users import User
+from entities.tag import Tag
+from entities.item import Item
+from typing import List
 from .base import Base
 
 
@@ -25,6 +28,7 @@ class DocumentType(enum.Enum):
     CIPHER = 'cipher'
     KEY = 'key'
     TBD = 'tbd'
+    tmp = 'tmp'
 
 class DocumentStatus(enum.Enum):
     ACTIVE = 'active'
@@ -34,18 +38,19 @@ class DocumentStatus(enum.Enum):
 
 class Document(Base):
     __tablename__ = 'documents'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    author_id = Column(Integer, ForeignKey('users_python.id'))
-    author = relationship("User", back_populates="documents")
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    author_id: int = Column(Integer, ForeignKey('users_python.id'))
+    author: User = relationship("User", back_populates="documents")
     
-    title = Column(String(255))
-    doc_type = Column(Enum(DocumentType, name='document_types'))
-    status = Column(Enum(DocumentStatus, name='document_status'))
-    description = Column(String(255))
+    title: str = Column(String(255))
+    doc_type: DocumentType = Column(Enum(DocumentType, name='document_types'))
+    status: DocumentStatus = Column(Enum(DocumentStatus, name='document_status'))
+    description: str = Column(String(255))
     
-    shared_with = relationship("User", secondary=document_user_association, back_populates="shared_documents")
+    shared_with: List["User"] = relationship("User", secondary=document_user_association, back_populates="shared_documents")
     
-    tags = relationship("Tag", secondary=document_tag_association, back_populates="documents")
+    tags: List["Tag"] = relationship("Tag", secondary=document_tag_association, back_populates="documents")
+    items: List["Item"] = relationship("Item", back_populates="document")
 
     
     
