@@ -31,8 +31,8 @@ function validateToken() {
         $decoded = JWT::decode($token, new Key($secret, 'HS256'));
 
         if (
-            $decoded->iss !== 'https://test.tptimovyprojekt.software/xpalfy' ||
-            $decoded->aud !== 'https://test.tptimovyprojekt.software/xpalfy'
+            $decoded->iss !== 'https://test.tptimovyprojekt.software/tp_timovy_projekt' ||
+            $decoded->aud !== 'https://test.tptimovyprojekt.software/tp_timovy_projekt'
         ) {
             throw new Exception('Invalid issuer or audience');
         }
