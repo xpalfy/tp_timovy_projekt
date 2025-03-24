@@ -137,14 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     UpdateUser($username, $new_username, $password, $email);
-    if ($new_username !== '') {
-        $_SESSION['user']['username'] = $new_username;
-    }
-    $_SESSION['toast'] = ['type' => 'success', 'message' => 'Update successful!'];
 
-    //TODO update token with new username
-
-    header('Location: profile.php');
+    require_once '../logout.php';
     exit();
 }
 
