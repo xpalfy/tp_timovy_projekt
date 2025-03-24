@@ -378,7 +378,8 @@ try {
                     </div>
                 </div>
                 <div class="col-md mt-5" id="SEGMENT-DOCUMENT-STEP" style="display: none;">
-                    <div class="card shadow-lg h-100 text-center segment-document" style="background-color:  rgba(52, 58, 64, 0.29);">
+                    <div class="card shadow-lg h-100 text-center segment-document"
+                        style="background-color:  rgba(52, 58, 64, 0.29);">
                         <div class="loading-cont"
                             style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; background-color:rgba(115, 124, 133, 0.52); z-index: 2; border-radius: 10px;">
                             <dotlottie-player
@@ -394,9 +395,11 @@ try {
                                 style="max-width: 100%; display: none; border: 2px white solid; border-radius: 10px; padding: 10px;">
                             <button class="nextBtn btn btn-light position-absolute"
                                 style="right: 10px; z-index: 10; visibility: hidden;">❯</button>
+
+                            <!-- ONLY TEST -->
+                            <segment-rect x1="100" y1="10" x2="150" y2="10" x3="150" y3="70" x4="100"
+                                y4="70" style="width: 100%; height: 100%; position: absolute; padding: 10px"></segment-rect>
                         </div>
-                        <!-- ONLY TEST -->
-                        <segment-rect x1="100" y1="10" x2="150" y2="10" x3="150" y3="70" x4="100" y4="70"></segment-rect>
                     </div>
                 </div>
             </div>
@@ -781,7 +784,7 @@ try {
             CalculateSegmentation();
         }
 
-        function CalculateSegmentation(){
+        function CalculateSegmentation() {
             // TODO: Implement image segmentation
             // For now, just wait 5secs and hide loading, then show the buttons and rect
             showLoading();
