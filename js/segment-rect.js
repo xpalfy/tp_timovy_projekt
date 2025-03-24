@@ -33,7 +33,7 @@ class PolygonElement extends HTMLElement {
 
     onMouseMove(event) {
         if (this.draggingPoint) {
-            const rect = this.shadowRoot.querySelector('svg').getBoundingClientRect();
+            const rect = this.shadowRoot.host.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             this.draggingPoint.setAttribute('cx', x);
@@ -65,11 +65,11 @@ class PolygonElement extends HTMLElement {
 
         this.shadowRoot.innerHTML = `
             <svg width="100%" height="100%">
-                <polygon points="${x1},${y1} ${x2},${y2} ${x3},${y3} ${x4},${y4}" style="fill:none;stroke:black;stroke-width:1" />
-                <circle cx="${x1}" cy="${y1}" r="5" fill="red" />
-                <circle cx="${x2}" cy="${y2}" r="5" fill="red" />
-                <circle cx="${x3}" cy="${y3}" r="5" fill="red" />
-                <circle cx="${x4}" cy="${y4}" r="5" fill="red" />
+                <polygon points="${x1},${y1} ${x2},${y2} ${x3},${y3} ${x4},${y4}" style="fill:#007bff1c;stroke:black;stroke-width:2" />
+                <circle cx="${x1}" cy="${y1}" r="7" fill="#007bff" />
+                <circle cx="${x2}" cy="${y2}" r="7" fill="#007bff" />
+                <circle cx="${x3}" cy="${y3}" r="7" fill="#007bff" />
+                <circle cx="${x4}" cy="${y4}" r="7" fill="#007bff" />
             </svg>
         `;
     }
