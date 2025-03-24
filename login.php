@@ -8,30 +8,8 @@ use Firebase\JWT\Key;
 
 require_once 'vendor/autoload.php';
 require_once 'config.php';
+require_once 'checkType.php';
 
-function getJwtSecret(): string {
-    $config = include 'jwt.php';
-    if (!isset($config['secret']) || empty($config['secret'])) {
-        throw new Exception('JWT secret is not configured');
-    }
-    return $config['secret'];
-}
-
-function generateToken($userId, $username): string {
-    $secret = getJwtSecret();
-    $payload = [
-        'iss' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
-        'aud' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
-        'iat' => time(),
-        'exp' => time() + 3600,
-        'data' => [
-            'id' => $userId,
-            'username' => $username,
-        ],
-    ];
-
-    return JWT::encode($payload, $secret, 'HS256');
-}
 
 function loginUser($username, $password): void {
     $conn = getDatabaseConnection();
@@ -162,7 +140,7 @@ unset($_SESSION['toast']);
 </div>
 
 <footer class="footer bg-dark text-center text-light py-3">
-    © Project Site <a href="https://test.tptimovyprojekt.software/tp_timovy_projekt/" class="text-light">tptimovyprojekt.software</a>
+    © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
 </footer>
 
 </body>

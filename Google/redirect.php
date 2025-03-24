@@ -3,30 +3,9 @@ session_start();
 
 require_once '../vendor/autoload.php';
 require_once '../config.php';
+require_once 'checkType.php';
 use Firebase\JWT\JWT;
 
-function getJwtSecret(): string {
-    $config = include '../jwt.php';
-    if (!isset($config['secret']) || empty($config['secret'])) {
-        throw new Exception('JWT secret is not configured');
-    }
-    return $config['secret'];
-}
-
-function generateToken($userId, $username): string {
-    $secret = getJwtSecret();
-    $payload = [
-        'iss' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
-        'aud' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
-        'iat' => time(),
-        'exp' => time() + 3600,
-        'data' => [
-            'id' => $userId,
-            'username' => $username,
-        ],
-    ];
-    return JWT::encode($payload, $secret, 'HS256');
-}
 
 // Setup Google Client
 $client = new Google\Client();
