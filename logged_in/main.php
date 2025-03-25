@@ -31,7 +31,7 @@ try {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-    <script src="../js/segment-rect.js" type="module"></script>
+    <script src="../js/segment-rect.js?" type="module"></script>
 
 </head>
 
@@ -413,6 +413,7 @@ try {
     </div>
 
     <button class="btn btn-primary" onclick="segmentCipher()">TEST</button>
+    <button class="btn btn-warning" onclick="saveCipher()">Save</button>
 
     <footer class="footer bg-dark text-center text-white py-3">
         © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
