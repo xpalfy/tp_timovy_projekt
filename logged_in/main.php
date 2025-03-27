@@ -194,17 +194,29 @@ try {
             border-radius: 2px;
             transition: background-color 0.6s;
         }
+
+        .not-copyable {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .not-draggable {
+            -webkit-user-drag: none;
+            user-select: none;
+        }
     </style>
 
 </head>
 
 <body class="min-h-screen flex flex-col">
     <!-- Navbar -->
-    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md"
+    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
         id="navbar">
         <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
             <!-- Logo and brand -->
-            <a href="main.php" class="flex items-center text-papyrus text-2xl font-bold hover:underline">
+            <a href="main.php" class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
                 <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
                     style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                 HandScript
@@ -220,7 +232,7 @@ try {
 
             <!-- Navigation links -->
             <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
-                <ul class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus">
+                <ul class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
                     <li class="flex items-center">
                         <a href="profile.php" class="nav-link flex items-center hover:underline">
                             Profile
@@ -256,7 +268,7 @@ try {
 
 
     <!-- Welcome Hero Section -->
-    <section class="text-center py-12 px-4 bg-[#e3d3b3] border-b border-yellow-200">
+    <section class="text-center py-12 px-4 bg-[#e3d3b3] border-b border-yellow-200 not-copyable not-draggable">
         <h2 class="text-4xl font-extrabold text-papyrus animate-top-fade">Welcome, <?php echo $userData['username']; ?>
             👋</h2>
         <p class="text-lg text-papyrus mt-2 animate-top-fade">Start uploading and classifying your encrypted
@@ -333,7 +345,7 @@ try {
         <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4"
             data-carousel-prev>
             <span
-                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-300/40 group-hover:bg-yellow-400">
+                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 hover:bg-yellow-200 duration-200">
                 <svg class="w-4 h-4 text-brown-900" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5 1 1 5l4 4" />
@@ -344,7 +356,7 @@ try {
         <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4"
             data-carousel-next>
             <span
-                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-300/40 group-hover:bg-yellow-400">
+                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 hover:bg-yellow-200 duration-200">
                 <svg class="w-4 h-4 text-brown-900" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m1 9 4-4-4-4" />
@@ -355,7 +367,7 @@ try {
     </div>
 
     <hr style="border: 1px solid #bfa97a;">
-    <a onclick="scrollToBookmark('bookmark')" class="mt-10 mb-10 animate-top-fade text-papyrus"
+    <a onclick="scrollToBookmark('bookmark')" class="mt-10 mb-10 animate-top-fade text-papyrus not-copyable not-draggable"
         style="display: flex; align-items: center; flex-direction: column; ">
         <h1 style="font-size: x-large; cursor: pointer;">Start Uploading</h1>
         <img src="../img/arrow_down.png" alt="Try now"
@@ -373,7 +385,7 @@ try {
             <!-- Progress Steps -->
             <div
                 style="display: flex; flex-direction: column; justify-content: center; border: #bfa97a4a 1px solid; border-radius: 20px 20px 0 0 ; padding: 10px 10px 5px 10px;">
-                <div class="step-progress-container">
+                <div class="step-progress-container not-copyable not-draggable">
                     <div class="step-group">
                         <div class="step active">1</div>
                         <h3 class="step-info text-papyrus">Upload</h3>
@@ -396,7 +408,8 @@ try {
                 </div>
             </div>
             <!-- Process Info -->
-            <h3 id="ProcessInfo" class="text-2xl mt-4 font-bold text-center text-papyrus mb-6">Upload & Classify Image
+            <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">Upload &
+                Classify Image
             </h3>
             <!-- Image Uploader STEP 0 -->
             <div id="imageUploader" ondrop="handleDrop(event)" ondragover="handleDragOver(event)"
@@ -410,21 +423,22 @@ try {
                 </div>
                 <div
                     style="z-index: -1; position: absolute; width: 92%; height: 68%; display: flex; align-items: center; justify-content: center; margin-top: 1rem;">
-                    <p id="uploadInstruction" class="text-papyrus">Drag and drop an image here or click to upload</p>
+                    <p id="uploadInstruction" class="not-copyable text-papyrus">Drag and drop an image here or click to upload</p>
                 </div>
                 <div id="previewContainer" class="relative mt-4 flex justify-center items-center">
-                    <img class="imagePreview max-w-full hidden rounded-xl" src="" alt="Preview" />
+                    <img class="imagePreview max-w-full hidden rounded-xlc not-copyable" src="" alt="Preview"
+                        draggable="false">
                     <button
-                        class="prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200"
+                        class="prevBtn not-copyable absolute left-3 z-2 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200"
                         style="visibility: hidden;">❮</button>
 
                     <button
-                        class="nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200"
+                        class="nextBtn not-copyable absolute right-3 z-2 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200"
                         style="visibility: hidden;">❯</button>
                 </div>
 
                 <input type="file" id="fileInput" accept="image/*" multiple hidden onchange="uploadImageButton(event)">
-                <button id="uploadBtn" class="mt-4 btn-papyrus px-6 py-2 rounded-lg shadow"
+                <button id="uploadBtn" class="mt-4 btn-papyrus px-6 py-2 rounded-lg shadow not-copyable"
                     onclick="console.log('Upload')">
                     Select Image(s)
                 </button>
@@ -433,7 +447,7 @@ try {
             <div class="col-md mt-5 animate-fade-in-slow" id="imageSegmentor" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
                     <!-- Loading Overlay -->
-                    <div class="loading-cont"
+                    <div class="loading-cont not-copyable not-draggable"
                         style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
                         <dotlottie-player
                             src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
@@ -445,18 +459,19 @@ try {
                     <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]">
                         <!-- Left Nav -->
                         <button
-                            class="prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
+                            class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
 
                         <!-- Image Preview -->
-                        <img class="imagePreview max-w-full hidden rounded-xl" src="" alt="Preview" />
+                        <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
+                            draggable="false" />
 
                         <!-- Right Nav -->
                         <button
-                            class="nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
+                            class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
 
                         <!-- Example Segment Element (can be styled later via JS/Canvas) -->
                         <segment-rect x1="100" y1="10" x2="150" y2="10" x3="150" y3="70" x4="100" y4="70"
-                            style="position: absolute; width: 100%; height: 100%; padding: 10px;">
+                            style="position: absolute; width: 100%; height: 100%;" class="not-copyable rounded-xl">
                         </segment-rect>
                     </div>
                 </div>
@@ -472,12 +487,14 @@ try {
 
             <!-- Progress Buttons STEP 1 -> STEP 2 -->
             <div id="AnalyzeKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Analyze Key (Now Save WIP)</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Analyze Key (Now Save
+                    WIP)</button>
             </div>
 
             <!-- Progress Buttons STEP 1 -> STEP 2 -->
             <div id="AnalyzeCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Analyze Cipher (Now Save WIP)</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Analyze Cipher (Now Save
+                    WIP)</button>
             </div>
 
 
@@ -490,7 +507,7 @@ try {
         </div>
     </main>
 
-    <footer class="bg-[#d7c7a5] text-papyrus text-center py-4 mt-10 border-t border-yellow-300">
+    <footer class="bg-[#d7c7a5] text-papyrus text-center py-4 mt-10 border-t border-yellow-300 not-copyable not-draggable">
         &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
     </footer>
 
@@ -946,14 +963,6 @@ try {
         gsap.from(".animate-top-fade", {
             opacity: 0,
             y: -80,
-            duration: 2,
-            ease: "power3.out",
-            stagger: 0.5
-        });
-
-        gsap.from(".animate-bottom-fade", {
-            opacity: 0,
-            y: 80,
             duration: 2,
             ease: "power3.out",
             stagger: 0.5
