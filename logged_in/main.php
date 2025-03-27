@@ -216,7 +216,8 @@ try {
         id="navbar">
         <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
             <!-- Logo and brand -->
-            <a href="main.php" class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
+            <a href="main.php"
+                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
                 <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
                     style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                 HandScript
@@ -232,7 +233,8 @@ try {
 
             <!-- Navigation links -->
             <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
-                <ul class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
+                <ul
+                    class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
                     <li class="flex items-center">
                         <a href="profile.php" class="nav-link flex items-center hover:underline">
                             Profile
@@ -367,7 +369,8 @@ try {
     </div>
 
     <hr style="border: 1px solid #bfa97a;">
-    <a onclick="scrollToBookmark('bookmark')" class="mt-10 mb-10 animate-top-fade text-papyrus not-copyable not-draggable"
+    <a onclick="scrollToBookmark('bookmark')"
+        class="mt-10 mb-10 animate-top-fade text-papyrus not-copyable not-draggable"
         style="display: flex; align-items: center; flex-direction: column; ">
         <h1 style="font-size: x-large; cursor: pointer;">Start Uploading</h1>
         <img src="../img/arrow_down.png" alt="Try now"
@@ -423,7 +426,8 @@ try {
                 </div>
                 <div
                     style="z-index: -1; position: absolute; width: 92%; height: 68%; display: flex; align-items: center; justify-content: center; margin-top: 1rem;">
-                    <p id="uploadInstruction" class="not-copyable text-papyrus">Drag and drop an image here or click to upload</p>
+                    <p id="uploadInstruction" class="not-copyable text-papyrus">Drag and drop an image here or click to
+                        upload</p>
                 </div>
                 <div id="previewContainer" class="relative mt-4 flex justify-center items-center">
                     <img class="imagePreview max-w-full hidden rounded-xlc not-copyable" src="" alt="Preview"
@@ -460,19 +464,38 @@ try {
                         <!-- Left Nav -->
                         <button
                             class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
-
                         <!-- Image Preview -->
                         <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
                             draggable="false" />
-
                         <!-- Right Nav -->
                         <button
                             class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Image Analysis STEP 2 -->
+            <div class="col-md mt-5 animate-fade-in-slow" id="imageAnalyzer" style="display: none;">
+                <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
+                    <!-- Loading Overlay -->
+                    <div class="loading-cont not-copyable not-draggable"
+                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
+                        <dotlottie-player
+                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
+                            autoplay></dotlottie-player>
+                    </div>
 
-                        <!-- Example Segment Element (can be styled later via JS/Canvas) -->
-                        <segment-rect x1="100" y1="10" x2="150" y2="10" x3="150" y3="70" x4="100" y4="70"
-                            style="position: absolute; width: 100%; height: 100%;" class="not-copyable rounded-xl">
-                        </segment-rect>
+                    <!-- Preview Image Container -->
+                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]">
+                        <!-- Left Nav -->
+                        <button
+                            class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
+                        <!-- Image Preview -->
+                        <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
+                            draggable="false" />
+                        <!-- Right Nav -->
+                        <button
+                            class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
                     </div>
                 </div>
             </div>
@@ -487,27 +510,38 @@ try {
 
             <!-- Progress Buttons STEP 1 -> STEP 2 -->
             <div id="AnalyzeKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Analyze Key (Now Save
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="analizeKey()">Analyze Key (Now Save
                     WIP)</button>
             </div>
 
             <!-- Progress Buttons STEP 1 -> STEP 2 -->
             <div id="AnalyzeCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Analyze Cipher (Now Save
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="analizeCipher()">Analyze Cipher (Now
+                    Save
                     WIP)</button>
             </div>
+
+            <!-- Progress Buttons STEP 2 -> STEP Final -->
+            <div id="SaveKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Save Key</button>
+            </div>
+
+            <!-- Progress Buttons STEP 2 -> STEP Final -->
+            <div id="SaveCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Save Cipher</button>
+            </div>
+
 
 
             <!-- System Message -->
             <div id="SystemMessage" class="mt-4 .bg-\[\#f1e4c5\] p-3 rounded-lg text-center text-papyrus"
                 style="border-radius: 0 0 20px 20px; font-weight: bold; font-size: 1.3rem;">
-
             </div>
-
         </div>
     </main>
 
-    <footer class="bg-[#d7c7a5] text-papyrus text-center py-4 mt-10 border-t border-yellow-300 not-copyable not-draggable">
+    <footer
+        class="bg-[#d7c7a5] text-papyrus text-center py-4 mt-10 border-t border-yellow-300 not-copyable not-draggable">
         &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
     </footer>
 
@@ -729,6 +763,22 @@ try {
             document.getElementById('AnalyzeCipherBtn').style.display = 'none';
         }
 
+        function showSaveKeyBtn() {
+            document.getElementById('SaveKeyBtn').style.display = 'flex';
+        }
+
+        function hideSaveKeyBtn() {
+            document.getElementById('SaveKeyBtn').style.display = 'none';
+        }
+
+        function showSaveCipherBtn() {
+            document.getElementById('SaveCipherBtn').style.display = 'flex';
+        }
+
+        function hideSaveCipherBtn() {
+            document.getElementById('SaveCipherBtn').style.display = 'none';
+        }
+
         function deleteUnsavedImage(imageId) {
             console.log("Deleting unsaved images...");
             for (let id of imageId) {
@@ -750,7 +800,7 @@ try {
             currentPreviewIndex = 0;
             updatePreview();
             document.getElementById('SegmentBtns').style.display = 'none';
-            document.getElementById('SystemMessage').style.display = 'none';
+            hideSystemMessage();
         }
 
         async function classifyPicture(path) {
@@ -824,7 +874,7 @@ try {
                     messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
                 }
                 hideLoading();
-                messageContainer.style.display = 'block';
+                showSystemMessage();
             })
         }
 
@@ -840,6 +890,14 @@ try {
             for (let loading of loadings) {
                 loading.style.display = 'none';
             }
+        }
+
+        function showSystemMessage() {
+            document.getElementById('SystemMessage').style.display = 'block';
+        }
+
+        function hideSystemMessage() {
+            document.getElementById('SystemMessage').style.display = 'none';
         }
 
         function disableClickUpload() {
@@ -884,6 +942,7 @@ try {
         function segmentCipher() {
             setStep(1);
             hideSegmentBtns();
+            hideSystemMessage();
             showAnalyzeCipherBtn();
             document.getElementById('imageUploader').style.display = 'none';
             document.getElementById('imageSegmentor').style.display = 'block';
@@ -897,6 +956,7 @@ try {
         function segmentKey() {
             setStep(1);
             hideSegmentBtns();
+            hideSystemMessage();
             showAnalyzeKeyBtn();
             document.getElementById('imageUploader').style.display = 'none';
             document.getElementById('imageSegmentor').style.display = 'block';
@@ -907,19 +967,110 @@ try {
             CalculateSegmentation('Key');
         }
 
+        function analizeKey() {
+            setStep(2);
+            hideAnalyzeKeyBtn();
+            hideSystemMessage();
+            showSaveKeyBtn();
+            document.getElementById('imageSegmentor').style.display = 'none';
+            document.getElementById('imageAnalyzer').style.display = 'block';
+            document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to analyze the images.<br>If the system made some mistakes, feel free to correct them.';
+            // got to #Dashboard
+            scrollToBookmark('bookmark');
+            updatePreview();
+            CalculateAnalization('Key');
+        }
+
+        function analizeCipher() {
+            setStep(2);
+            hideAnalyzeCipherBtn();
+            hideSystemMessage();
+            showSaveCipherBtn();
+            document.getElementById('imageSegmentor').style.display = 'none';
+            document.getElementById('imageAnalyzer').style.display = 'block';
+            document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to analyze the images.<br>If the system made some mistakes, feel free to correct them.';
+            // got to #Dashboard
+            scrollToBookmark('bookmark');
+            updatePreview();
+            CalculateAnalization('Cipher');
+        }
+
         function CalculateSegmentation(type) {
             // TODO: Implement image segmentation
             // For now, just wait 5secs and hide loading, then show the buttons and rect
             showLoading();
-            let wait = true;
             setTimeout(() => {
-                wait = false;
+                hideLoading();
+                let Rect = [98, 33, 770, 504];
+                appendSegmentedRect(Rect);
             }, 5000);
-            setInterval(() => {
-                if (!wait) {
-                    hideLoading();
+        }
+
+        function appendSegmentedRect(Rect) {
+            // Rect should follow pattern [x1, y1, x2, y2], two diagonal points of the rectangle
+            if (Rect.length !== 4) {
+                console.error('Invalid Rect:', Rect);
+                return;
+            }
+            let parent = document.getElementById('previewContainerSegment');
+            // calculate othe two points
+            let x2 = Rect[0];
+            let y2 = Rect[3];
+            let x4 = Rect[2];
+            let y4 = Rect[1];
+
+            let newRect = document.createElement('segment-rect');
+            newRect.setAttribute('x1', Rect[0]);
+            newRect.setAttribute('y1', Rect[1]);
+            newRect.setAttribute('x2', x2);
+            newRect.setAttribute('y2', y2);
+            newRect.setAttribute('x3', Rect[2]);
+            newRect.setAttribute('y3', Rect[3]);
+            newRect.setAttribute('x4', x4);
+            newRect.setAttribute('y4', y4);
+            newRect.setAttribute('style', 'position: absolute; width: 100%; height: 100%;');
+            newRect.classList.add('rounded-xl');
+            parent.appendChild(newRect);
+        }
+
+        function CalculateAnalization(type) {
+            // TODO: Implement image analization
+            // For now, just wait 5secs and hide loading, then show the buttons and rects
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                let Rects = [[131, 143, 243, 389], [135, 60, 404, 146], [452, 61, 755, 94], [455, 131, 570, 236], [615, 105, 734, 133], [596, 140, 739, 173]];
+                appendAnalizedRects(Rects);
+            }, 5000);
+        }
+
+        function appendAnalizedRects(Rects) {
+            // Rects should follow pattern [[x1, y1, x2, y2], [x1, y1, x2, y2], ...]
+            let parent = document.getElementById('previewContainerAnalyze');
+            for (let Rect of Rects) {
+                if (Rect.length !== 4) {
+                    console.error('Invalid Rect:', Rect);
+                    return;
                 }
-            }, 1000);
+                // calculate othe two points
+                let x2 = Rect[0];
+                let y2 = Rect[3];
+                let x4 = Rect[2];
+                let y4 = Rect[1];
+
+                let newRect = document.createElement('segment-rect');
+                newRect.setAttribute('x1', Rect[0]);
+                newRect.setAttribute('y1', Rect[1]);
+                newRect.setAttribute('x2', x2);
+                newRect.setAttribute('y2', y2);
+                newRect.setAttribute('x3', Rect[2]);
+                newRect.setAttribute('y3', Rect[3]);
+                newRect.setAttribute('x4', x4);
+                newRect.setAttribute('y4', y4);
+                newRect.setAttribute('style', 'position: absolute; width: 100%; height: 100%;');
+                newRect.classList.add('rounded-xl');
+                parent.appendChild(newRect);
+            }
         }
 
         function scrollEvent() {
