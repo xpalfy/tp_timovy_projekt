@@ -113,18 +113,59 @@ try {
     
 
     <!-- Navbar -->
-    <nav class="bg-[#d7c7a5] p-4 text-papyrus shadow-md sticky top-0 z-50 border-b border-yellow-300">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="../img/logo.png" alt="Logo" class="w-10 h-10">
-                <h1 class="text-2xl font-bold">HandScript</h1>
+    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+        id="navbar">
+        <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+            <!-- Logo and brand -->
+            <a href="main.php"
+                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left" data-aos="fade-right" data-aos-delay="150">
+                <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
+                    style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                HandScript
+            </a>
+
+            <!-- Toggler button -->
+            <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!-- Navigation links -->
+            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav" data-aos="fade-left" data-aos-delay="150">
+                <ul
+                    class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
+                    <li class="flex items-center">
+                        <a href="profile.php" class="nav-link flex items-center hover:underline">
+                            Profile
+                            <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="documents.php" class="nav-link flex items-center hover:underline">
+                            Documents
+                            <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="https://tptimovyprojekt.ddns.net/" class="nav-link flex items-center hover:underline">
+                            Project
+                            <img src="../img/web.png" alt="project" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                            Logout
+                            <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <ul class="flex space-x-6 font-semibold">
-                <li><a href="profile.php" class="hover:underline">Profile</a></li>
-                <li><a href="documents.php" class="hover:underline">Documents</a></li>
-                <li><a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Project</a></li>
-                <li><a href="../logout.php" class="hover:underline">Logout</a></li>
-            </ul>
         </div>
     </nav>
 
