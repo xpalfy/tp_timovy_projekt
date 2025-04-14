@@ -1,147 +1,98 @@
-<?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
-require_once 'vendor/autoload.php';
-require_once 'config.php';
-require_once 'checkType.php';
-
-
-function loginUser($username, $password): void {
-    $conn = getDatabaseConnection();
-    $stmt = $conn->prepare('SELECT id, username, password FROM users WHERE username = ?');
-    if (!$stmt) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Database error: Unable to prepare statement'];
-        header('Location: login.php');
-        exit();
-    }
-
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows === 1) {
-        $stmt->bind_result($id, $fetchedUsername, $hash);
-        $stmt->fetch();
-        if (password_verify($password, $hash)) {
-            $token = generateToken($id, $fetchedUsername);
-            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful!'];
-            $_SESSION['token'] = $token;
-            header('Location: ./logged_in/main.php');
-        } else {
-            $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid password!'];
-            header('Location: login.php');
-        }
-    } else {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid username!'];
-        header('Location: login.php');
-    }
-
-    $stmt->close();
-    $conn->close();
-}
-
-$client = new Google\Client();
-try {
-    $client->setAuthConfig('./Google/credentials.json');
-} catch (\Google\Exception $e) {
-    // Handle exception or logging
-}
-
-$redirect_uri = "https://test.tptimovyprojekt.software/tp_timovy_projekt/Google/redirect.php";
-$client->setRedirectUri($redirect_uri);
-$client->addScope("email");
-$client->addScope("profile");
-
-$auth_url = $client->createAuthUrl();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? null;
-    $password = $_POST['password'] ?? null;
-
-    if ($username && $password) {
-        try {
-            loginUser($username, $password);
-        } catch (Exception $e) {
-            $_SESSION['toast'] = ['type' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()];
-            header('Location: login.php');
-        }
-    } else {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid request: Missing username or password'];
-        header('Location: login.php');
-    }
-    exit();
-}
-
-$toast = $_SESSION['toast'] ?? null;
-unset($_SESSION['toast']);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/login.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - HandScript</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: url('img/login.png') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-papyrus {
+      background-color: #bfa97a;
+      color: #3b2f1d;
+    }
+
+    .btn-papyrus:hover {
+      background-color: #a68f68;
+    }
+  </style>
 </head>
-<body>
 
-<script>
+<body class="text-[#3b2f1d] bg-[#fefbf5]">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
     $(document).ready(function () {
-        let toast = <?php echo json_encode($toast); ?>;
-        if (toast) {
-            toastr[toast.type](toast.message);
-        }
+      let toast = <?php echo json_encode($toast); ?>;
+      if (toast) {
+        toastr[toast.type](toast.message);
+      }
+      AOS.init({ duration: 1000, once: true });
     });
-</script>
+  </script>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="./index.html">Home</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item"><a class="nav-link" href="./login.php">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="./register.php">Register</a></li>
-        </ul>
+  <!-- Navbar -->
+  <nav class="bg-[#d7c7a5] shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+      <div class="hidden md:flex space-x-6 text-lg">
+        <a href="./login.php" class="hover:underline">Login</a>
+        <a href="./register.php" class="hover:underline">Register</a>
+      </div>
     </div>
-</nav>
+  </nav>
 
-<div class="container cont mb-5">
-    <div class="form-container">
-        <h3 class="mb-3 text-center">Login</h3>
-        <form action="login.php" method="POST">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" autocomplete="off" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Log In</button>
-        </form>
+  <!-- Login Section -->
+  <main class="flex-grow flex items-center justify-center px-4">
+    <div class="glass p-10 w-full max-w-md my-10" data-aos="fade-up">
+      <h2 class="text-3xl font-bold text-center mb-6">Login to HandScript</h2>
+      <form action="login.php" method="POST" class="space-y-4">
+        <div>
+          <label for="username" class="block mb-1 font-medium">Username</label>
+          <input type="text" id="username" name="username" class="w-full p-3 border rounded focus:outline-none focus:ring focus:ring-yellow-400" required>
+        </div>
+        <div>
+          <label for="password" class="block mb-1 font-medium">Password</label>
+          <input type="password" id="password" name="password" autocomplete="off" class="w-full p-3 border rounded focus:outline-none focus:ring focus:ring-yellow-400" required>
+        </div>
+        <button type="submit" class="btn-papyrus w-full py-3 mt-4 rounded font-semibold">Log In</button>
+      </form>
 
-        <hr class="my-4">
-        <a href="<?php echo htmlspecialchars($auth_url); ?>" class="btn btn-danger btn-block">Login with Google</a>
+      <a href="<?php echo htmlspecialchars($auth_url); ?>" class="w-full flex items-center justify-center mt-4 gap-3 py-3 bg-white border border-gray-300 rounded hover:shadow-md transition">
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" class="w-5 h-5">
+        <span class="text-sm font-medium text-gray-800">Sign in with Google</span>
+      </a>
     </div>
-</div>
+  </main>
 
-<footer class="footer bg-dark text-center text-light py-3">
-    © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
-</footer>
+  <!-- Footer -->
+  <footer class="bg-[#d7c7a5] text-center py-6 border-t border-yellow-300 text-[#3b2f1d]">
+    &copy; 2025 HandScript — <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+  </footer>
 
 </body>
 </html>
