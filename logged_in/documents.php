@@ -36,6 +36,15 @@ try {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+    <!-- jQuery (MUST come first) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -65,9 +74,10 @@ try {
             gap: 10px;
             margin-bottom: 20px;
         }
+
         .item-display-btn,
         .list-display-btn {
-            background-color:rgb(189, 175, 145);
+            background-color: rgb(189, 175, 145);
             color: #3b2f1d;
             border: none;
             padding: 20px;
@@ -77,11 +87,13 @@ try {
             transition: background-color 0.3s, transform 0.3s;
             border: #3b2f1d 1px solid;
         }
+
         .item-display-btn:hover,
         .list-display-btn:hover {
             background-color: #cdbf9b;
             transform: scale(1.10);
         }
+
         .item-display-btn.active,
         .list-display-btn.active {
             background-color: #cdbf9b;
@@ -103,14 +115,13 @@ try {
             background-repeat: no-repeat;
             background-position: center left 10px;
         }
-
     </style>
 
 </head>
 
 <body class="min-h-screen select-none flex flex-col">
 
-    
+
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
@@ -118,7 +129,8 @@ try {
         <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
             <!-- Logo and brand -->
             <a href="main.php"
-                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left" data-aos="fade-right" data-aos-delay="150">
+                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left"
+                data-aos="fade-right" data-aos-delay="150">
                 <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
                     style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                 HandScript
@@ -133,7 +145,8 @@ try {
             </button>
 
             <!-- Navigation links -->
-            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav" data-aos="fade-left" data-aos-delay="150">
+            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav"
+                data-aos="fade-left" data-aos-delay="150">
                 <ul
                     class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
                     <li class="flex items-center">
@@ -175,13 +188,13 @@ try {
             <h2 class="text-4xl font-bold text-center text-papyrus mb-2" data-aos="fade-up">📁 My Documents</h2>
             <p class="text-center text-lg mb-8 text-papyrus" data-aos="fade-up" data-aos-delay="150">View and edit your
                 documents here</p>
-            
+
             <div class="display-btns">
                 <button class="item-display-btn" id="item-display-btn-my" onclick="changeToItemDispMy()"></button>
                 <button class="list-display-btn" id="list-display-btn-my" onclick="changeToListDispMy()"></button>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+            <div id="my-documents-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
                 style="display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
                 <?php
                 require_once '../config.php';
@@ -213,6 +226,36 @@ try {
                 $stmt->close();
                 ?>
             </div>
+
+            <!-- My Documents table -->
+            <div id="my-documents-table-wrapper" class="w-full overflow-x-auto mt-4" style="display: none;">
+                <table id="my-documents-table" class="display">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Preview</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $stmt = $conn->prepare("SELECT ID ,path FROM pictures WHERE creator = ?");
+                        $stmt->bind_param("i", $userData['id']);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        while ($row = $result->fetch_assoc()) {
+                            echo '<tr>';
+                            echo '<td>' . pathinfo($row['path'], PATHINFO_FILENAME) . '</td>';
+                            echo '<td><img src="..' . $row['path'] . '" style="height: 50px;"></td>';
+                            echo '<td><a href="editDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-primary mr-2">Edit</a>
+                          <a href="deleteDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-danger">Delete</a></td>';
+                            echo '</tr>';
+                        }
+                        $stmt->close();
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <!-- Shared Documents Section -->
@@ -223,11 +266,13 @@ try {
                 documents</p>
 
             <div class="display-btns">
-                <button class="item-display-btn" id="item-display-btn-shared" onclick="changeToItemDispShared()"></button>
-                <button class="list-display-btn" id="list-display-btn-shared" onclick="changeToListDispShared()"></button>
+                <button class="item-display-btn" id="item-display-btn-shared"
+                    onclick="changeToItemDispShared()"></button>
+                <button class="list-display-btn" id="list-display-btn-shared"
+                    onclick="changeToListDispShared()"></button>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+            <div id="shared-documents-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
                 style="display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
                 <?php
                 $sql = "SELECT picture_id FROM users_pictures WHERE user_id = ?";
@@ -262,9 +307,46 @@ try {
                     echo '<div class="col-span-3 text-center text-gray-600" data-aos="fade-up">No shared documents found</div>';
                 }
 
-                $stmt->close();
-                $conn->close();
                 ?>
+            </div>
+
+            <!-- Shared Documents table -->
+            <div id="shared-documents-table-wrapper" class="w-full overflow-x-auto mt-4" style="display: none;">
+                <table id="shared-documents-table" class="display">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Preview</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $stmt = $conn->prepare("SELECT picture_id FROM users_pictures WHERE user_id = ?");
+                        $stmt->bind_param("i", $userData['id']);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        while ($row = $result->fetch_assoc()) {
+                            $sql2 = "SELECT ID, path FROM pictures WHERE ID = ?";
+                            $stmt2 = $conn->prepare($sql2);
+                            $stmt2->bind_param("i", $row['picture_id']);
+                            $stmt2->execute();
+                            $result2 = $stmt2->get_result();
+
+                            while ($row2 = $result2->fetch_assoc()) {
+                                echo '<tr>';
+                                echo '<td>' . pathinfo($row2['path'], PATHINFO_FILENAME) . '</td>';
+                                echo '<td><img src="..' . $row2['path'] . '" style="height: 50px;"></td>';
+                                echo '<td><a href="editDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-primary mr-2">Edit</a></td>';
+                                echo '</tr>';
+                            }
+                        }
+                        
+                    
+                        $conn->close();
+                        ?>
+                    </tbody>
+                </table>
             </div>
         </section>
     </main>
@@ -279,23 +361,41 @@ try {
         function changeToItemDispMy() {
             document.getElementById("list-display-btn-my").classList.remove("active");
             document.getElementById("item-display-btn-my").classList.add("active");
-            // TODO: display the grid as default
+            document.getElementById("my-documents-grid").style.display = "flex";
+            document.getElementById("my-documents-table-wrapper").style.display = "none";
         }
+
         function changeToListDispMy() {
             document.getElementById("item-display-btn-my").classList.remove("active");
             document.getElementById("list-display-btn-my").classList.add("active");
-            // TODO: display the list
+            document.getElementById("my-documents-grid").style.display = "none";
+            document.getElementById("my-documents-table-wrapper").style.display = "block";
+
+            if ($.fn.DataTable.isDataTable('#my-documents-table')) {
+                $('#my-documents-table').DataTable().destroy();
+            }
+            $('#my-documents-table').DataTable();
         }
+
         function changeToItemDispShared() {
             document.getElementById("list-display-btn-shared").classList.remove("active");
             document.getElementById("item-display-btn-shared").classList.add("active");
-            // TODO: display the grid as default
+            document.getElementById("shared-documents-grid").style.display = "flex";
+            document.getElementById("shared-documents-table-wrapper").style.display = "none";
         }
+
         function changeToListDispShared() {
             document.getElementById("item-display-btn-shared").classList.remove("active");
             document.getElementById("list-display-btn-shared").classList.add("active");
-            // TODO: display the list
+            document.getElementById("shared-documents-grid").style.display = "none";
+            document.getElementById("shared-documents-table-wrapper").style.display = "block";
+
+            if ($.fn.DataTable.isDataTable('#shared-documents-table')) {
+                $('#shared-documents-table').DataTable().destroy();
+            }
+            $('#shared-documents-table').DataTable();
         }
+
 
         function checkToasts() {
             let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
@@ -311,7 +411,7 @@ try {
 
         // scroll to top of window
         window.scrollTo(0, 0);
-    
+
         AOS.init({
             duration: 800,
             once: true
