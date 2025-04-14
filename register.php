@@ -88,22 +88,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/register.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="./js/regex.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - HandScript</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: url('img/register.png') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-papyrus {
+      background-color: #bfa97a;
+      color: #3b2f1d;
+    }
+
+    .btn-papyrus:hover {
+      background-color: #a68f68;
+    }
+
+    .is-valid {
+      border-color: #16a34a !important; /* green */
+    }
+
+    .is-invalid {
+      border-color: #dc2626 !important; /* red */
+    }
+
+    .text-success {
+      color: #16a34a;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .text-danger {
+      color: #dc2626;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  </style>
 </head>
-<body>
-<script>
+
+<body class="text-[#3b2f1d] bg-[#fefbf5]">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="./js/regex.js"></script>
+  <script>
     function checkToasts() {
         let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
         if (toast) {
@@ -113,60 +169,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     checkToasts();
-</script>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="./index.html">Home</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="https://tptimovyprojekt.ddns.net/">Project</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="./login.php">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="./register.php">Register</a>
-            </li>
-        </ul>
+    AOS.init({ duration: 1000, once: true });
+  </script>
+
+  <!-- Navbar -->
+  <nav class="bg-[#d7c7a5] shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+      <div class="hidden md:flex space-x-6 text-lg">
+        <a href="./login.php" class="hover:underline">Login</a>
+        <a href="./register.php" class="hover:underline">Register</a>
+      </div>
     </div>
-</nav>
-<div class="container cont mb-5">
-    <div class="form-container">
-        <h3 class="mb-3 text-center">Register</h3>
-        <form action="register.php" method="POST">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" oninput="isValidInput(this)"
-                       required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" oninput="isValidEmail(this)" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password"
-                       oninput="isValidPassword(this)" autocomplete="off" required>
-            </div>
-            <div class="form-group">
-                <label for="password_confirm">Confirm Password</label>
-                <input type="password" class="form-control" id="password_confirm" name="password_confirm"
-                       oninput="isValidPassword(this)" autocomplete="off" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
+  </nav>
+
+  <!-- Register Section -->
+  <main class="flex-grow flex items-center justify-center px-4">
+    <div class="glass p-10 w-full max-w-md my-10" data-aos="fade-up">
+      <h2 class="text-3xl font-bold text-center mb-6">Create an Account</h2>
+      <form action="register.php" method="POST" class="space-y-4">
+        <div>
+          <label for="username" class="block mb-1 font-medium">Username</label>
+          <input type="text" id="username" name="username" oninput="isValidInput(this)" class="w-full p-3 border rounded" required>
+        </div>
+        <div>
+          <label for="email" class="block mb-1 font-medium">Email</label>
+          <input type="email" id="email" name="email" oninput="isValidEmail(this)" class="w-full p-3 border rounded" required>
+        </div>
+        <div>
+          <label for="password" class="block mb-1 font-medium">Password</label>
+          <input type="password" id="password" name="password" oninput="isValidPassword(this)" autocomplete="off" class="w-full p-3 border rounded" required>
+        </div>
+        <div>
+          <label for="password_confirm" class="block mb-1 font-medium">Confirm Password</label>
+          <input type="password" id="password_confirm" name="password_confirm" oninput="isValidPassword(this)" autocomplete="off" class="w-full p-3 border rounded" required>
+        </div>
+        <button type="submit" class="btn-papyrus w-full py-3 mt-4 rounded font-semibold">Register</button>
+      </form>
     </div>
-</div>
-<footer class="footer bg-dark">
-    © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
-</footer>
-<script>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#d7c7a5] text-center py-6 border-t border-yellow-300 text-[#3b2f1d]">
+    &copy; 2025 HandScript — <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+  </footer>
+
+  <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', checkForm);
-</script>
+  </script>
+
 </body>
 </html>
