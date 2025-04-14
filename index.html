@@ -1,100 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Historical Document Processing</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/index.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HandScript: Historical Document Processing</title>
 
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #f5eddc, #d4c6a3);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(8px);
+      border-radius: 1.25rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-papyrus {
+      background-color: #bfa97a;
+      color: #3b2f1d;
+    }
+
+    .btn-papyrus:hover {
+      background-color: #a68f68;
+    }
+
+    .image-card {
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .image-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 </head>
-<body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="./index.html">Home</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="https://tptimovyprojekt.ddns.net/">Project</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="./login.php">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="./register.php">Register</a>
-            </li>
-        </ul>
+<body class="text-[#3b2f1d]">
+
+  <!-- Navbar -->
+  <nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+      <div class="hidden md:flex space-x-6 text-lg">
+        <a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Project</a>
+        <a href="./login.php" class="hover:underline">Login</a>
+        <a href="./register.php" class="hover:underline">Register</a>
+      </div>
     </div>
-</nav>
+  </nav>
 
-<div class="container-fluid header-image-container px-0 mb-4">
-    <img src="img/main.png" alt="Web Application for Historical Documents" class="header-image img-fluid">
-    <div class="digital-clock d-flex flex-column justify-content-center align-items-center">
-        <div id="time" class="h4 mb-2">00:00:00</div>
-        <div id="date" class="date small">January 1, 2024</div>
+  <!-- Hero -->
+  <header class="relative w-full h-[60vh] overflow-hidden mb-16">
+    <img src="img/main.png" alt="Hero" class="w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black bg-opacity-40 flex justify-center items-center px-4">
+      <div class="glass p-8 border border-white/20 text-[#f8f6f1] text-center w-full max-w-2xl transition duration-300 hover:scale-105 hover:shadow-xl"
+           style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);"
+           data-aos="zoom-in">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Decipher the Past with AI</h1>
+        <p class="text-base md:text-lg mb-3">Upload, analyze, and decrypt historical manuscripts like never before.</p>
+        <div>
+          <div id="time" class="text-xl font-medium"></div>
+          <div id="date" class="text-sm mt-1 opacity-90"></div>
+        </div>
+      </div>
     </div>
-</div>
+  </header>
 
-<div class="container cont mb-5">
-    <div class="row align-items-center mb-3">
-        <div class="col-md-6">
-            <div class="description">
-                <h2>About This Application</h2>
-                <p>This web application is engineered to process historical handwritten documents, specifically
-                    targeting encrypted texts and substitution cipher keys. Built on the .NET platform and integrated
-                    with Python for AI simulations, it allows users to classify, transcribe, and decrypt manuscripts
-                    effectively. The system facilitates the use of brute-force algorithms or custom cipher keys for
-                    decryption, and supports the application of new cipher keys to check compatibility with existing
-                    texts.</p>
-                <p>An interactive tutorial guides new users on navigating and utilizing the system, ensuring a seamless
-                    onboarding process. The application is designed to encourage students to develop critical thinking
-                    skills by solving various design and integration challenges independently.</p>
-            </div>
+  <!-- About Section -->
+  <section class="max-w-6xl mx-auto px-6 mb-20">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="glass p-6" data-aos="fade-right">
+        <h2 class="text-3xl font-bold mb-4">About the Project</h2>
+        <p class="mb-4">HandScript equips researchers, students, and hobbyists with modern tools to digitize and decrypt ancient texts. It blends AI handwriting analysis with cipher solving and text reconstruction.</p>
+        <p class="mb-4">Our mission is to preserve history, unlock secrets, and make manuscript analysis engaging and collaborative. Whether you're analyzing a cryptic letter from the 18th century or trying to decode a family heirloom, HandScript provides you the tools to explore it intelligently.</p>
+        <p>We aim to bridge the gap between traditional historical research and modern technology by offering a user-friendly platform that supports learning, discovery, and preservation at every step.</p>
+      </div>
+      <div class="flex justify-center" data-aos="fade-left">
+        <div class="glass p-4 rounded-xl image-card">
+          <img src="img/1_1.png" alt="Encrypted Example" class="rounded-lg max-w-xs h-auto" />
         </div>
-        <div class="col-md-6">
-            <img src="img/1.png" alt="Encrypted Text Example" class="image-fluid">
-        </div>
+      </div>
     </div>
-    <div class="row align-items-center">
-        <div class="col-md-6 order-md-2">
-            <div class="content">
-                <h1>Historical Handwritten Document Processing</h1>
-                <p>Explore this advanced platform that utilizes cutting-edge artificial intelligence to digitize,
-                    transcribe, and decrypt historical manuscripts efficiently. Designed to handle complex encrypted
-                    texts and faded documents, it supports a variety of ciphers for decryption, aiding researchers in
-                    uncovering historical insights.</p>
-                <p>With integration into cloud storage solutions, all processed documents are securely stored and
-                    accessible from anywhere, facilitating collaborative research and ensuring the preservation of
-                    historical data. The system’s intuitive interface ensures ease of use for both academics and amateur
-                    historians alike.</p>
-                <p>The application is continuously updated to incorporate user feedback and the latest advancements in
-                    AI and document processing technology, ensuring it remains a vital tool for historical document
-                    analysis.</p>
-            </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="max-w-6xl mx-auto px-6 mb-20">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="flex justify-center order-2 md:order-1" data-aos="fade-right">
+        <div class="glass p-4 rounded-xl image-card">
+          <img src="img/1_2.png" alt="Cipher" class="rounded-lg max-w-xs h-auto" />
         </div>
-        <div class="col-md-6 order-md-1">
-            <img src="img/2.png" alt="Substitution Cipher Example" class="image-fluid">
-        </div>
+      </div>
+      <div class="glass p-6 order-1 md:order-2" data-aos="fade-left">
+        <h2 class="text-3xl font-bold mb-4">AI + Cryptography</h2>
+        <p class="mb-4">Our neural network deciphers handwritten glyphs and helps you reconstruct texts using substitution keys, pattern matching, or brute-force strategies.</p>
+        <p class="mb-4">By combining machine learning with traditional cryptographic approaches, we enable a more dynamic and adaptable method of decryption. This allows users to visualize results, apply custom logic, and get recommendations based on evolving AI models.</p>
+        <p>The integration of AI with classical methods opens up new pathways for education, research, and exploration in both historical and fictional cipher studies.</p>
+      </div>
     </div>
-</div>
+  </section>
 
-<div class="container mb-5 text-center">
-    <p>If you have any questions, please feel free to reach out to us!</p>
-    <a href="mailto:xpalfy@stuba.sk" class="btn btn-primary">Send me an Email</a>
-</div>
+  <!-- How It Works -->
+  <section class="max-w-5xl mx-auto px-6 mb-24 text-center" data-aos="fade-up">
+    <h2 class="text-3xl font-bold mb-10">How It Works</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass p-6 rounded-xl shadow" data-aos="zoom-in">
+        <h3 class="text-xl font-semibold mb-2">📤 Upload</h3>
+        <p>Drop your scanned manuscript or cipher into our secure interface.</p>
+      </div>
+      <div class="glass p-6 rounded-xl shadow" data-aos="zoom-in" data-aos-delay="100">
+        <h3 class="text-xl font-semibold mb-2">🧠 Analyze</h3>
+        <p>We segment and classify handwritten characters using machine learning.</p>
+      </div>
+      <div class="glass p-6 rounded-xl shadow" data-aos="zoom-in" data-aos-delay="200">
+        <h3 class="text-xl font-semibold mb-2">🔓 Decrypt</h3>
+        <p>Choose cipher strategies or input your own key to reveal the hidden message.</p>
+      </div>
+    </div>
+  </section>
 
-<footer class="footer bg-dark">
-    © Project Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
-</footer>
+  <!-- Login/Register CTA -->
+  <section class="max-w-3xl mx-auto px-6 mb-24 text-center" data-aos="fade-up">
+    <div class="glass p-8 rounded-2xl border border-yellow-300 shadow-md">
+      <h2 class="text-3xl font-bold mb-4">Start Your Decryption Journey</h2>
+      <p class="mb-6 text-lg">Log in or create an account to unlock full access: upload, analyze, and preserve your historical documents.</p>
+      <div class="flex justify-center gap-6">
+        <a href="./login.php" class="btn-papyrus px-6 py-2 text-lg rounded-lg shadow hover:scale-105 transition">🔐 Login</a>
+        <a href="./register.php" class="btn-papyrus px-6 py-2 text-lg rounded-lg shadow hover:scale-105 transition">📝 Register</a>
+      </div>
+    </div>
+  </section>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="js/index.js"></script>
+  <!-- Footer -->
+  <footer class="bg-[#d7c7a5] text-center py-6 border-t border-yellow-300 text-[#3b2f1d]">
+    &copy; 2025 HandScript — <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+  </footer>
+
+  <!-- Clock Script -->
+  <script>
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("time").innerText = now.toLocaleTimeString();
+      document.getElementById("date").innerText = now.toLocaleDateString(undefined, {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+
+  <!-- AOS Init -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+  </script>
 
 </body>
 </html>
