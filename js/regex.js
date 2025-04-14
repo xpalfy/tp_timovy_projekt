@@ -50,7 +50,7 @@ function isValidPassword(inputElement) {
         inputElement,
         regex,
         'Password cannot be empty.',
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        'Password must contain characters from LUDS.'
     );
 }
 
