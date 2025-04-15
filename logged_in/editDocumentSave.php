@@ -89,6 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($sharedUsers)) {
         require_once '../config.php';
         $conn = getDatabaseConnection();
+        // reset the shared users
+        $stmt = $conn->prepare('DELETE FROM users_pictures WHERE picture_id = ?');
+        $stmt->bind_param('i', $pictureId);
+        $stmt->execute();
+        $stmt->close();
+        // add the new shared users
         foreach ($sharedUsers as $sharedUser) {
             $stmt = $conn->prepare('SELECT * FROM users WHERE username = ?');
             $stmt->bind_param('s', $sharedUser);
