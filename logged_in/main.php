@@ -497,6 +497,11 @@ try {
                         <button
                             class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
                     </div>
+                    <!-- document name -->
+                    <div class="mt-4">
+                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
+                            placeholder="Document Name" />
+                    </div>
                 </div>
             </div>
 
@@ -673,35 +678,69 @@ try {
                 handleError('Please upload an image first.');
                 return;
             }
-            for (let [data, image_name] of previewImages) {
-                fetch('movePicture.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        data: data,
-                        data_name: image_name,
-                        user_name: <?php echo json_encode($userData['username']); ?>,
-                        type: type, // Use the passed 'type' parameter
-                        id: <?php echo json_encode($userData['id']); ?>
-                    })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            toastr.success(data.message);
-                            console.log("Image saved successfully.");
-                            currentImageId = null; // Image is saved, no need to delete it
-                        } else {
-                            handleError(data.error);
-                        }
-                    });
+            doc_name = document.getElementById('documentName').value;
+            if (doc_name === '') {
+                handleError('Please enter a name for the document.');
+                return;
             }
+
+            console.log(doc_name);
+
+            fetch('documents/createDocument.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    doc_name: doc_name,
+                    type: type,
+                    user_name: <?php echo json_encode($userData['username']); ?>,
+                    id: <?php echo json_encode($userData['id']); ?>
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success(data.message);
+                        console.log("Document created successfully.");
+                        doc_id = data.document_id;
+                        console.log("Document ID:", doc_id);
+                        for (let [data, image_name] of previewImages) {
+                            fetch('items/createItem.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    image_name: image_name,
+                                    doc_id: doc_id,
+                                    doc_name: doc_name,
+                                    type: type,
+                                    user_name: <?php echo json_encode($userData['username']); ?>,
+                                    id: <?php echo json_encode($userData['id']); ?>
+                                })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        toastr.success(data.message);
+                                        console.log("Image saved successfully.");
+                                        currentImageId = null; // Image is saved, no need to delete it
+                                    } else {
+                                        handleError(data.error);
+                                    }
+                                });
+                        }
+                    } else {
+                        handleWarning(data.error);
+                        return;
+                    }
+                });
+
         }
 
         function saveKey() {
-            saveData('KEYS');
+            saveData('KEY');
         }
 
         function saveCipher() {
@@ -927,7 +966,6 @@ try {
         }
 
         function handleError(error_message) {
-            // If something mega bad happens set everything back to normal
             hideLoading();
             document.getElementById('SegmentBtns').style.display = 'none';
             document.getElementById('classificationMessage').style.display = 'none';
@@ -937,6 +975,11 @@ try {
             currentPreviewIndex = 0;
             updatePreview();
             toastr.error(error_message || 'An error occurred. Please try again.');
+        }
+
+        function handleWarning(warning_message) {
+            hideLoading();
+            toastr.warning(warning_message || 'An warning occurred. Please try again.');
         }
 
         function segmentCipher() {
