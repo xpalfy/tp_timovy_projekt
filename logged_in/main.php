@@ -625,7 +625,7 @@ try {
             for (imageElement of imageElements) {
                 if (previewImages.length === 0) {
                     imageElement.style.display = 'none';
-                    return;
+                    continue;
                 }
                 imageElement.src = previewImages[currentPreviewIndex][0];
                 imageElement.style.display = 'block';
@@ -723,19 +723,34 @@ try {
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.success) {
-                                        toastr.success(data.message);
-                                        console.log("Image saved successfully.");
                                         currentImageId = null; // Image is saved, no need to delete it
                                     } else {
                                         handleError(data.error);
                                     }
                                 });
                         }
+                        toastr.success('Images uploaded successfully.');
+                        // reset window
+                        currentImageId = [];
+                        previewImages = [];
+                        classificationScores = [];
+                        currentPreviewIndex = 0;
+                        updatePreview();
+                        hideSegmentBtns();
+                        hideAnalyzeKeyBtn();
+                        hideAnalyzeCipherBtn();
+                        hideSaveKeyBtn();
+                        hideSaveCipherBtn();
+                        hideLoading();
+                        hideSystemMessage();
+                        setStep(0);
                     } else {
                         handleWarning(data.error);
                         return;
                     }
                 });
+
+
 
         }
 
@@ -838,7 +853,12 @@ try {
             classificationScores = [];
             currentPreviewIndex = 0;
             updatePreview();
-            document.getElementById('SegmentBtns').style.display = 'none';
+            hideSegmentBtns();
+            hideAnalyzeKeyBtn();
+            hideAnalyzeCipherBtn();
+            hideSaveKeyBtn();
+            hideSaveCipherBtn();
+            hideLoading();
             hideSystemMessage();
         }
 
