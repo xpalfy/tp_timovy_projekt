@@ -12,30 +12,156 @@ try {
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
     header('Location: login.php');
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Main</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="../css/profile.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/idb/build/iife/index-min.js"></script>
-    <script src="../js/regex.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HandScript - Profile</title>
 
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- AOS for animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #ede1c3, #cdbf9b);
+        }
+
+        .text-papyrus {
+            color: #3b2f1d;
+        }
+
+        input:focus {
+            outline: none !important;
+            box-shadow: 0 0 0 2px #bfa97a;
+        }
+    </style>
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col select-none">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+        id="navbar">
+        <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+            <!-- Logo and brand -->
+            <a href="main.php"
+                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left"
+                data-aos="fade-right" data-aos-delay="150">
+                <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
+                    style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                HandScript
+            </a>
+
+            <!-- Toggler button -->
+            <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!-- Navigation links -->
+            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav"
+                data-aos="fade-left" data-aos-delay="150">
+                <ul
+                    class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
+                    <li class="flex items-center">
+                        <a href="profile.php" class="nav-link flex items-center hover:underline">
+                            Profile
+                            <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="documents.php" class="nav-link flex items-center hover:underline">
+                            Documents
+                            <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="https://tptimovyprojekt.ddns.net/" class="nav-link flex items-center hover:underline">
+                            Project
+                            <img src="../img/web.png" alt="project" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center">
+                        <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                            Logout
+                            <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="flex-grow">
+        <section class="container mx-auto px-6 py-10">
+            <h1 class="text-4xl font-bold text-center text-papyrus mb-6" data-aos="fade-up">👤 Profile</h1>
+            <p class="text-center text-lg mb-10 text-papyrus" data-aos="fade-up" data-aos-delay="100">
+                Welcome back, <span class="font-semibold"><?php echo $userData['username']; ?></span>
+            </p>
+
+            <form action="profileUpdate.php" method="post" class="max-w-2xl mx-auto rounded-xl shadow-lg p-8 space-y-6"
+                data-aos="fade-up" data-aos-delay="200"
+                style="background-color: #fef9e4; border: 1px solid #3b2f1d;">
+                <div>
+                    <label class="block text-papyrus mb-1 font-semibold">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Username"
+                        class="w-full border border-yellow-300 rounded px-4 py-2" />
+                </div>
+                <div>
+                    <label class="block text-papyrus mb-1 font-semibold">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Email" oninput="isValidEmail(this)"
+                        class="w-full border border-yellow-300 rounded px-4 py-2" />
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-papyrus mb-1 font-semibold">New Password</label>
+                        <input type="password" name="password" id="password" placeholder="New Password"
+                            class="w-full border border-yellow-300 rounded px-4 py-2" />
+                    </div>
+                    <div>
+                        <label class="block text-papyrus mb-1 font-semibold">Repeat New Password</label>
+                        <input type="password" name="password_confirm" id="password_confirm"
+                            placeholder="New Password Again"
+                            class="w-full border border-yellow-300 rounded px-4 py-2" />
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit"
+                        class="bg-[#bfa97a] text-white px-6 py-2 rounded hover:bg-[#a68f68] transition">Submit</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
+        &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+    </footer>
+
     <script>
+        AOS.init({ duration: 800, once: true });
+
         function checkToasts() {
             let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
             if (toast) {
@@ -45,129 +171,7 @@ try {
         }
 
         checkToasts();
-
-
     </script>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" style="transition: top 0.3s;" id="navbar">
-        <a class="navbar-brand" href="main.php" style="font-size: xx-large; display: flex; align-items: center;">
-            <img src="../img/logo.png" alt="Logo" style="width: 40px; height: 40px; margin-right: 15px;">
-            HandScript
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-
-                <li class="nav-item">
-                    <a class="nav-link " href="profile.php">
-                        Profile
-                        <img src="../img/account.png" alt="profile"
-                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="documents.php">
-                        Documents
-                        <img src="../img/document.png" alt="document"
-                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://tptimovyprojekt.ddns.net/">
-                        Project
-                        <img src="../img/web.png" alt="Project"
-                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link  " href="../logout.php">
-                        Logout
-                        <img src="../img/logout.png" alt="logout"
-                            style="width: 25px; height: 25px; margin-right: 8px; margin-left: 4px;">
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <script>
-        let lastScrollTop = 0;
-        const navbar = document.getElementById('navbar');
-
-        window.addEventListener('scroll', function () {
-            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-            if (currentScroll > lastScrollTop) {    
-                // Scrolling down
-                navbar.style.top = '-80px';
-            } else {
-                // Scrolling up
-                navbar.style.top = '0';
-            }
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Avoid negative values
-        });
-    </script>
-
-    <div class="background-image"></div>
-
-
-    <div class="cont mb-5 pt-5">
-        <div class="container mb-5 pt-5">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <h1 class="display-4 font-weight-bold mb-4">Profile</h1>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <h2>Welcome back, <span class="text-primary"><?php echo $userData['username']; ?></span>
-                    </h2>
-                </div>
-            </div>
-
-            <form class="container mt-4"
-                style="display: flex; flex-direction: column; align-items: center; flex-wrap: wrap;"
-                action="profileUpdate.php" method="post">
-                <div class="input-group mb-3 col-md-8">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">🇮🇩</span>
-                    </div>
-                    <input id="username" name="username" type="text" class="form-control" placeholder="Username"
-                        aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-
-                <div class="input-group mb-3 col-md-8">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">@</span>
-                    </div>
-                    <input type="email" class="form-control" id="email" name="email" oninput="isValidEmail(this)"
-                        placeholder="Email">
-                </div>
-
-                <div class="input-group col-md-8 mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><img src="../img/lock.png" width="20" draggable="false"></span>
-                    </div>
-                    <input type="password" class="form-control" id="password" name="password"
-                        placeholder="New Password">
-                    <input type="password" class="form-control" id="password_confirm" name="password_confirm"
-                        placeholder="New Password Again">
-                </div>
-
-                <div class="input-group col-md-3 justify-content-center mb-3">
-                    <button type="submit" class="btn btn-secondary mb-3">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <footer class="footer bg-dark text-center text-white py-3">
-        © Project Site <a href="https://tptimovyprojekt.ddns.net/" class="text-white">tptimovyprojekt.ddns.net</a>
-    </footer>
-
-
 </body>
 
 </html>
