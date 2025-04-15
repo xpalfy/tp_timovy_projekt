@@ -189,7 +189,7 @@ try {
             <p class="text-center text-lg mb-8 text-papyrus" data-aos="fade-up" data-aos-delay="150">View and edit your
                 documents here</p>
 
-            <div class="display-btns">
+            <div class="display-btns" data-aos="flip-up" data-aos-delay="1000">
                 <button class="item-display-btn" id="item-display-btn-my" onclick="changeToItemDispMy()"></button>
                 <button class="list-display-btn" id="list-display-btn-my" onclick="changeToListDispMy()"></button>
             </div>
@@ -265,10 +265,10 @@ try {
                 shared
                 documents</p>
 
-            <div class="display-btns">
+            <div class="display-btns" data-aos="flip-up" data-aos-delay="1000">
                 <button class="item-display-btn" id="item-display-btn-shared"
                     onclick="changeToItemDispShared()"></button>
-                <button class="list-display-btn" id="list-display-btn-shared"
+                <button class=" list-display-btn" id="list-display-btn-shared"
                     onclick="changeToListDispShared()"></button>
             </div>
 
@@ -341,8 +341,8 @@ try {
                                 echo '</tr>';
                             }
                         }
-                        
-                    
+
+
                         $conn->close();
                         ?>
                     </tbody>
@@ -406,8 +406,10 @@ try {
         }
 
         checkToasts();
-        changeToItemDispMy();
-        changeToItemDispShared();
+        setTimeout(function () {
+            changeToItemDispMy();
+            changeToItemDispShared();
+        }, 800);
 
         // scroll to top of window
         window.scrollTo(0, 0);
