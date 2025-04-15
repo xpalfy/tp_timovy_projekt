@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt->close();
     $conn->close();
-    echo json_encode(['success' => 'Image moved and inserted successfully']);
+    echo json_encode(['success' => true, 'message' => 'File moved and database updated']);
 }
 else {
     http_response_code(405);
