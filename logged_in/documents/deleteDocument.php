@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = getDatabaseConnection();
 
     // Check if the document exists
-    $stmt = $conn->prepare('SELECT * FROM documents WHERE author_id = ? AND doc_id');
+    $stmt = $conn->prepare('SELECT * FROM documents WHERE author_id = ? AND id = ?');
 
     $stmt->bind_param('ii', $id, $doc_id);
     $stmt->execute();
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt->close();
     // Delete the document
-    $stmt = $conn->prepare('DELETE FROM documents WHERE doc_id = ? AND author_id = ?');
+    $stmt = $conn->prepare('DELETE FROM documents WHERE id = ? AND author_id = ?');
     $stmt->bind_param('ii', $doc_id, $id);
     $stmt->execute();
     if ($stmt->affected_rows === 0) {
