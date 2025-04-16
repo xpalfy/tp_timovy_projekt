@@ -56,15 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     $row = $result->fetch_assoc();
+    $temp_file_path = $row['path'];
+    $extension = pathinfo($temp_file_path, PATHINFO_EXTENSION);
     $stmt->close();
-    
-    // Check if the new file path already exists
-    if (file_exists($new_file_path)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'File already exists']);
-        exit;
-    }
-    $new_db_file_path = '/DOCS/' . $user_name . '/' . $type . '/' . $doc_name . '/' . $image_name;
+
+    // Check if the document already exists
+    $new_db_file_path = '/DOCS/' . $user_name . '/' . $type . '/' . $doc_name . '/' . $image_name . '.' . $extension;
     $stmt = $conn->prepare('SELECT * FROM items WHERE document_id = ? AND image_path = ?');
     $stmt->bind_param('is', $doc_id, $new_db_file_path);
     $stmt->execute();
@@ -76,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt->close();
 
-    
     $old_file_path = realpath(__DIR__ . '/../..') . $row['path'];
 
     if (!file_exists($old_file_path)) {
@@ -91,6 +87,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $new_file_path = $new_directory . '/' . basename($old_file_path);
+    
+    // Check if the new file path already exists
+    if (file_exists($new_file_path)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'File already exists']);
+        exit;
+    }
+    
 
     if (!rename($old_file_path, $new_file_path)) {
         http_response_code(500);
