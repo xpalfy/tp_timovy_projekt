@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -199,22 +202,26 @@ try {
                 <?php
                 require_once '../config.php';
                 $conn = getDatabaseConnection();
-
-                $sql = "SELECT ID ,path FROM pictures WHERE creator = ?";
+                $sql = "SELECT * FROM documents WHERE author_id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $userData['id']);
                 $stmt->execute();
                 $result = $stmt->get_result();
-
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $sql2 = "SELECT image_path FROM items WHERE document_id = ?";
+                        $stmt2 = $conn->prepare($sql2);
+                        $stmt2->bind_param("i", $row['id']);
+                        $stmt2->execute();
+                        $result2 = $stmt2->get_result();
+                        $row2 = $result2->fetch_assoc();
                         echo '<div class="card-pic">';
-                        echo '<img src="..' . $row['path'] . '" class="" alt="..." >';
+                        echo '<img src="..' . $row2['image_path'] . '" class="" alt="..." >';
                         echo '<div class="card-body">';
-                        echo '<h5 class="card-title">' . pathinfo($row['path'], PATHINFO_FILENAME) . '</h5>';
+                        echo '<h5 class="card-title">' . $row['title'] . '</h5>';
                         echo '<div class="card-buttons">';
-                        echo '<a href="editDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
-                        echo '<a href="deleteDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-danger">Delete</a>';
+                        echo '<a href="editDocument.php?id=' . $row['id'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
+                        echo '<button onclick="deleteDocument(' . $row['id'] . ')" class="btn btn-danger">Delete</button>';
                         echo '</div>';
                         echo '</div>';
                         echo '</div>';
@@ -222,7 +229,6 @@ try {
                 } else {
                     echo '<div class="col-span-3 text-center text-gray-600" data-aos="fade-up">No documents found</div>';
                 }
-
                 $stmt->close();
                 ?>
             </div>
@@ -233,22 +239,29 @@ try {
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Preview</th>
+                            <th>Number of Items</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $stmt = $conn->prepare("SELECT ID ,path FROM pictures WHERE creator = ?");
+                        $sql = "SELECT * FROM documents WHERE author_id = ?";
+                        $stmt = $conn->prepare($sql);
                         $stmt->bind_param("i", $userData['id']);
                         $stmt->execute();
                         $result = $stmt->get_result();
                         while ($row = $result->fetch_assoc()) {
+                            $sql2 = "SELECT id FROM items WHERE document_id = ?";
+                            $stmt2 = $conn->prepare($sql2);
+                            $stmt2->bind_param("i", $row['id']);
+                            $stmt2->execute();
+                            $result2 = $stmt2->get_result();
+                            $item_count = $result2->num_rows;
                             echo '<tr>';
-                            echo '<td>' . pathinfo($row['path'], PATHINFO_FILENAME) . '</td>';
-                            echo '<td><img src="..' . $row['path'] . '" style="height: 50px;"></td>';
-                            echo '<td><a href="editDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-primary mr-2">Edit</a>
-                          <a href="deleteDocument.php?id=' . $row['ID'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-danger">Delete</a></td>';
+                            echo '<td>' . $row['title'] . '</td>';
+                            echo '<td>' . $item_count . '</td>';
+                            echo '<td><a href="editDocument.php?id=' . $row['id'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-primary mr-2">Edit</a>
+                          <button onclick="deleteDocument(' . $row['id'] . ')" class="btn btn-sm btn-danger">Delete</button></td>';
                             echo '</tr>';
                         }
                         $stmt->close();
@@ -275,38 +288,44 @@ try {
             <div id="shared-documents-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
                 style="display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
                 <?php
-                $sql = "SELECT picture_id FROM users_pictures WHERE user_id = ?";
+                $sql = "SELECT document_id FROM document_user_association WHERE user_id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $userData['id']);
                 $stmt->execute();
                 $result = $stmt->get_result();
-
+                $stmt->close();
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        $sql2 = "SELECT ID, path FROM pictures WHERE ID = ?";
+                        $sql2 = "SELECT * FROM documents WHERE id = ?";
                         $stmt2 = $conn->prepare($sql2);
-                        $stmt2->bind_param("i", $row['picture_id']);
+                        $stmt2->bind_param("i", $row['document_id']);
                         $stmt2->execute();
                         $result2 = $stmt2->get_result();
-
+                        $stmt2->close();
                         if ($result2->num_rows > 0) {
                             while ($row2 = $result2->fetch_assoc()) {
+                                $sql3 = "SELECT image_path FROM items WHERE document_id = ?";
+                                $stmt3 = $conn->prepare($sql3);
+                                $stmt3->bind_param("i", $row2['id']);
+                                $stmt3->execute();
+                                $result3 = $stmt3->get_result();
+                                $row3 = $result3->fetch_assoc();
                                 echo '<div class="card-pic">';
-                                echo '<img src="..' . $row2['path'] . '" class="" alt="..." >';
+                                echo '<img src="..' . $row3['image_path'] . '" class="" alt="..." >';
                                 echo '<div class="card-body">';
-                                echo '<h5 class="card-title">' . pathinfo($row2['path'], PATHINFO_FILENAME) . '</h5>';
+                                echo '<h5 class="card-title">' . $row2['title'] . '</h5>';
                                 echo '<div class="card-buttons">';
-                                echo '<a href="editDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
+                                echo '<a href="editDocument.php?id=' . $row2['id'] . '&user=' . $userData['id'] . '" class="btn btn-primary">Edit</a>';
                                 echo '</div>';
                                 echo '</div>';
                                 echo '</div>';
+                                $stmt3->close();
                             }
                         }
                     }
                 } else {
                     echo '<div class="col-span-3 text-center text-gray-600" data-aos="fade-up">No shared documents found</div>';
                 }
-
                 ?>
             </div>
 
@@ -316,33 +335,46 @@ try {
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Preview</th>
+                            <th>Number of Items</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $stmt = $conn->prepare("SELECT picture_id FROM users_pictures WHERE user_id = ?");
+                        $sql = "SELECT document_id FROM document_user_association WHERE user_id = ?";
+                        $stmt = $conn->prepare($sql);
                         $stmt->bind_param("i", $userData['id']);
                         $stmt->execute();
                         $result = $stmt->get_result();
-                        while ($row = $result->fetch_assoc()) {
-                            $sql2 = "SELECT ID, path FROM pictures WHERE ID = ?";
-                            $stmt2 = $conn->prepare($sql2);
-                            $stmt2->bind_param("i", $row['picture_id']);
-                            $stmt2->execute();
-                            $result2 = $stmt2->get_result();
-
-                            while ($row2 = $result2->fetch_assoc()) {
-                                echo '<tr>';
-                                echo '<td>' . pathinfo($row2['path'], PATHINFO_FILENAME) . '</td>';
-                                echo '<td><img src="..' . $row2['path'] . '" style="height: 50px;"></td>';
-                                echo '<td><a href="editDocument.php?id=' . $row2['ID'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-primary mr-2">Edit</a></td>';
-                                echo '</tr>';
+                        $stmt->close();
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                $sql2 = "SELECT * FROM documents WHERE id = ?";
+                                $stmt2 = $conn->prepare($sql2);
+                                $stmt2->bind_param("i", $row['document_id']);
+                                $stmt2->execute();
+                                $result2 = $stmt2->get_result();
+                                $stmt2->close();
+                                if ($result2->num_rows > 0) {
+                                    while ($row2 = $result2->fetch_assoc()) {
+                                        $sql3 = "SELECT image_path FROM items WHERE document_id = ?";
+                                        $stmt3 = $conn->prepare($sql3);
+                                        $stmt3->bind_param("i", $row2['id']);
+                                        $stmt3->execute();
+                                        $result3 = $stmt3->get_result();
+                                        $item_count = $result3->num_rows;
+                                        echo '<tr>';
+                                        echo '<td>' . $row2['title'] . '</td>';
+                                        echo '<td>' . $item_count . '</td>';
+                                        echo '<td><a href="editDocument.php?id=' . $row2['id'] . '&user=' . $userData['id'] . '" class="btn btn-sm btn-primary mr-2">Edit</a></td>';
+                                        echo '</tr>';
+                                        $stmt3->close();
+                                    }
+                                }
                             }
+                        } else {
+                            echo '<div class="col-span-3 text-center text-gray-600" data-aos="fade-up">No shared documents found</div>';
                         }
-
-
                         $conn->close();
                         ?>
                     </tbody>
@@ -394,6 +426,36 @@ try {
                 $('#shared-documents-table').DataTable().destroy();
             }
             $('#shared-documents-table').DataTable();
+        }
+
+        function deleteDocument(documentId) {
+            if (confirm("Are you sure you want to delete this document?")) {
+                fetch('documents/deleteDocument.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        doc_id: documentId,
+                        id: <?php echo $userData['id']; ?>,
+                        user_name: "<?php echo $userData['username']; ?>"
+                    })
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            toastr.error(data.error);
+                        } else {
+                            toastr.success("Document deleted successfully");
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        toastr.error("An error occurred while deleting the document");
+                    });
+            }
         }
 
 
