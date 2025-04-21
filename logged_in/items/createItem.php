@@ -124,8 +124,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     $stmt->close();
+
+    //fetch the item id
+    $stmt = $conn->prepare('SELECT id FROM items WHERE document_id = ? AND image_path = ?');
+    $stmt->bind_param('is', $doc_id, $new_db_file_path);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows === 0) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to fetch item ID']);
+        exit;
+    }
+    $row = $result->fetch_assoc();
+    $item_id = $row['id'];
+    $stmt->close();
     $conn->close();
-    echo json_encode(['success' => true, 'message' => 'File moved and database updated']);
+    echo json_encode(['success' => true, 'message' => 'File moved and database updated', 'item_id' => $item_id, 'file_path' => $new_file_path]);
+
+
 }
 else {
     http_response_code(405);
