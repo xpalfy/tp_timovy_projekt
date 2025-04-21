@@ -17,9 +17,10 @@ try {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post = json_decode(file_get_contents('php://input'), true);
 
-    if (empty($post['user_name']) || empty($post['id']) || empty($post['item_id']) || empty($post['doc_id'])) {
+    if (empty($post['user_name']) || empty($post['id']) || empty($post['image_id'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid input data']);
+        echo json_encode(['data' => $post]);
         exit;
     }
 
@@ -28,43 +29,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['error' => 'Invalid user']);
         exit;
     }
-
+    $succes = false;
     $user_name = $post['user_name'];
     $user_id = $post['id'];
+    $image_id = $post['image_id'];
     $item_id = $post['item_id'];
-    $doc_id = $post['doc_id'];
 
     $conn = getDatabaseConnection();
-
-    // Check if doc of item is the user's
-    $stmt = $conn->prepare('SELECT * FROM items WHERE id = ? AND document_id = ?');
-    $stmt->bind_param('ii', $item_id, $doc_id);
+    $stmt = $conn->prepare('SELECT * FROM pictures WHERE id = ?');
+    $stmt->bind_param('i', $image_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    if ($result->num_rows === 0) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Item not found']);
-        exit;
+    if ($result->num_rows  != 0) {
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        $sql = "DELETE FROM pictures WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $image_id);
+        $stmt->execute();
+        $stmt->close();
+        echo json_encode(['success' => true, 'message' => 'Image deleted successfully']);
+        $succes = true;
     }
-    $row = $result->fetch_assoc();
-    $stmt = $conn->prepare('SELECT * FROM documents WHERE id = ? AND author_id = ?');
-    $stmt->bind_param('ii', $doc_id, $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows === 0) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Document not found']);
-        exit;
+    if ($item_id != null) {
+        $stmt = $conn->prepare('SELECT * FROM items WHERE id = ?');
+        $stmt->bind_param('ii', $item_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows  != 0) {
+            $row = $result->fetch_assoc();
+            $stmt->close();
+            $sql = "DELETE FROM items WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('i', $item_id);
+            $stmt->execute();
+            $stmt->close();
+            echo json_encode(['success' => true, 'message' => 'Item deleted successfully']);
+            $succes = true;
+        }
     }
-    $row = $result->fetch_assoc();
-    $stmt->close();
-    $sql = "DELETE FROM items WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $item_id);
-    $stmt->execute();
-    $stmt->close();
     $conn->close();
-    echo json_encode(['success' => true, 'message' => 'Item deleted successfully']);
+    if ($succes === false) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Item or Image not found']);
+    }
 }
 else {
     http_response_code(405);

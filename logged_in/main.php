@@ -551,6 +551,8 @@ try {
     </footer>
 
     <script>
+        let doc_id = null;
+        let item_id = null;
         let currentImageId = [];
         let previewImages = [];
         let classificationScores = [];
@@ -724,6 +726,8 @@ try {
                                 .then(data => {
                                     if (data.success) {
                                         currentImageId = null; // Image is saved, no need to delete it
+                                        item_id = data.item_id;
+                                        console.log("Item created successfully. ID:", item_id);
                                     } else {
                                         handleError(data.error);
                                     }
@@ -835,17 +839,28 @@ try {
 
         function deleteUnsavedImage(imageId) {
             console.log("Deleting unsaved images...");
-            for (let id of imageId) {
-                fetch(`deleteDocument.php?id=${id}&user=${<?php echo json_encode($userData['id']); ?>}`, {
-                    method: 'GET'
+            for (let image_id of imageId) {
+                fetch(`items/deleteItem.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_name: <?php echo json_encode($userData['username']); ?>,
+                        id: <?php echo json_encode($userData['id']); ?>,
+                        image_id: image_id,
+                        item_id: item_id,
+                    })
                 }).then(response => {
                     if (response.ok) {
                         console.log("Unsaved image deleted successfully.");
+                        toastr.success("Unsaved image deleted successfully.");
                     } else {
                         console.error("Failed to delete unsaved image.");
+                        toastr.error("Failed to delete unsaved image.");
                     }
                 }).catch(error => {
-                    handleError("Error deleting unsaved image:" + error);
+                    handleError("Error deleting unsaved image: " + error);
                 });
             }
             currentImageId = [];
