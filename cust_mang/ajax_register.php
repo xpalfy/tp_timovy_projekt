@@ -1,36 +1,11 @@
 <?php
-require_once 'config.php';
+require_once '../config.php';
 session_start();
 header('Content-Type: application/json');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-require 'vendor/autoload.php';
-
-function sendVerificationEmail($toEmail, $code) {
-    $mail = new PHPMailer(true);
-    try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'ptimovy@gmail.com'; 
-        $mail->Password = 'cfxc llnb lspi sevg'; 
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-
-        $mail->setFrom('ptimovy@gmail.com', 'HandScript');
-        $mail->addAddress($toEmail);
-        $mail->isHTML(false);
-        $mail->Subject = 'HandScript - Email Verification';
-        $mail->Body = "Your verification code is: $code";
-
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        error_log("Mail error: " . $mail->ErrorInfo);
-        return false;
-    }
-}
+require_once '../vendor/autoload.php';
 
 function isUserExists($conn, $field, $value) {
     $query = "SELECT id FROM users WHERE $field = ?";
@@ -93,6 +68,7 @@ $stmt->bind_param("ssss", $username, $email, $hashedPassword, $code);
 $stmt->execute();
 $stmt->close();
 
+require_once 'mail.php';
 $emailSent = sendVerificationEmail($email, $code);
 
 if ($emailSent) {
