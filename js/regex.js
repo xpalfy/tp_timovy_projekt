@@ -65,19 +65,26 @@ function isValidEmail(inputElement) {
 
 }
 
-function checkForm(e) {
-    e.preventDefault();
+function isValidCode(inputElement){
+    const regex = /^\d{6}$/;
+    return validateInput(
+        inputElement,
+        regex,
+        'Code cannot be empty.',
+        'Code must be 6 digits.'
+    );
+}
+
+function checkForm(form) {
     let formIsValid = true;
-    const inputs = e.target.querySelectorAll('input');
+    const inputs = form.querySelectorAll('input');
     inputs.forEach(input => {
         if (!input.value.trim() || input.classList.contains('is-invalid')) {
             formIsValid = false;
         }
     });
-    if (formIsValid) {
-        e.target.submit();
-    } else {
+    if (!formIsValid) {
         toastr.error('Please fill in the form correctly.');
-        return false;
     }
+    return formIsValid;
 }
