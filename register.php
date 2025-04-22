@@ -1,91 +1,4 @@
-<?php
-require_once 'config.php';
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-function isAlreadyUser($conn, $username): void
-{
-    $stmt = $conn->prepare('SELECT id FROM users WHERE username = ?');
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows > 0) {
-        $stmt->close();
-        $conn->close();
-        header('Location: register.php');
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'User with this username already exists.'];
-        exit();
-    }
-}
-
-function isEmailUsed($conn, $email): void
-{
-    $stmt = $conn->prepare('SELECT id FROM users WHERE email = ?');
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows > 0) {
-        $stmt->close();
-        $conn->close();
-        header('Location: register.php');
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Email address already in use.'];
-        exit();
-    }
-}
-
-function createUser($username, $password, $email): void
-{
-    $conn = getDatabaseConnection();
-    isAlreadyUser($conn, $username);
-    isEmailUsed($conn, $email);
-    $stmt = $conn->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
-    $stmt->bind_param('sss', $username, $email, $password);
-    $stmt->execute();
-    $stmt->close();
-    $conn->close();
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW);
-    $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
-    $email = filter_input(INPUT_POST, 'email', FILTER_UNSAFE_RAW);
-    $confirmPassword = filter_input(INPUT_POST, 'password_confirm', FILTER_UNSAFE_RAW);
-
-    if ($password !== $confirmPassword) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Passwords do not match.'];
-        header('Location: register.php');
-        exit();
-    }
-
-    if (!is_string($username) || strlen($username) > 255) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Username must be less than 256 characters.'];
-        header('Location: register.php');
-        exit();
-    }
-
-    if (strlen($password) < 8) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Password must be at least 8 characters long.'];
-        header('Location: register.php');
-        exit();
-    }
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid email address.'];
-        header('Location: register.php');
-        exit();
-    }
-
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    createUser($username, $hashedPassword, $email);
-
-    $_SESSION['toast'] = ['type' => 'success', 'message' => 'Registration successful! Please login.'];
-    header('Location: login.php');
-    exit();
-}
-
-?>
-
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -150,15 +63,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       outline: none;
       box-shadow: none;
     }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-animate-in {
+      animation: modalFadeIn 0.3s ease-out forwards;
+    }
   </style>
 </head>
 
 <body class="text-[#3b2f1d] bg-[#fefbf5]">
 
+  <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="./js/regex.js"></script>
+
+  <!-- Toast check -->
   <script>
     function checkToasts() {
         let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
@@ -168,8 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    checkToasts();
     AOS.init({ duration: 1000, once: true });
+    document.addEventListener('DOMContentLoaded', checkToasts);
   </script>
 
   <!-- Navbar -->
@@ -187,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <main class="flex-grow flex items-center justify-center px-4">
     <div class="glass p-10 w-full max-w-md my-10" data-aos="fade-up">
       <h2 class="text-3xl font-bold text-center mb-6">Create an Account</h2>
-      <form action="register.php" method="POST" class="space-y-4">
+      <form id="registerForm" class="space-y-4">
         <div>
           <label for="username" class="block mb-1 font-medium">Username</label>
           <input type="text" id="username" name="username" oninput="isValidInput(this)" class="w-full p-3 border rounded" required>
@@ -209,14 +139,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </main>
 
+  <!-- Verification Modal -->
+  <div id="verificationModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-sm modal-animate-in">
+      <h3 class="text-xl font-semibold mb-4">Email Verification</h3>
+      <p class="mb-3 text-sm text-gray-700">We sent a code to your email. Enter it below to verify your account.</p>
+      <form id="verifyForm" class="space-y-4">
+        <input type="hidden" name="verify_email" id="verifyEmail">
+        <input type="text" name="verify_code" id="verifyCode" class="w-full p-3 border rounded" oninput="isValidCode(this)" autocomplete="off" placeholder="Enter verification code" required>
+        <button type="submit" class="btn-papyrus w-full py-2 rounded font-semibold">Verify</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="bg-[#d7c7a5] text-center py-6 border-t border-yellow-300 text-[#3b2f1d]">
     &copy; 2025 HandScript — <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
   </footer>
 
+  <script src="./js/regex.js?v=2"></script>
   <script>
-    let form = document.querySelector('form');
-    form.addEventListener('submit', checkForm);
+    
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      if (!checkForm(form)) return;
+
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("password_confirm").value;
+
+      const res = await fetch("ajax_register.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password, confirm })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+          toastr.success(data.message);
+          document.getElementById("verifyEmail").value = data.email;
+          document.getElementById("verificationModal").classList.remove("hidden");
+      } else {
+          toastr.error(data.message);
+      }
+    });
+
+    document.getElementById('verifyForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      if (!checkForm(form)) return;
+
+      const email = document.getElementById("verifyEmail").value;
+      const code = document.getElementById("verifyCode").value;
+
+      const res = await fetch("ajax_verify.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code })
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById("verificationModal").classList.add("hidden");
+        window.location.href = "login.php";
+      } else {
+        toastr.error(data.message);
+      }
+    });
+
   </script>
 
 </body>
