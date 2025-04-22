@@ -508,8 +508,8 @@ try {
 
             <!-- Progress Buttons STEP 0 -> STEP 1 -->
             <div id="SegmentBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentKey()">Segment as Key</button>
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentCipher()">Segment as
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentKey()">Process as Key</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentCipher()">Process as
                     Cipher</button>
             </div>
 
@@ -1074,14 +1074,37 @@ try {
         }
 
         function CalculateSegmentation(type) {
-            // TODO: Implement image segmentation
-            // For now, just wait 5secs and hide loading, then show the buttons and rect
+            // Show loading indicator
             showLoading();
-            setTimeout(() => {
-                hideLoading();
-                let Rect = [98, 33, 770, 504];
-                appendSegmentedRect(Rect);
-            }, 5000);
+
+            // Define the path to the image (this should be dynamically set based on your application logic)
+            const imagePath = 'path/to/your/image.jpg'; // Replace with the actual image path
+
+            // Make a POST request to the Flask server to detect the edges of the page
+            fetch('https://python.tptimovyprojekt.software/segmentate_page', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ path: imagePath })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading indicator
+                    hideLoading();
+
+                    // Check if the response contains a polygon
+                    if (data.polygon && Array.isArray(data.polygon)) {
+                        appendSegmentedRect(data.polygon);
+                    } else {
+                        console.error('Invalid response from server:', data);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors
+                    hideLoading();
+                    console.error('Error detecting page edges:', error);
+                });
         }
 
         function appendSegmentedRect(Rect) {
@@ -1112,15 +1135,39 @@ try {
         }
 
         function CalculateAnalization(type) {
-            // TODO: Implement image analization
-            // For now, just wait 5secs and hide loading, then show the buttons and rects
+            // Show loading indicator
             showLoading();
-            setTimeout(() => {
-                hideLoading();
-                let Rects = [[131, 143, 243, 389], [135, 60, 404, 146], [452, 61, 755, 94], [455, 131, 570, 236], [615, 105, 734, 133], [596, 140, 739, 173]];
-                appendAnalizedRects(Rects);
-            }, 5000);
-        }
+
+            // Define the path to the image (this should be dynamically set based on your application logic)
+            const imagePath = 'path/to/your/image.jpg'; // Replace with the actual image path
+
+            // Make a POST request to the Flask server to get the analyzed rectangles
+            fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ path: imagePath })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading indicator
+                    hideLoading();
+
+                    // Check if the response contains polygons
+                    if (data.polygons && Array.isArray(data.polygons)) {
+                        appendAnalizedRects(data.polygons);
+                    } else {
+                        console.error('Invalid response from server:', data);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors
+                    hideLoading();
+                    console.error('Error fetching analyzed rectangles:', error);
+                });
+            }
+
 
         function appendAnalizedRects(Rects) {
             // Rects should follow pattern [[x1, y1, x2, y2], [x1, y1, x2, y2], ...]
