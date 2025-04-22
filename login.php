@@ -1,95 +1,11 @@
-<?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
-require_once 'vendor/autoload.php';
-require_once 'config.php';
-require_once 'checkType.php';
-
-
-function loginUser($username, $password): void {
-    $conn = getDatabaseConnection();
-    $stmt = $conn->prepare('SELECT id, username, password FROM users WHERE username = ?');
-    if (!$stmt) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Database error: Unable to prepare statement'];
-        header('Location: login.php');
-        exit();
-    }
-
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows === 1) {
-        $stmt->bind_result($id, $fetchedUsername, $hash);
-        $stmt->fetch();
-        if (password_verify($password, $hash)) {
-            $token = generateToken($id, $fetchedUsername);
-            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful!'];
-            $_SESSION['token'] = $token;
-            header('Location: ./logged_in/main.php');
-        } else {
-            $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid password!'];
-            header('Location: login.php');
-        }
-    } else {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid username!'];
-        header('Location: login.php');
-    }
-
-    $stmt->close();
-    $conn->close();
-}
-
-$client = new Google\Client();
-try {
-    $client->setAuthConfig('./Google/credentials.json');
-} catch (\Google\Exception $e) {
-    // Handle exception or logging
-}
-
-$redirect_uri = "https://test.tptimovyprojekt.software/tp_timovy_projekt/Google/redirect.php";
-$client->setRedirectUri($redirect_uri);
-$client->addScope("email");
-$client->addScope("profile");
-
-$auth_url = $client->createAuthUrl();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? null;
-    $password = $_POST['password'] ?? null;
-
-    if ($username && $password) {
-        try {
-            loginUser($username, $password);
-        } catch (Exception $e) {
-            $_SESSION['toast'] = ['type' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()];
-            header('Location: login.php');
-        }
-    } else {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Invalid request: Missing username or password'];
-        header('Location: login.php');
-    }
-    exit();
-}
-
-$toast = $_SESSION['toast'] ?? null;
-unset($_SESSION['toast']);
-?>
-
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - HandScript</title>
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -122,11 +38,11 @@ unset($_SESSION['toast']);
     }
 
     .is-valid {
-      border-color: #16a34a !important;
+      border-color: #16a34a !important; /* green */
     }
 
     .is-invalid {
-      border-color: #dc2626 !important;
+      border-color: #dc2626 !important; /* red */
     }
 
     .text-success {
@@ -145,9 +61,23 @@ unset($_SESSION['toast']);
       outline: none;
       box-shadow: none;
     }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-animate-in {
+      animation: modalFadeIn 0.5s ease-out forwards;
+    }
   </style>
 </head>
-
 <body class="text-[#3b2f1d] bg-[#fefbf5]">
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -169,6 +99,7 @@ unset($_SESSION['toast']);
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
       <div class="hidden md:flex space-x-6 text-lg">
+        <a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Project</a>
         <a href="./login.php" class="hover:underline">Login</a>
         <a href="./register.php" class="hover:underline">Register</a>
       </div>
@@ -179,7 +110,7 @@ unset($_SESSION['toast']);
   <main class="flex-grow flex items-center justify-center px-4">
     <div class="glass p-10 w-full max-w-md my-10" data-aos="fade-up">
       <h2 class="text-3xl font-bold text-center mb-6">Login to HandScript</h2>
-      <form action="login.php" method="POST" class="space-y-4">
+      <form id="loginForm" class="space-y-4">
         <div>
           <label for="username" class="block mb-1 font-medium">Username</label>
           <input type="text" id="username" name="username" class="w-full p-3 border rounded" required>
@@ -191,17 +122,92 @@ unset($_SESSION['toast']);
         <button type="submit" class="btn-papyrus w-full py-3 mt-4 rounded font-semibold">Log In</button>
       </form>
 
-      <a href="<?php echo htmlspecialchars($auth_url); ?>" class="w-full flex items-center justify-center mt-4 gap-3 py-3 bg-white border border-gray-300 rounded hover:shadow-md transition">
+      <a href=
+        "<?php
+          require_once 'vendor/autoload.php';
+          $client = new Google\Client();
+          $client->setAuthConfig('./Google/credentials.json');
+          $client->setRedirectUri("https://test.tptimovyprojekt.software/tp_timovy_projekt/Google/redirect.php");
+          $client->addScope("email");
+          $client->addScope("profile");
+          echo htmlspecialchars($client->createAuthUrl());
+        ?>" 
+        class="w-full flex items-center justify-center mt-4 gap-3 py-3 bg-white border border-gray-300 rounded hover:shadow-md transition">
         <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" class="w-5 h-5">
         <span class="text-sm font-medium text-gray-800">Sign in with Google</span>
       </a>
     </div>
   </main>
 
+  <!-- Verification Modal -->
+  <div id="loginVerificationModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-sm modal-animate-in">
+      <h3 class="text-xl font-semibold mb-4">Verify your email</h3>
+      <p class="mb-3 text-sm text-gray-700">We've sent a verification code to your email. Please enter it below.</p>
+      <form id="verifyForm" class="space-y-4">
+        <input type="hidden" name="verify_email" id="verifyEmail">
+        <input type="text" name="verify_code" id="verifyCode" class="w-full p-3 border rounded" oninput="isValidCode(this)" autocomplete="off" placeholder="Enter verification code" required>
+        <button type="submit" class="btn-papyrus w-full py-2 rounded font-semibold">Verify</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="bg-[#d7c7a5] text-center py-6 border-t border-yellow-300 text-[#3b2f1d]">
     &copy; 2025 HandScript — <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
   </footer>
+
+  <!-- JS Logic -->
+  <script src="./js/regex.js?v=2"></script>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("./cust_mang/ajax_login.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = "./logged_in/main.php";
+      } else if (data.unverified) {
+        toastr.warning(data.message);
+        document.getElementById("verifyEmail").value = data.email;
+        document.getElementById("loginVerificationModal").classList.remove("hidden");
+      } else {
+        console.log(data);
+        toastr.error(data.message);
+      }
+    });
+
+    document.getElementById("verifyForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      if (!checkForm(form)) return;
+      
+      const email = document.getElementById("verifyEmail").value;
+      const code = document.getElementById("verifyCode").value;
+
+      const res = await fetch("./cust_mang/ajax_verify.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toastr.success(data.message);
+        document.getElementById("loginVerificationModal").classList.add("hidden");
+      } else {
+        toastr.error(data.message);
+      }
+    });
+  </script>
 
 </body>
 </html>

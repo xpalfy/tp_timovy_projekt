@@ -76,7 +76,7 @@
     }
 
     .modal-animate-in {
-      animation: modalFadeIn 0.3s ease-out forwards;
+      animation: modalFadeIn 0.5s ease-out forwards;
     }
   </style>
 </head>
@@ -107,6 +107,7 @@
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
       <div class="hidden md:flex space-x-6 text-lg">
+        <a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Project</a>
         <a href="./login.php" class="hover:underline">Login</a>
         <a href="./register.php" class="hover:underline">Register</a>
       </div>
@@ -170,7 +171,7 @@
       const password = document.getElementById("password").value;
       const confirm = document.getElementById("password_confirm").value;
 
-      const res = await fetch("ajax_register.php", {
+      const res = await fetch("./cust_mang/ajax_register.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, email, password, confirm })
@@ -194,7 +195,7 @@
       const email = document.getElementById("verifyEmail").value;
       const code = document.getElementById("verifyCode").value;
 
-      const res = await fetch("ajax_verify.php", {
+      const res = await fetch("./cust_mang/ajax_verify.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code })

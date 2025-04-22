@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once '../config.php';
 session_start();
 header('Content-Type: application/json');
 
@@ -39,7 +39,7 @@ if ($code === $dbCode) {
     $update->close();
 
     $_SESSION['toast'] = ['type' => 'success', 'message' => 'Email verified successfully!'];
-    echo json_encode(['success' => true, 'message' => 'Email verified successfully.']);
+    echo json_encode(['success' => true, 'message' => 'Email verified successfully, now you can login.']);
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid verification code.']);
 }
