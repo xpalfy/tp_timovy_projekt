@@ -1,0 +1,14 @@
+name: Send GET Request on Push
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  send-get-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send GET request
+        run: curl https://auto_pull.tptimovyprojekt.software/
