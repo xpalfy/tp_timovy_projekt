@@ -46,6 +46,9 @@ try {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
     <style>
@@ -429,7 +432,16 @@ try {
         }
 
         function deleteDocument(documentId) {
-            if (confirm("Are you sure you want to delete this document?")) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 fetch('documents/deleteDocument.php', {
                     method: 'POST',
                     headers: {
@@ -441,22 +453,23 @@ try {
                         user_name: "<?php echo $userData['username']; ?>"
                     })
                 }).then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            toastr.error(data.error);
-                        } else {
-                            toastr.success("Document deleted successfully");
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        toastr.error("An error occurred while deleting the document");
-                    });
+                  .then(data => {
+                      if (data.error) {
+                          toastr.error(data.error);
+                      } else {
+                          toastr.success("Document deleted successfully");
+                          setTimeout(() => {
+                              location.reload();
+                          }, 1000);
+                      }
+                  })
+                  .catch(error => {
+                      console.error('Error:', error);
+                      toastr.error("An error occurred while deleting the document");
+                  });
             }
-        }
+        });
+    }
 
 
         function checkToasts() {
