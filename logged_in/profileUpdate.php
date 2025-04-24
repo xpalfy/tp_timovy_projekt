@@ -45,6 +45,13 @@ function isEmailUsed($conn, $email): void
     }
 }
 
+function updateIsVerified($conn, $username): void
+{
+    $stmt = $conn->prepare('UPDATE users SET is_verified = 0 WHERE username = ?');
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+}
+
 function UpdateUser($username, $new_username, $password, $email): void
 {
     $conn = getDatabaseConnection();
@@ -86,6 +93,8 @@ function UpdateUser($username, $new_username, $password, $email): void
     if (!$stmt->execute()) {
         die("Execution failed: " . $stmt->error);
     }
+
+    updateIsVerified($conn, $new_username);
 
     echo "Update successful!";
     $stmt->close();

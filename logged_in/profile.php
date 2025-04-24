@@ -37,21 +37,71 @@ try {
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom right, #ede1c3, #cdbf9b);
+            background: url('../img/profile.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .text-papyrus {
+        .glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-papyrus {
+            background-color: #bfa97a;
             color: #3b2f1d;
         }
 
+        .btn-papyrus:hover {
+            background-color: #a68f68;
+        }
+
+        .is-valid {
+            border-color: #16a34a !important;
+        }
+
+        .is-invalid {
+            border-color: #dc2626 !important;
+        }
+
+        .text-success {
+            color: #16a34a;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .text-danger {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
         input:focus {
-            outline: none !important;
-            box-shadow: 0 0 0 2px #bfa97a;
+            outline: none;
+            box-shadow: none;
         }
     </style>
 </head>
 
 <body class="min-h-screen flex flex-col select-none">
+    
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        function checkToasts() {
+            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+            if (toast) {
+                toastr[toast.type](toast.message);
+                <?php unset($_SESSION['toast']); ?>
+            }
+        }
+
+        checkToasts();
+    </script>
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
@@ -112,43 +162,44 @@ try {
         </div>
     </nav>
 
-    <!-- Content -->
+    <!-- Updated Profile Form Section -->
     <main class="flex-grow">
         <section class="container mx-auto px-6 py-10">
-            <h1 class="text-4xl font-bold text-center text-papyrus mb-6" data-aos="fade-up">👤 Profile</h1>
-            <p class="text-center text-lg mb-10 text-papyrus" data-aos="fade-up" data-aos-delay="100">
-                Welcome back, <span class="font-semibold"><?php echo $userData['username']; ?></span>
-            </p>
-
-            <form action="profileUpdate.php" method="post" class="max-w-2xl mx-auto rounded-xl shadow-lg p-8 space-y-6"
-                data-aos="fade-up" data-aos-delay="200"
-                style="background-color: #fef9e4; border: 1px solid #3b2f1d;">
+            <form action="profileUpdate.php" method="post"
+                class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6 mt-8"
+                data-aos="fade-up" data-aos-delay="200">
+                <h1 class="text-4xl font-bold text-center text-papyrus mb-6" data-aos="fade-up">👤 Profile</h1>
+                <p class="text-center text-lg mb-10 text-papyrus" data-aos="fade-up" data-aos-delay="100">
+                    Welcome back, <span class="font-semibold"><?php echo $userData['username']; ?></span>
+                </p>
                 <div>
                     <label class="block text-papyrus mb-1 font-semibold">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Username"
-                        class="w-full border border-yellow-300 rounded px-4 py-2" />
+                    <input type="text" name="username" id="username" oninput="isValidInput(this)" placeholder="Username"
+                        class="w-full border rounded px-4 py-3" />
                 </div>
                 <div>
                     <label class="block text-papyrus mb-1 font-semibold">Email</label>
-                    <input type="email" name="email" id="email" placeholder="Email" oninput="isValidEmail(this)"
-                        class="w-full border border-yellow-300 rounded px-4 py-2" />
+                    <input type="email" name="email" id="email" oninput="isValidEmail(this)" placeholder="Email"
+                        class="w-full border rounded px-4 py-3" />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-papyrus mb-1 font-semibold">New Password</label>
-                        <input type="password" name="password" id="password" placeholder="New Password"
-                            class="w-full border border-yellow-300 rounded px-4 py-2" />
+                        <input type="password" name="password" id="password" oninput="isValidPassword(this)" autocomplete="off" placeholder="New Password"
+                            class="w-full border rounded px-4 py-3" />
                     </div>
                     <div>
                         <label class="block text-papyrus mb-1 font-semibold">Repeat New Password</label>
-                        <input type="password" name="password_confirm" id="password_confirm"
+                        <input type="password" name="password_confirm" id="password_confirm" oninput="isValidPassword(this)" autocomplete="off"
                             placeholder="New Password Again"
-                            class="w-full border border-yellow-300 rounded px-4 py-2" />
+                            class="w-full border rounded px-4 py-3" />
                     </div>
                 </div>
                 <div class="text-center">
                     <button type="submit"
-                        class="bg-[#bfa97a] text-white px-6 py-2 rounded hover:bg-[#a68f68] transition">Submit</button>
+                            class="btn-papyrus px-8 py-3 rounded font-semibold transition text-white">
+                        Submit
+                    </button>
                 </div>
             </form>
         </section>
@@ -159,19 +210,16 @@ try {
         &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
     </footer>
 
+    <script src="../js/regex.js?v=2"></script>
     <script>
-        AOS.init({ duration: 800, once: true });
-
-        function checkToasts() {
-            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
-            if (toast) {
-                toastr[toast.type](toast.message);
-                <?php unset($_SESSION['toast']); ?>
-            }
-        }
-
-        checkToasts();
+        document.querySelector('form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const form = e.target;
+            if (!checkForm(form)) return;
+            e.target.submit();
+        });
     </script>
+
 </body>
 
 </html>
