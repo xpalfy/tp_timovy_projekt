@@ -412,7 +412,7 @@ try {
                     <div class="line"></div>
                     <div class="step-group">
                         <div class="step">5</div>
-                        <h3 class="step-info text-papyrus">Store</h3>
+                        <h3 class="step-info text-papyrus">Save</h3>
                     </div>
                 </div>
             </div>
@@ -532,10 +532,31 @@ try {
                         <button
                             class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
                     </div>
-                    <!-- document name -->
+                </div>
+            </div>
+
+            <!-- Image JSON STEP 4 -->
+            <div class="col-md mt-5 animate-fade-in-slow" id="imageJSON" style="display: none;">
+                <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
+                    <!-- Loading Overlay -->
+                    <div class="loading-cont not-copyable not-draggable"
+                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
+                        <dotlottie-player
+                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
+                            autoplay></dotlottie-player>
+                    </div>
+
+                     <!-- JSON Textarea Editor -->
+                    <div class="mt-4 text-left">
+                        <label for="jsonEditor" class="block text-sm font-medium text-yellow-100 mb-1">Edit JSON:</label>
+                        <textarea id="jsonEditor" rows="14" class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800"
+                            placeholder="{ ... }">{}</textarea>
+                    </div>
+
+                     <!-- document name -->
                     <div class="mt-4">
-                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
-                            placeholder="Document Name" />
+                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2" placeholder="Document Name"/>
                     </div>
                 </div>
             </div>
@@ -569,15 +590,17 @@ try {
             <div id="LetterCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
             </div>
-
+            
             <!-- Progress Buttons STEP 3 -> STEP Final -->
-            <div id="SaveKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+            <div id="SaveKeyBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Save Key</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
             </div>
 
             <!-- Progress Buttons STEP 3 -> STEP Final -->
-            <div id="SaveCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+            <div id="SaveCipherBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Save Cipher</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
             </div>
 
             <!-- System Message -->
@@ -787,8 +810,8 @@ try {
                         hideAnalyzeCipherBtn();
                         hideLettersKeyBtn();
                         hideLettersCipherBtn();
-                        hideSaveKeyBtn();
-                        hideSaveCipherBtn();
+                        hideSaveKeyBtns();
+                        hideSaveCipherBtns();
                         hideLoading();
                         hideSystemMessage();
                         setStep(0);
@@ -878,20 +901,20 @@ try {
             document.getElementById('LettersCipherBtn').style.display = 'none';
         }
 
-        function showSaveKeyBtn() {
-            document.getElementById('SaveKeyBtn').style.display = 'flex';
+        function showSaveKeyBtns() {
+            document.getElementById('SaveKeyBtns').style.display = 'flex';
         }
 
-        function hideSaveKeyBtn() {
-            document.getElementById('SaveKeyBtn').style.display = 'none';
+        function hideSaveKeyBtns() {
+            document.getElementById('SaveKeyBtns').style.display = 'none';
         }
 
-        function showSaveCipherBtn() {
-            document.getElementById('SaveCipherBtn').style.display = 'flex';
+        function showSaveCipherBtns() {
+            document.getElementById('SaveCipherBtns').style.display = 'flex';
         }
 
-        function hideSaveCipherBtn() {
-            document.getElementById('SaveCipherBtn').style.display = 'none';
+        function hideSaveCipherBtns() {
+            document.getElementById('SaveCipherBtns').style.display = 'none';
         }
 
         function deleteUnsavedImage(imageId) {
@@ -930,8 +953,8 @@ try {
             hideAnalyzeCipherBtn();
             hideLettersKeyBtn();
             hideLettersCipherBtn();
-            hideSaveKeyBtn();
-            hideSaveCipherBtn();
+            hideSaveKeyBtns();
+            hideSaveCipherBtns();
             hideLoading();
             hideSystemMessage();
         }
@@ -1136,7 +1159,7 @@ try {
             setStep(3);
             hideLettersKeyBtn();
             hideSystemMessage();
-            showSaveKeyBtn();
+            showSaveKeyBtns();
             document.getElementById('imageAnalyzer').style.display = 'none';
             document.getElementById('imageLetters').style.display = 'block';
             document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
@@ -1150,7 +1173,7 @@ try {
             setStep(3);
             hideLettersCipherBtn();
             hideSystemMessage();
-            showSaveCipherBtn();
+            showSaveCipherBtns();
             document.getElementById('imageAnalyzer').style.display = 'none';
             document.getElementById('imageLetters').style.display = 'block';
             document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
@@ -1326,6 +1349,32 @@ try {
                 parent.appendChild(newRect);
             }
         }
+
+
+        function downloadJSON() {
+            try {
+                const jsonText = document.getElementById("jsonEditor").value;
+                const jsonData = JSON.stringify(JSON.parse(jsonText), null, 2);
+
+                const blob = new Blob([jsonData], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                
+                // Get filename from input or use default
+                const filename = document.getElementById("documentName").value || "document.json";
+                
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                alert("Invalid JSON format. Please check your input.");
+                console.error("JSON Download Error:", e);
+            }
+        }
+
 
         function scrollEvent() {
             const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
