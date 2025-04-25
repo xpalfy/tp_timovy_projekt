@@ -554,10 +554,11 @@ try {
                             placeholder="{ ... }">{}</textarea>
                     </div>
 
-                     <!-- document name -->
+                    <!-- document name -->
                     <div class="mt-4">
-                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2" placeholder="Document Name"/>
-                    </div>
+                         <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
+                             placeholder="Document Name" />
+                     </div>
                 </div>
             </div>
 
