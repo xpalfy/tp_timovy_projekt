@@ -590,14 +590,24 @@ try {
             <div id="LetterCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
             </div>
+
+            <!-- Progress Buttons STEP 3 -> STEP 4 -->
+            <div id="EditJSONKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="editJSONKey()">Edit JSON</button>
+            </div>
+
+            <!-- Progress Buttons STEP 3 -> STEP 4 -->
+            <div id="EditJSONCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="editJSONCipher()">Edit JSON</button>
+            </div>
             
-            <!-- Progress Buttons STEP 3 -> STEP Final -->
+            <!-- Progress Buttons STEP 4 -> STEP Final -->
             <div id="SaveKeyBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Save Key</button>
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
             </div>
 
-            <!-- Progress Buttons STEP 3 -> STEP Final -->
+            <!-- Progress Buttons STEP 4 -> STEP Final -->
             <div id="SaveCipherBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Save Cipher</button>
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
@@ -810,6 +820,8 @@ try {
                         hideAnalyzeCipherBtn();
                         hideLettersKeyBtn();
                         hideLettersCipherBtn();
+                        hideEditJSONKeyBtn();
+                        hideEditJSONCipherBtn();
                         hideSaveKeyBtns();
                         hideSaveCipherBtns();
                         hideLoading();
@@ -901,6 +913,22 @@ try {
             document.getElementById('LettersCipherBtn').style.display = 'none';
         }
 
+        function showEditJSONKeyBtn() {
+            document.getElementById('EditJSONKeyBtn').style.display = 'flex';
+        }
+
+        function hideEditJSONKeyBtn() {
+            document.getElementById('EditJSONKeyBtn').style.display = 'none';
+        }
+
+        function showEditJSONCipherBtn() {
+            document.getElementById('EditJSONCipherBtn').style.display = 'flex';
+        }
+
+        function hideEditJSONCipherBtn() {
+            document.getElementById('EditJSONCipherBtn').style.display = 'none';
+        }
+
         function showSaveKeyBtns() {
             document.getElementById('SaveKeyBtns').style.display = 'flex';
         }
@@ -953,6 +981,8 @@ try {
             hideAnalyzeCipherBtn();
             hideLettersKeyBtn();
             hideLettersCipherBtn();
+            hideEditJSONKeyBtn();
+            hideEditJSONCipherBtn();
             hideSaveKeyBtns();
             hideSaveCipherBtns();
             hideLoading();
@@ -1159,7 +1189,7 @@ try {
             setStep(3);
             hideLettersKeyBtn();
             hideSystemMessage();
-            showSaveKeyBtns();
+            showEditJSONKeyBtn();
             document.getElementById('imageAnalyzer').style.display = 'none';
             document.getElementById('imageLetters').style.display = 'block';
             document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
@@ -1173,7 +1203,7 @@ try {
             setStep(3);
             hideLettersCipherBtn();
             hideSystemMessage();
-            showSaveCipherBtns();
+            showEditJSONCipherBtn();
             document.getElementById('imageAnalyzer').style.display = 'none';
             document.getElementById('imageLetters').style.display = 'block';
             document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
@@ -1181,6 +1211,30 @@ try {
             scrollToBookmark('bookmark');
             updatePreview();
             CalculateLetters('Cipher');
+        }
+
+        function editJSONKey() {
+            setStep(4);
+            hideEditJSONKeyBtn();
+            hideSystemMessage();
+            showSaveKeyBtns();
+            document.getElementById('imageLetters').style.display = 'none';
+            document.getElementById('imageJSON').style.display = 'block';
+            document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
+            // got to #Dashboard
+            scrollToBookmark('bookmark');
+        }
+
+        function editJSONCipher() {
+            setStep(4);
+            hideEditJSONCipherBtn();
+            hideSystemMessage();
+            showSaveKeyBtns();
+            document.getElementById('imageLetters').style.display = 'none';
+            document.getElementById('imageJSON').style.display = 'block';
+            document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
+            // got to #Dashboard
+            scrollToBookmark('bookmark');
         }
 
         function CalculateSegmentation(type) {
