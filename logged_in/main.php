@@ -453,6 +453,7 @@ try {
                     Select Image(s)
                 </button>
             </div>
+
             <!-- Image Segmentation STEP 1 -->
             <div class="col-md mt-5 animate-fade-in-slow" id="imageSegmentor" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
@@ -479,6 +480,7 @@ try {
                     </div>
                 </div>
             </div>
+
             <!-- Image Analysis STEP 2 -->
             <div class="col-md mt-5 animate-fade-in-slow" id="imageAnalyzer" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
@@ -503,13 +505,9 @@ try {
                         <button
                             class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
                     </div>
-                    <!-- document name -->
-                    <div class="mt-4">
-                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
-                            placeholder="Document Name" />
-                    </div>
                 </div>
             </div>
+
             <!-- Image Letters STEP 3 -->
             <div class="col-md mt-5 animate-fade-in-slow" id="imageLetters" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
@@ -534,9 +532,13 @@ try {
                         <button
                             class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
                     </div>
+                    <!-- document name -->
+                    <div class="mt-4">
+                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
+                            placeholder="Document Name" />
+                    </div>
                 </div>
             </div>
-
 
             <!-- Progress Buttons STEP 0 -> STEP 1 -->
             <div id="SegmentBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
@@ -568,17 +570,15 @@ try {
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
             </div>
 
-            <!-- Progress Buttons STEP 2 -> STEP Final -->
+            <!-- Progress Buttons STEP 3 -> STEP Final -->
             <div id="SaveKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Save Key</button>
             </div>
 
-            <!-- Progress Buttons STEP 2 -> STEP Final -->
+            <!-- Progress Buttons STEP 3 -> STEP Final -->
             <div id="SaveCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Save Cipher</button>
             </div>
-
-
 
             <!-- System Message -->
             <div id="SystemMessage" class="mt-4 .bg-\[\#f1e4c5\] p-3 rounded-lg text-center text-papyrus"
@@ -797,9 +797,6 @@ try {
                         return;
                     }
                 });
-
-
-
         }
 
         function saveKey() {
@@ -1164,13 +1161,10 @@ try {
         }
 
         function CalculateSegmentation(type) {
-            // Show loading indicator
             showLoading();
 
-            // Define the path to the image (this should be dynamically set based on your application logic)
-            const imagePath = 'path/to/your/image.jpg'; // Replace with the actual image path
+            const imagePath = 'path/to/your/image.jpg';
 
-            // Make a POST request to the Flask server to detect the edges of the page
             fetch('https://python.tptimovyprojekt.software/segmentate_page', {
                 method: 'POST',
                 headers: {
@@ -1180,10 +1174,8 @@ try {
             })
                 .then(response => response.json())
                 .then(data => {
-                    // Hide loading indicator
                     hideLoading();
 
-                    // Check if the response contains a polygon
                     if (data.polygon && Array.isArray(data.polygon)) {
                         appendSegmentedRect(data.polygon);
                     } else {
@@ -1191,20 +1183,17 @@ try {
                     }
                 })
                 .catch(error => {
-                    // Handle errors
                     hideLoading();
                     console.error('Error detecting page edges:', error);
                 });
         }
 
         function appendSegmentedRect(Rect) {
-            // Rect should follow pattern [x1, y1, x2, y2], two diagonal points of the rectangle
             if (Rect.length !== 4) {
                 console.error('Invalid Rect:', Rect);
                 return;
             }
             let parent = document.getElementById('previewContainerSegment');
-            // calculate othe two points
             let x2 = Rect[0];
             let y2 = Rect[3];
             let x4 = Rect[2];
@@ -1225,13 +1214,10 @@ try {
         }
 
         function CalculateAnalization(type) {
-            // Show loading indicator
             showLoading();
 
-            // Define the path to the image (this should be dynamically set based on your application logic)
-            const imagePath = 'path/to/your/image.jpg'; // Replace with the actual image path
+            const imagePath = 'path/to/your/image.jpg'; 
 
-            // Make a POST request to the Flask server to get the analyzed rectangles
             fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
                 method: 'POST',
                 headers: {
@@ -1241,10 +1227,8 @@ try {
             })
                 .then(response => response.json())
                 .then(data => {
-                    // Hide loading indicator
                     hideLoading();
 
-                    // Check if the response contains polygons
                     if (data.polygons && Array.isArray(data.polygons)) {
                         appendAnalizedRects(data.polygons);
                     } else {
@@ -1252,7 +1236,6 @@ try {
                     }
                 })
                 .catch(error => {
-                    // Handle errors
                     hideLoading();
                     console.error('Error fetching analyzed rectangles:', error);
                 });
@@ -1260,14 +1243,12 @@ try {
 
 
         function appendAnalizedRects(Rects) {
-            // Rects should follow pattern [[x1, y1, x2, y2], [x1, y1, x2, y2], ...]
             let parent = document.getElementById('previewContainerAnalyze');
             for (let Rect of Rects) {
                 if (Rect.length !== 4) {
                     console.error('Invalid Rect:', Rect);
                     return;
                 }
-                // calculate othe two points
                 let x2 = Rect[0];
                 let y2 = Rect[3];
                 let x4 = Rect[2];
