@@ -46,6 +46,7 @@ try {
 
     <!-- Custom JS -->
     <script src="../js/segment-rect.js?" type="module"></script>
+    <script src="../js/letter-rect.js?" type="module"></script>
 
 
 
@@ -406,6 +407,11 @@ try {
                     <div class="line"></div>
                     <div class="step-group">
                         <div class="step">4</div>
+                        <h3 class="step-info text-papyrus">Letters</h3>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step-group">
+                        <div class="step">5</div>
                         <h3 class="step-info text-papyrus">Store</h3>
                     </div>
                 </div>
@@ -504,6 +510,32 @@ try {
                     </div>
                 </div>
             </div>
+            <!-- Image Letters STEP 3 -->
+            <div class="col-md mt-5 animate-fade-in-slow" id="imageLetters" style="display: none;">
+                <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
+                    <!-- Loading Overlay -->
+                    <div class="loading-cont not-copyable not-draggable"
+                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
+                        <dotlottie-player
+                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
+                            autoplay></dotlottie-player>
+                    </div>
+
+                    <!-- Preview Image Container -->
+                    <div id="previewContainerLetter" class="relative flex justify-center items-center min-h-[250px]">
+                        <!-- Left Nav -->
+                        <button
+                            class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
+                        <!-- Image Preview -->
+                        <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
+                            draggable="false" />
+                        <!-- Right Nav -->
+                        <button
+                            class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
+                    </div>
+                </div>
+            </div>
 
 
             <!-- Progress Buttons STEP 0 -> STEP 1 -->
@@ -524,6 +556,16 @@ try {
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="analizeCipher()">Analyze Cipher (Now
                     Save
                     WIP)</button>
+            </div>
+
+            <!-- Progress Buttons STEP 2 -> STEP 3 -->
+            <div id="LettersKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersKey()">Segment Letters</button>
+            </div>
+
+            <!-- Progress Buttons STEP 2 -> STEP 3 -->
+            <div id="LetterCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
             </div>
 
             <!-- Progress Buttons STEP 2 -> STEP Final -->
@@ -743,6 +785,8 @@ try {
                         hideSegmentBtns();
                         hideAnalyzeKeyBtn();
                         hideAnalyzeCipherBtn();
+                        hideLettersKeyBtn();
+                        hideLettersCipherBtn();
                         hideSaveKeyBtn();
                         hideSaveCipherBtn();
                         hideLoading();
@@ -821,6 +865,22 @@ try {
             document.getElementById('AnalyzeCipherBtn').style.display = 'none';
         }
 
+        function showLettersKeyBtn() {
+            document.getElementById('LettersKeyBtn').style.display = 'flex';
+        }
+
+        function hideLettersKeyBtn() {
+            document.getElementById('LettersKeyBtn').style.display = 'none';
+        }
+
+        function showLettersCipherBtn() {
+            document.getElementById('LettersCipherBtn').style.display = 'flex';
+        }
+
+        function hideLettersCipherBtn() {
+            document.getElementById('LettersCipherBtn').style.display = 'none';
+        }
+
         function showSaveKeyBtn() {
             document.getElementById('SaveKeyBtn').style.display = 'flex';
         }
@@ -871,6 +931,8 @@ try {
             hideSegmentBtns();
             hideAnalyzeKeyBtn();
             hideAnalyzeCipherBtn();
+            hideLettersKeyBtn();
+            hideLettersCipherBtn();
             hideSaveKeyBtn();
             hideSaveCipherBtn();
             hideLoading();
@@ -1049,7 +1111,7 @@ try {
             setStep(2);
             hideAnalyzeKeyBtn();
             hideSystemMessage();
-            showSaveKeyBtn();
+            showLettersKeyBtn();
             document.getElementById('imageSegmentor').style.display = 'none';
             document.getElementById('imageAnalyzer').style.display = 'block';
             document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to analyze the images.<br>If the system made some mistakes, feel free to correct them.';
@@ -1063,7 +1125,7 @@ try {
             setStep(2);
             hideAnalyzeCipherBtn();
             hideSystemMessage();
-            showSaveCipherBtn();
+            showLettersCipherBtn();
             document.getElementById('imageSegmentor').style.display = 'none';
             document.getElementById('imageAnalyzer').style.display = 'block';
             document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to analyze the images.<br>If the system made some mistakes, feel free to correct them.';
@@ -1071,6 +1133,34 @@ try {
             scrollToBookmark('bookmark');
             updatePreview();
             CalculateAnalization('Cipher');
+        }
+
+        function lettersKey() {
+            setStep(3);
+            hideLettersKeyBtn();
+            hideSystemMessage();
+            showSaveKeyBtn();
+            document.getElementById('imageAnalyzer').style.display = 'none';
+            document.getElementById('imageLetters').style.display = 'block';
+            document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
+            // got to #Dashboard
+            scrollToBookmark('bookmark');
+            updatePreview();
+            CalculateLetters('Key');
+        }
+
+        function lettersCipher() {
+            setStep(3);
+            hideLettersCipherBtn();
+            hideSystemMessage();
+            showSaveCipherBtn();
+            document.getElementById('imageAnalyzer').style.display = 'none';
+            document.getElementById('imageLetters').style.display = 'block';
+            document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
+            // got to #Dashboard
+            scrollToBookmark('bookmark');
+            updatePreview();
+            CalculateLetters('Cipher');
         }
 
         function CalculateSegmentation(type) {
@@ -1184,6 +1274,64 @@ try {
                 let y4 = Rect[1];
 
                 let newRect = document.createElement('segment-rect');
+                newRect.setAttribute('x1', Rect[0]);
+                newRect.setAttribute('y1', Rect[1]);
+                newRect.setAttribute('x2', x2);
+                newRect.setAttribute('y2', y2);
+                newRect.setAttribute('x3', Rect[2]);
+                newRect.setAttribute('y3', Rect[3]);
+                newRect.setAttribute('x4', x4);
+                newRect.setAttribute('y4', y4);
+                newRect.setAttribute('style', 'position: absolute; width: 100%; height: 100%;');
+                newRect.classList.add('rounded-xl');
+                parent.appendChild(newRect);
+            }
+        }
+
+
+        function CalculateLetters(type) {
+            showLoading();
+
+            const imagePath = 'path/to/your/image.jpg';
+
+            fetch('https://python.tptimovyprojekt.software/segmentate_text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ path: imagePath })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+
+                    if (data.polygons && Array.isArray(data.polygons)) {
+                        appendLetterRects(data.polygons);
+                    } else {
+                        console.error('Invalid response from server:', data);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Error fetching analyzed rectangles:', error);
+                });
+            }
+
+
+        function appendLetterRects(Rects) {
+            let parent = document.getElementById('previewContainerLetter');
+            for (let Rect of Rects) {
+                if (Rect.length !== 4) {
+                    console.error('Invalid Rect:', Rect);
+                    return;
+                }
+                
+                let x2 = Rect[0];
+                let y2 = Rect[3];
+                let x4 = Rect[2];
+                let y4 = Rect[1];
+
+                let newRect = document.createElement('letter-rect');
                 newRect.setAttribute('x1', Rect[0]);
                 newRect.setAttribute('y1', Rect[1]);
                 newRect.setAttribute('x2', x2);
