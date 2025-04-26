@@ -170,13 +170,6 @@ try {
                         </a>
                     </li>
                     <li class="flex items-center">
-                        <a href="https://tptimovyprojekt.ddns.net/" class="nav-link flex items-center hover:underline">
-                            Project
-                            <img src="../img/web.png" alt="project" class="w-6 h-6 ml-2"
-                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        </a>
-                    </li>
-                    <li class="flex items-center">
                         <a href="../logout.php" class="nav-link flex items-center hover:underline">
                             Logout
                             <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"

@@ -37,7 +37,7 @@ try {
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: url('../img/profile.jpg') no-repeat center center fixed;
+            background: linear-gradient(to bottom right, #ede1c3, #cdbf9b);
             background-size: cover;
             min-height: 100vh;
             display: flex;
@@ -46,7 +46,7 @@ try {
 
         .glass {
             background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); 
             border-radius: 1rem;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
@@ -88,7 +88,7 @@ try {
 </head>
 
 <body class="min-h-screen flex flex-col select-none">
-    
+
     <script>
         AOS.init({ duration: 800, once: true });
 
@@ -107,16 +107,14 @@ try {
     <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
         id="navbar">
         <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
-            <!-- Logo and brand -->
             <a href="main.php"
                 class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left"
                 data-aos="fade-right" data-aos-delay="150">
                 <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
-                    style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                 HandScript
             </a>
 
-            <!-- Toggler button -->
             <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -124,11 +122,9 @@ try {
                 </svg>
             </button>
 
-            <!-- Navigation links -->
             <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav"
                 data-aos="fade-left" data-aos-delay="150">
-                <ul
-                    class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
+                <ul class="flex flex-col lg:flex-row lg:space-x-6 w-full text-lg font-medium text-papyrus animate-slide-right">
                     <li class="flex items-center">
                         <a href="profile.php" class="nav-link flex items-center hover:underline">
                             Profile
@@ -140,13 +136,6 @@ try {
                         <a href="documents.php" class="nav-link flex items-center hover:underline">
                             Documents
                             <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
-                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        </a>
-                    </li>
-                    <li class="flex items-center">
-                        <a href="https://tptimovyprojekt.ddns.net/" class="nav-link flex items-center hover:underline">
-                            Project
-                            <img src="../img/web.png" alt="project" class="w-6 h-6 ml-2"
                                 style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                         </a>
                     </li>
@@ -163,10 +152,10 @@ try {
     </nav>
 
     <!-- Updated Profile Form Section -->
-    <main class="flex-grow">
-        <section class="container mx-auto px-6 py-10">
+    <main class="flex-grow flex justify-center items-center">
+        <section class="container mx-auto px-6">
             <form action="profileUpdate.php" method="post"
-                class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6 mt-8"
+                class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6"
                 data-aos="fade-up" data-aos-delay="200">
                 <h1 class="text-4xl font-bold text-center text-papyrus mb-6" data-aos="fade-up">👤 Profile</h1>
                 <p class="text-center text-lg mb-10 text-papyrus" data-aos="fade-up" data-aos-delay="100">

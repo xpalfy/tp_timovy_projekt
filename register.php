@@ -17,7 +17,7 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: url('img/register.png') no-repeat center center fixed;
+      background: radial-gradient(circle, #f5eddc, #d4c6a3);
       background-size: cover;
       min-height: 100vh;
       display: flex;
