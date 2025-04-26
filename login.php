@@ -95,32 +95,34 @@
     AOS.init({ duration: 1000, once: true });
   </script>
 
-  <!-- Navbar -->
-  <nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
-      <div class="hidden md:flex space-x-6 text-lg items-center">
-        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="hover:underline flex items-center">
-          Project
-          <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4"/>
-          </svg>
-        </button>
-        <div id="dropdownNavbar" class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
-          <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownLargeButton">
-            <li>
-              <a href="https://tptimovyprojekt.ddns.net/" class="block px-4 py-2 hover:bg-[#cbbd99]">Minutes</a>
-            </li>
-            <li>
-              <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team</a>
-            </li>
-          </ul>
-        </div>
-        <a href="./login.php" class="hover:underline">Login</a>
-        <a href="./register.php" class="hover:underline">Register</a>
+<!-- Navbar -->
+<nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+    <div class="hidden md:flex space-x-6 text-lg items-center">
+      <a href="./index.html" class="hover:underline">Home</a>
+      <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="hover:underline flex items-center">
+        Project
+        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4"/>
+        </svg>
+      </button>
+      <div id="dropdownNavbar" class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
+        <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownLargeButton">
+          <li>
+            <a href="./task.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
+          </li>
+          <li>
+            <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
+          </li>
+        </ul>
       </div>
+      <a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Minutes</a>
+      <a href="./login.php" class="hover:underline">Login</a>
+      <a href="./register.php" class="hover:underline">Register</a>
     </div>
-  </nav>
+  </div>
+</nav>
 
   <!-- Login Section -->
   <main class="flex-grow flex items-center justify-center px-4">
