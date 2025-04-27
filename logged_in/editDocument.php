@@ -15,9 +15,9 @@ try {
 }
 
 $userId = $_GET['user'];
-$pictureId = $_GET['id'];
+$documentId = $_GET['id'];
 
-if ($userId == null || $pictureId == null) {
+if ($userId == null || $documentId == null) {
     $_SESSION['toast'] = [
         'message' => 'Invalid URL',
         'type' => 'error'
@@ -37,7 +37,7 @@ if ($userId != $userData['id']) {
 
 $conn = getDatabaseConnection();
 
-$sql = "SELECT * FROM pictures WHERE ID = $pictureId AND creator = $userId";
+$sql = "SELECT * FROM documents WHERE ID = $documentId AND author_id = $userId";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -45,7 +45,7 @@ $result = $stmt->get_result();
 
 if ($result->num_rows == 0) {
     // check if document exists in shared documents
-    $sql = "SELECT * FROM users_pictures WHERE picture_id = $pictureId AND user_id = $userId";
+    $sql = "SELECT * FROM users_pictures WHERE picture_id = $documentId AND user_id = $userId";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -58,7 +58,7 @@ if ($result->num_rows == 0) {
         exit();
     }
 
-    $sql = "SELECT * FROM pictures WHERE ID = $pictureId";
+    $sql = "SELECT * FROM pictures WHERE ID = $documentId";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -257,12 +257,12 @@ $conn->close();
                 <form action="editDocumentSave.php" method="post" enctype="multipart/form-data"
                     class="space-y-6 relative min-h-[500px]">
                     <input type="hidden" name="id" value="<?php echo $picture['ID'] ?>">
-                    <input type="hidden" name="user" value="<?php echo $picture['creator'] ?>">
+                    <input type="hidden" name="user" value="<?php echo $picture['author_id'] ?>">
 
                     <!-- Name Input -->
                     <div>
                         <label for="name" class="block font-semibold mb-1">Document Name</label>
-                        <input type="text" name="name" id="name" value="<?php echo $picture['name'] ?>"
+                        <input type="text" name="name" id="name" value="<?php echo $picture['title'] ?>"
                             class="w-full border border-yellow-400 rounded px-4 py-2" />
                     </div>
 
@@ -293,8 +293,8 @@ $conn->close();
                                 <?php
                                 $conn = getDatabaseConnection();
                                 $sql = "SELECT u.username FROM users u
-                                        JOIN users_pictures up ON u.id = up.user_id
-                                        WHERE up.picture_id = $pictureId";
+                                        JOIN document_user_association d_u_a ON u.id = d_u_a.user_id
+                                        WHERE d_u_a.document_id = $documentId";
                                 $stmt = $conn->prepare($sql);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
@@ -379,7 +379,7 @@ $conn->close();
                     $.ajax({
                         url: "fetchUsernames.php",
                         type: "GET",
-                        data: { query: request.term, picture_id: <?php echo $pictureId; ?> },
+                        data: { query: request.term, picture_id: <?php echo $documentId; ?> },
                         dataType: "json",
                         success: function (data) {
                             response(data.map(user => user.username));
