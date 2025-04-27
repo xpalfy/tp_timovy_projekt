@@ -4,3 +4,5 @@ python/entities/__pycache__/users.cpython-312.pyc
 python/entities/__pycache__/tag.cpython-312.pyc
 python/entities/__pycache__/*.pyc
 temp/
+DOCS/
+KEYS/
