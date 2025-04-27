@@ -630,7 +630,7 @@ try {
             id: <?= json_encode($userData['id']) ?>
         };
     </script>
-    <script src="js/main.js?v=<?= time() ?>"></script> <!-- in PHP -->
+    <script type="module" src="js/main.js?v=<?= time() ?>"></script>
 </body>
 
 </html>
