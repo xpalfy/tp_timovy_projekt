@@ -414,8 +414,7 @@ try {
                 Classify Image
             </h3>
             <!-- Image Uploader STEP 0 -->
-            <div id="imageUploader" ondrop="handleDrop(event)" ondragover="handleDragOver(event)"
-                ondragleave="handleDragLeave()" onclick="document.getElementById('fileInput').click()"
+            <div id="imageUploader" onclick="document.getElementById('fileInput').click()"
                 class="border-4 border-dashed border-yellow-400 hover:border-yellow-500 rounded-xl p-6 m-2 text-center transition-all duration-300">
                 <div class="loading-cont"
                     style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
