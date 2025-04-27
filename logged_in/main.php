@@ -580,7 +580,7 @@ try {
             </div>
 
             <!-- Progress Buttons STEP 2 -> STEP 3 -->
-            <div id="LetterCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+            <div id="LettersCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
             </div>
 
