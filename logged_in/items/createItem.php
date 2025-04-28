@@ -71,7 +71,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $json_path = null;
     }
+
+    if ($post['type'] == 'CIPHER' && empty($post['decoded_text'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid decoded text']);
+        exit;
+    }
     
+    if ($post['type'] == 'CIPHER') {
+        $decoded_text = $post['decoded_text'];
+    
+        // Create JSON with "result": decoded_text
+        $cipher_json = [
+            "result" => $decoded_text
+        ];
+    
+        // Encode it as pretty JSON
+        $json_text = json_encode($cipher_json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    
+        $json_path = '/DOCS/' . $post['user_name'] . '/' . $post['type'] . '/' . $post['doc_name'] . '/result/r.json';
+        $json_path = realpath(__DIR__ . '/../..') . $json_path;
+    
+        if (!file_exists(dirname($json_path))) {
+            mkdir(dirname($json_path), 0777, true);
+        }
+    
+        file_put_contents($json_path, $json_text);
+    } else {
+        $json_path = null;
+    }    
 
     $doc_id = $post['doc_id'];
     $type = $post['type'];
@@ -151,11 +179,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt->close();
     // Insert the new image into the items table
-    $stmt = $conn->prepare('INSERT INTO items (document_id, status, title, description, image_path, json_path, publish_date, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO items (document_id, status, title, description, image_path, publish_date, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
     $status = 'UPLOADED';
     $description = 'Please add a description';
     $date = date('Y-m-d H:i:s');
-    $stmt->bind_param('isssssss', $doc_id, $status, $image_name, $description, $new_db_file_path, $json_path, $date, $date);
+    $stmt->bind_param('issssss', $doc_id, $status, $image_name, $description, $new_db_file_path, $date, $date);
     if (!$stmt->execute()) {
         http_response_code(500);
         echo json_encode(['error' => 'Failed to insert image into items']);
@@ -175,6 +203,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $row = $result->fetch_assoc();
     $item_id = $row['id'];
+    $stmt->close();
+
+    // insert result into the database
+    $stmt = $conn->prepare('INSERT INTO processing_results (item_id, status, message, model_used, created_date, modified_date, result_path) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $status = 'PROCESSED';
+    $message = 'File processed successfully';
+    $model_used = 'MODEL1'; // Replace with actual model name if needed
+    $stmt->bind_param('issssss', $item_id, $status, $message, $model_used, $date, $date, $json_path);
+    if (!$stmt->execute()) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to insert processing result']);
+        exit;
+    }
     $stmt->close();
     $conn->close();
     echo json_encode(['success' => true, 'message' => 'File moved and database updated', 'item_id' => $item_id, 'file_path' => $new_file_path]);
