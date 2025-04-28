@@ -77,7 +77,6 @@ processing_result = ProcessingResult(
     model_used=Model.MODEL1,  # Specify the model used
     created_date="2025-04-28",
     modified_date="2025-04-28",
-    result={"key": "value"}  # Example JSON result
 )
 session.add(processing_result)
 session.commit()

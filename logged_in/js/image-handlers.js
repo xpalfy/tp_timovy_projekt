@@ -126,6 +126,7 @@ function saveData(type) {
     }
     let doc_name = document.getElementById('documentName').value;
     let json_text = null;
+    let decoded_text = null;
     if (type === 'KEY') {
         json_text = document.getElementById('jsonEditor').value;
 
@@ -140,6 +141,10 @@ function saveData(type) {
             return;
         }
     }
+    if (type === 'CIPHER') {
+        decoded_text = "Some decoded text"; // <- here call your decoding function later
+    }
+    
     if (doc_name === '') {
         uiAnimationHandlers.handleError('Please enter a name for the document.');
         return;
@@ -178,6 +183,7 @@ function saveData(type) {
                             doc_name: doc_name,
                             type: type,
                             json_text: json_text,
+                            decoded_text: decoded_text,
                             user_name: window.userData.username, // Use injected data
                             id: window.userData.id,              // No PHP in JS file!
                         })
