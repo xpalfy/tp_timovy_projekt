@@ -470,7 +470,7 @@ export function editJSONCipher() {
     setStep(4);
     uiAnimationHandlers.hideEditJSONCipherBtn();
     uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showSaveKeyBtns();
+    uiAnimationHandlers.showSaveCipherBtns();
     document.getElementById('imageLetters').style.display = 'none';
     document.getElementById('imageJSON').style.display = 'block';
     document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
