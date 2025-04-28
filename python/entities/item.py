@@ -31,6 +31,7 @@ class Item(Base):
     title = Column(String(255))
     description = Column(String(255))
     image_path = Column(String(255))
+    json_path = Column(String(255), nullable=True)
     publish_date = Column(String(255))
     modified_date = Column(String(255))
     processing_results = relationship("ProcessingResult", back_populates="item")

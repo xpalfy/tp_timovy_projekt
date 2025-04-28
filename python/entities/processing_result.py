@@ -34,5 +34,4 @@ class ProcessingResult(Base):
     model_used = Column(Enum(Model, name='model_used'))
     created_date = Column(String(255))
     modified_date = Column(String(255))
-    result = Column(JSON)
     
