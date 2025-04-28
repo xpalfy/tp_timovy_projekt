@@ -32,75 +32,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['error' => 'Invalid user']);
         exit;
     }
+    $flask_url = "https://python.tptimovyprojekt.software/delete_document"; // adjust if Flask is remote
 
-    $doc_id = $post['doc_id'];
-    $user_name = $post['user_name'];
-    $id = $post['id'];
+    $ch = curl_init($flask_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+        'doc_id' => $post['doc_id'],
+        'id' => $post['id'],
+    ]));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
 
+    $response = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    $conn = getDatabaseConnection();
-
-    // Check if the document exists
-    $stmt = $conn->prepare('SELECT * FROM documents WHERE author_id = ? AND id = ?');
-
-    $stmt->bind_param('ii', $id, $doc_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows === 0) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Document not found']);
+    if (curl_errno($ch)) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Internal server error']);
+        curl_close($ch);
         exit;
     }
-    $row = $result->fetch_assoc();
-    $stmt->close();
-    // Delete the items associated with the document
-    $stmt = $conn->prepare('DELETE FROM items WHERE document_id = ?');
-    $stmt->bind_param('i', $doc_id);
-    $stmt->execute();
-    if ($stmt->affected_rows === 0) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Failed to delete items']);
-        exit;
-    }
-    $stmt->close();
-    // Delete the document
-    $stmt = $conn->prepare('DELETE FROM documents WHERE id = ? AND author_id = ?');
-    $stmt->bind_param('ii', $doc_id, $id);
-    $stmt->execute();
-    if ($stmt->affected_rows === 0) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Failed to delete document']);
-        exit;
-    }
-    $stmt->close();
-    // Delete the directory associated with the document
-    $directory = realpath(__DIR__ . '/../..') . '/DOCS/' . $user_name . '/' . $row['doc_type'] . '/' . $row['title'];
-    if (is_dir($directory)) {
-        $files = glob($directory . '/*'); // Get all files in the directory
-        foreach ($files as $file) {
-            if (is_file($file)) {
-                unlink($file); // Delete the file
-            }
-        }
-        // remove the sub directories
-        $subdirs = glob($directory . '/*', GLOB_ONLYDIR);
-        foreach ($subdirs as $subdir) {
-            $subfiles = glob($subdir . '/*'); // Get all files in the subdirectory
-            foreach ($subfiles as $subfile) {
-                if (is_file($subfile)) {
-                    unlink($subfile); // Delete the file
-                }
-            }
-            rmdir($subdir); // Remove the subdirectory
-        }
-        rmdir($directory); // Remove the directory
-    }
-    echo json_encode(['success' => true, 'message' => 'Document deleted successfully']);
-    
-    $conn->close();
-}
-else {
+
+    curl_close($ch);
+
+    http_response_code($httpcode);
+    echo $response;
+
+} else {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
 }
+
 ?>
