@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask import jsonify
 from modules.classifier import Classifier
 from modules.segmentator import Segmentator
+from modules.encoder import Encoder
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controller.document_service import DocumentService
@@ -41,6 +42,14 @@ def crop_polygon():
     polygon = request.json['polygon']
     print(path)
     return jsonify({"cropped_image": segmentator.crop_polygon(path, polygon)})
+
+@app.route('/get_example_json', methods=['GET'])
+def get_example_json():
+    try:
+        data = Encoder.get_json()
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/update_document', methods=['POST'])
 def update_document():
