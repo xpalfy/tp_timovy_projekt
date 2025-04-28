@@ -6,8 +6,9 @@ from entities.base import Base
 from entities.tag import Tag
 from entities.item import Item
 from entities.document import Document, DocumentType, DocumentStatus
+from entities.processing_result import ProcessingResult, ProcessingStatus, Model
 
-
+# THIS IS A TEST FILE DO_NOT_USE
 # Database credentials from config.php
 db_username = "root"
 db_password = "NemTudokJobbJelszavat123."
@@ -38,7 +39,7 @@ def get_or_create(session, model, defaults=None, **kwargs):
 alice = get_or_create(session, User, username="Alice", email="alice@example.com")
 bob = get_or_create(session, User, username="Bob", email="bob@example.com")
 
-alice_copy: User = session.query(User).filter_by(username="Alice").first()
+# alice_copy: User = session.query(User).filter_by(username="Alice").first()
 
 # Get or create tags
 tag1 = get_or_create(session, Tag, name="Work")
@@ -69,6 +70,16 @@ item1 = Item(
     status="uploaded",
     document=doc
 )
+processing_result = ProcessingResult(
+    item_id=item1.id,  # Associate with the created item
+    status=ProcessingStatus.UPLOADED,  # Set the initial status
+    message="Processing started successfully.",
+    model_used=Model.MODEL1,  # Specify the model used
+    created_date="2025-04-28",
+    modified_date="2025-04-28",
+    result={"key": "value"}  # Example JSON result
+)
+session.add(processing_result)
 session.commit()
 
 # Query all documents with a specific tag

@@ -256,7 +256,7 @@ $conn->close();
             <div class="w-full lg:w-1/2 bg-white bg-opacity-50 rounded-xl p-6 shadow-lg">
                 <form action="editDocumentSave.php" method="post" enctype="multipart/form-data"
                     class="space-y-6 relative min-h-[500px]">
-                    <input type="hidden" name="id" value="<?php echo $picture['ID'] ?>">
+                    <input type="hidden" name="id" value="<?php echo $picture['id'] ?>">
                     <input type="hidden" name="user" value="<?php echo $picture['author_id'] ?>">
 
                     <!-- Name Input -->
