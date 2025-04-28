@@ -82,6 +82,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unlink($file); // Delete the file
             }
         }
+        // remove the sub directories
+        $subdirs = glob($directory . '/*', GLOB_ONLYDIR);
+        foreach ($subdirs as $subdir) {
+            $subfiles = glob($subdir . '/*'); // Get all files in the subdirectory
+            foreach ($subfiles as $subfile) {
+                if (is_file($subfile)) {
+                    unlink($subfile); // Delete the file
+                }
+            }
+            rmdir($subdir); // Remove the subdirectory
+        }
         rmdir($directory); // Remove the directory
     }
     echo json_encode(['success' => true, 'message' => 'Document deleted successfully']);

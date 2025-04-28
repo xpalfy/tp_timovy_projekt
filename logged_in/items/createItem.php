@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -34,6 +38,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['error' => 'Invalid document name']);
         exit;
     }
+
+    if ($post['type'] == 'KEY' && empty($post['json_text'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid JSON text']);
+        exit;
+    }
+    if ($post['type'] == 'KEY') {
+        $json_text = $post['json_text'];
+    
+        // Validate JSON
+        if (isJson($json_text) === null) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid JSON text']);
+            exit;
+        }
+    
+        // Decode and re-encode to pretty JSON (optional)
+        $json_array = json_decode($json_text, true);
+    
+        // Save it properly formatted
+        $json_text = json_encode($json_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    
+        $json_path = '/DOCS/' . $post['user_name'] . '/' . $post['type'] . '/' . $post['doc_name'] . '/key/key.json';
+        $json_path = realpath(__DIR__ . '/../..') . $json_path;
+    
+        if (!file_exists(dirname($json_path))) {
+            mkdir(dirname($json_path), 0777, true);
+        }
+    
+        file_put_contents($json_path, $json_text);
+    } else {
+        $json_path = null;
+    }
+    
 
     $doc_id = $post['doc_id'];
     $type = $post['type'];
@@ -113,11 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt->close();
     // Insert the new image into the items table
-    $stmt = $conn->prepare('INSERT INTO items (document_id, status, title, description, image_path, publish_date, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO items (document_id, status, title, description, image_path, json_path, publish_date, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
     $status = 'UPLOADED';
     $description = 'Please add a description';
     $date = date('Y-m-d H:i:s');
-    $stmt->bind_param('issssss', $doc_id, $status, $image_name, $description, $new_db_file_path, $date, $date);
+    $stmt->bind_param('isssssss', $doc_id, $status, $image_name, $description, $new_db_file_path, $json_path, $date, $date);
     if (!$stmt->execute()) {
         http_response_code(500);
         echo json_encode(['error' => 'Failed to insert image into items']);
