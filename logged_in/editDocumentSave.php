@@ -12,14 +12,14 @@ try {
     http_response_code(500);
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
     header('Location: login.php');
+    exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
     $pictureId = $_POST['id'];
     $creatorId = $_POST['user'];
     $pictureName = $_POST['name'];
-    $sharedUsers = explode(',', $_POST['sharedUsers']);
+    $sharedUsers = $_POST['sharedUsers'];
 
     if ($creatorId != $userData['id']) {
         $_SESSION['toast'] = [
@@ -30,98 +30,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 
-    if (!empty($pictureName)) {
-        $conn = getDatabaseConnection();
+    $postData = [
+        'id' => $pictureId,
+        'user' => $creatorId,
+        'name' => $pictureName,
+        'sharedUsers' => $sharedUsers
+    ];
 
-        $stmt = $conn->prepare("SELECT * FROM pictures WHERE name = ? AND creator = ? AND ID != ?");
-        $stmt->bind_param('sii', $pictureName, $creatorId, $pictureId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $flaskUrl = 'https://python.tptimovyprojekt.software/update_document'; // Flask endpoint
 
-        if ($result->num_rows > 0) {
-            $_SESSION['toast'] = [
-                'message' => 'Document name already exists',
-                'type' => 'error'
-            ];
-            header('Location: editDocument.php?user=' . $creatorId . '&id=' . $pictureId);
-            exit();
-        }
+    $ch = curl_init($flaskUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+    curl_setopt($ch, CURLOPT_POST, true);
+    $response = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-
-        $stmt = $conn->prepare("SELECT * FROM pictures WHERE ID = ? AND creator = ?");
-        $stmt->bind_param('ii', $pictureId, $creatorId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $old_picture_name = $row['name'];
-            $old_picture_path = $row['path'];
-
-            if ($old_picture_name != $pictureName) {
-                $stmt = $conn->prepare("UPDATE pictures SET name = ? WHERE ID = ? AND creator = ?");
-                $stmt->bind_param('sii', $pictureName, $pictureId, $creatorId);
-                $stmt->execute();
-
-                $new_picture_path = str_replace($old_picture_name, $pictureName, $old_picture_path);
-
-                if (file_exists('../' . $old_picture_path) && is_writable(dirname('../' . $old_picture_path))) {
-                    rename('../' . $old_picture_path, '../' . $new_picture_path);
-                } else {
-                    $_SESSION['toast'] = [
-                        'message' => 'Failed to rename file: Path is invalid or not writable.',
-                        'type' => 'error'
-                    ];
-                    header('Location: editDocument.php?user=' . $creatorId . '&id=' . $pictureId);
-                    exit();
-                }
-
-
-                $stmt = $conn->prepare("UPDATE pictures SET path = ? WHERE ID = ? AND creator = ?");
-                $stmt->bind_param('sii', $new_picture_path, $pictureId, $creatorId);
-                $stmt->execute();
-            }
-        }
-
-        $stmt->close();
+    if ($httpcode == 200) {
+        $_SESSION['toast'] = [
+            'message' => 'Document updated successfully',
+            'type' => 'success'
+        ];
+        header('Location: documents.php');
+        exit();
+    } else {
+        $_SESSION['toast'] = [
+            'message' => 'Failed to update document',
+            'type' => 'error'
+        ];
+        header('Location: editDocument.php?user=' . $creatorId . '&id=' . $pictureId);
+        exit();
     }
-
-    if (!empty($sharedUsers)) {
-        require_once '../config.php';
-        $conn = getDatabaseConnection();
-        // reset the shared users
-        $stmt = $conn->prepare('DELETE FROM users_pictures WHERE picture_id = ?');
-        $stmt->bind_param('i', $pictureId);
-        $stmt->execute();
-        $stmt->close();
-        // add the new shared users
-        foreach ($sharedUsers as $sharedUser) {
-            $stmt = $conn->prepare('SELECT * FROM users WHERE username = ?');
-            $stmt->bind_param('s', $sharedUser);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                $sharedUserId = $row['id'];
-
-                $stmt = $conn->prepare('SELECT * FROM users_pictures WHERE picture_id = ? AND user_id = ?');
-                $stmt->bind_param('ii', $pictureId, $sharedUserId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($result->num_rows > 0) {
-                    continue;
-                }
-                $stmt = $conn->prepare('INSERT INTO users_pictures (user_id, picture_id) VALUES (?, ?)');
-                $stmt->bind_param('ii', $sharedUserId, $pictureId);
-                $stmt->execute();
-            }
-        }
-    }
-
-    $conn->close();
-    header('Location: documents.php');
-    exit();
 }
-
 ?>

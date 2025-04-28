@@ -14,7 +14,7 @@ document_user_association = Table(
     "document_user_association",
     Base.metadata,
     Column("document_id", Integer, ForeignKey("documents.id"), primary_key=True),
-    Column("user_id", Integer, ForeignKey("users_python.id"), primary_key=True),
+    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
 )
 
 document_tag_association = Table(
@@ -39,7 +39,7 @@ class DocumentStatus(enum.Enum):
 class Document(Base):
     __tablename__ = 'documents'
     id: int = Column(Integer, primary_key=True, autoincrement=True)
-    author_id: int = Column(Integer, ForeignKey('users_python.id'))
+    author_id: int = Column(Integer, ForeignKey('users.id'))
     author: User = relationship("User", back_populates="documents")
     
     title: str = Column(String(255))

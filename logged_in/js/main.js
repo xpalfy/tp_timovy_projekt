@@ -5,10 +5,11 @@ Promise.all([
     import(`./ui-animation-handler.js${version}`)
 ]).then(([imageHandlers, uiAnimationHandlers]) => {
     const {
-        handleDrop, uploadImageButton, handleDragOver, handleDragLeave,
+        handleDrop, uploadImageButton, handleDragOver, handleDragLeave, downloadJSON,
         hideLoading, checkToasts, setStep, setupPreviewNavigation, segmentCipher,
         deleteUnsavedImage, segmentKey, analizeKey, analizeCipher, lettersKey, lettersCipher,
-        editJSONKey, editJSONCipher, deleteImage, getImage, getImageKey, saveKey, saveCipher
+        editJSONKey, editJSONCipher, deleteImage, getImage, getImageKey, saveKey, saveCipher,
+        currentImageId
     } = imageHandlers;
 
     const {
@@ -35,6 +36,7 @@ Promise.all([
     window.saveKey = saveKey; // Expose saveKey
     window.saveCipher = saveCipher; // Expose saveCipher
     window.scrollToBookmark = scrollToBookmark;
+    window.downloadJSON = downloadJSON;
 
 
     // Setup event listeners
@@ -44,6 +46,8 @@ Promise.all([
     window.addEventListener('scroll', scrollEvent);
     window.addEventListener("beforeunload", function () {
         console.log("Page is being unloaded...");
+        // Perform any necessary cleanup or state saving here
+        deleteUnsavedImage(currentImageId);
         
         // Optionally call deleteUnsavedImage if needed
     });
