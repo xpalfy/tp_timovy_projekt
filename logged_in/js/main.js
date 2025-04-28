@@ -5,7 +5,7 @@ Promise.all([
     import(`./ui-animation-handler.js${version}`)
 ]).then(([imageHandlers, uiAnimationHandlers]) => {
     const {
-        handleDrop, uploadImageButton, handleDragOver, handleDragLeave,
+        handleDrop, uploadImageButton, handleDragOver, handleDragLeave, downloadJSON,
         hideLoading, checkToasts, setStep, setupPreviewNavigation, segmentCipher,
         deleteUnsavedImage, segmentKey, analizeKey, analizeCipher, lettersKey, lettersCipher,
         editJSONKey, editJSONCipher, deleteImage, getImage, getImageKey, saveKey, saveCipher
@@ -35,6 +35,7 @@ Promise.all([
     window.saveKey = saveKey; // Expose saveKey
     window.saveCipher = saveCipher; // Expose saveCipher
     window.scrollToBookmark = scrollToBookmark;
+    window.downloadJSON = downloadJSON;
 
 
     // Setup event listeners
