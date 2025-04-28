@@ -1,10 +1,12 @@
 # services/document_service.py
 
 import os
+import shutil
 from sqlalchemy.orm import Session
 from entities.document import Document
 from entities.users import User
 from controller.db_controller import get_db_session
+
 
 class DocumentService:
     def __init__(self, db: Session=None):
@@ -49,3 +51,28 @@ class DocumentService:
 
     def save_changes(self):
         self.db.commit()
+    
+    def delete_document(self, document_id: int, user_id: int):
+        document = self.get_document_by_id_and_author(document_id, user_id)
+        if not document:
+            raise Exception("Document not found")
+
+        user = self.db.query(User).filter_by(id=user_id).first()
+        breakpoint()
+        if not user:
+            raise Exception("User not found")
+
+        # Save directory path before deleting the document
+        doc_directory = os.path.join('DOCS', user.username, document.doc_type.name, document.title)
+
+        # First, delete associated items if you have a relationship (assuming cascade delete isn't set)
+        if hasattr(document, 'items') and document.items:
+            for item in document.items:
+                self.db.delete(item)
+
+        self.db.delete(document)
+        self.db.commit()
+
+        # Delete the associated directory and its contents
+        if os.path.isdir(doc_directory):
+            shutil.rmtree(doc_directory)

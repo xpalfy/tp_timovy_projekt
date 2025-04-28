@@ -87,6 +87,33 @@ def update_document():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/delete_document', methods=['POST'])
+def delete_document():
+    db = next(get_db_session())
+    service = DocumentService(db)
+    breakpoint()
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+
+        user_id = data.get('id')
+        doc_id = data.get('doc_id')
+
+        if not user_id or not doc_id:
+            return jsonify({'error': 'Missing required fields'}), 400
+
+        service.delete_document(int(doc_id), int(user_id))
+
+        return jsonify({'success': True, 'message': 'Document deleted successfully'}), 200
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 if __name__ == '__main__':
     
     classifier = Classifier(40, 60)
