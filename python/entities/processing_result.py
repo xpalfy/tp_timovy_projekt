@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import enum
-from sqlalchemy import create_engine, Column, Integer, String, Enum, Table, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Enum, Table, ForeignKey, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from .base import Base
@@ -34,5 +34,4 @@ class ProcessingResult(Base):
     model_used = Column(Enum(Model, name='model_used'))
     created_date = Column(String(255))
     modified_date = Column(String(255))
-    
-    
+    result = Column(JSON)
