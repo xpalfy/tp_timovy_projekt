@@ -125,6 +125,21 @@ function saveData(type) {
         return;
     }
     let doc_name = document.getElementById('documentName').value;
+    let json_text = null;
+    if (type === 'KEY') {
+        json_text = document.getElementById('jsonEditor').value;
+
+        if (json_text === '') {
+            uiAnimationHandlers.handleError('Please enter a JSON string.');
+            return;
+        }
+        try {
+            JSON.parse(json_text);
+        } catch (e) {
+            uiAnimationHandlers.handleError('Invalid JSON format. Please check your input.');
+            return;
+        }
+    }
     if (doc_name === '') {
         uiAnimationHandlers.handleError('Please enter a name for the document.');
         return;
@@ -162,6 +177,7 @@ function saveData(type) {
                             doc_id: doc_id,
                             doc_name: doc_name,
                             type: type,
+                            json_text: json_text,
                             user_name: window.userData.username, // Use injected data
                             id: window.userData.id,              // No PHP in JS file!
                         })
