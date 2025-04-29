@@ -94,7 +94,6 @@ def update_document():
 def delete_document():
     db = next(get_db_session())
     service = DocumentService(db)
-    breakpoint()
 
     try:
         data = request.get_json()
@@ -118,7 +117,7 @@ def delete_document():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-
+    print("Starting Flask server...")
     username = getpass.getuser()
     print(f"Script is run by user: {username}")
     classifier = Classifier(40, 60)
