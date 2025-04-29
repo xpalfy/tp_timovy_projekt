@@ -60,16 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save it properly formatted
         $json_text = json_encode($json_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     
-        $json_path = '/DOCS/' . $post['user_name'] . '/' . $post['type'] . '/' . $post['doc_name'] . '/key/key.json';
-        $json_path = realpath(__DIR__ . '/../..') . $json_path;
-    
-        if (!file_exists(dirname($json_path))) {
-            mkdir(dirname($json_path), 0777, true);
-        }
-    
-        file_put_contents($json_path, $json_text);
-    } else {
-        $json_path = null;
+
     }
 
     if ($post['type'] == 'CIPHER' && empty($post['decoded_text'])) {
@@ -89,17 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Encode it as pretty JSON
         $json_text = json_encode($cipher_json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     
-        $json_path = '/DOCS/' . $post['user_name'] . '/' . $post['type'] . '/' . $post['doc_name'] . '/result/r.json';
-        $json_path = realpath(__DIR__ . '/../..') . $json_path;
-    
-        if (!file_exists(dirname($json_path))) {
-            mkdir(dirname($json_path), 0777, true);
-        }
-    
-        file_put_contents($json_path, $json_text);
-    } else {
-        $json_path = null;
-    }    
+    } 
 
     $doc_id = $post['doc_id'];
     $type = $post['type'];
@@ -206,11 +187,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 
     // insert result into the database
-    $stmt = $conn->prepare('INSERT INTO processing_results (item_id, status, message, model_used, created_date, modified_date, result_path) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO processing_results (item_id, status, message, model_used, created_date, modified_date, result) VALUES (?, ?, ?, ?, ?, ?, ?)');
     $status = 'PROCESSED';
     $message = 'File processed successfully';
     $model_used = 'MODEL1'; // Replace with actual model name if needed
-    $stmt->bind_param('issssss', $item_id, $status, $message, $model_used, $date, $date, $json_path);
+    $stmt->bind_param('issssss', $item_id, $status, $message, $model_used, $date, $date, $json_text);
     if (!$stmt->execute()) {
         http_response_code(500);
         echo json_encode(['error' => 'Failed to insert processing result']);
