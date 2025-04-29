@@ -73,11 +73,13 @@ def update_document():
 
             if document.title != picture_name:
                 service.update_document_title(document, picture_name, creator_id)
+                print(f"Document title updated to {picture_name}")
 
         if shared_users:
             service.update_shared_users(document, shared_users)
 
         service.save_changes()
+        print(f"Document {picture_id} updated successfully")
 
         return jsonify({'success': True}), 200
 
