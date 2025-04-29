@@ -62,7 +62,6 @@ class DocumentService:
             raise Exception("Document not found")
 
         user = self.db.query(User).filter_by(id=user_id).first()
-        breakpoint()
         if not user:
             raise Exception("User not found")
 
