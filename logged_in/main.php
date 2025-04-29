@@ -45,8 +45,8 @@ try {
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
     <!-- Custom JS -->
-    <script src="../js/segment-rect.js?" type="module"></script>
-    <script src="../js/letter-rect.js?" type="module"></script>
+    <script src="../js/segment-rect.js?v=<?php echo time() ?>" type="module"></script>
+    <script src="../js/letter-rect.js?v=<?php echo time() ?>" type="module"></script>
 
 
 
@@ -466,7 +466,7 @@ try {
                     </div>
 
                     <!-- Preview Image Container -->
-                    <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]">
+                    <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]" style="position: relative;">
                         <!-- Left Nav -->
                         <button
                             class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
@@ -493,7 +493,7 @@ try {
                     </div>
 
                     <!-- Preview Image Container -->
-                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]">
+                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]" style="position: relative;">
                         <!-- Left Nav -->
                         <button
                             class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
@@ -520,7 +520,7 @@ try {
                     </div>
 
                     <!-- Preview Image Container -->
-                    <div id="previewContainerLetter" class="relative flex justify-center items-center min-h-[250px]">
+                    <div id="previewContainerLetter" class="relative flex justify-center items-center min-h-[250px]" style="position: relative;">
                         <!-- Left Nav -->
                         <button
                             class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
