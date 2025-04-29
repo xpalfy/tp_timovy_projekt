@@ -8,6 +8,7 @@ from flask_cors import CORS
 from controller.document_service import DocumentService
 from sqlalchemy.exc import SQLAlchemyError
 from controller.db_controller import get_db_session
+import os
 
 app = Flask(__name__)
 CORS(app)  
@@ -117,7 +118,9 @@ def delete_document():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-    
+
+    username = os.getlogin()
+    print(f"Script is run by user: {username}")
     classifier = Classifier(40, 60)
     print("Classifier initialized")
     print(classifier)
