@@ -23,15 +23,15 @@ class DocumentService:
             query = query.filter(Document.id != exclude_id)
         return self.db.query(query.exists()).scalar()
 
-    def update_document_title(self, document: Document, new_title: str, user_id: int):
-        user = self.db.query(User).filter_by(id=user_id).first()
+    def update_document_title(self, document: Document, new_title: str, user_id: int, folder:str = None):
+        user = self.db.query(User).filter_by(id=user_id).first() 
         if not user:
             raise Exception("User not found")
 
-        user_name = user.username  # Retrieve the username
+        user_name = user.username
 
-        old_path = os.path.join('DOCS', user_name, document.doc_type.name, document.title)
-        new_path = os.path.join('DOCS', user_name, document.doc_type.name, new_title)
+        old_path = os.path.join('..',folder,'DOCS', user_name, document.doc_type.name, document.title)
+        new_path = os.path.join('..',folder,'DOCS', user_name, document.doc_type.name, new_title)
 
         if os.path.exists(old_path) and os.access(old_path, os.W_OK):
             os.rename(old_path, new_path)
@@ -56,7 +56,7 @@ class DocumentService:
     def save_changes(self):
         self.db.commit()
     
-    def delete_document(self, document_id: int, user_id: int):
+    def delete_document(self, document_id: int, user_id: int, folder:str = None):
         document = self.get_document_by_id_and_author(document_id, user_id)
         if not document:
             raise Exception("Document not found")
@@ -66,7 +66,7 @@ class DocumentService:
             raise Exception("User not found")
 
         # Save directory path before deleting the document
-        doc_directory = os.path.join('DOCS', user.username, document.doc_type.name, document.title)
+        doc_directory = os.path.join('..', folder, 'DOCS', user.username, document.doc_type.name, document.title)
 
         # First, delete associated items if you have a relationship (assuming cascade delete isn't set)
         if hasattr(document, 'items') and document.items:
