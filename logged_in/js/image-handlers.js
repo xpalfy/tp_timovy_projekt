@@ -144,7 +144,7 @@ function saveData(type) {
     if (type === 'CIPHER') {
         decoded_text = "Some decoded text"; // <- here call your decoding function later
     }
-    
+
     if (doc_name === '') {
         uiAnimationHandlers.handleError('Please enter a name for the document.');
         return;
@@ -160,8 +160,8 @@ function saveData(type) {
         body: JSON.stringify({
             doc_name: doc_name,
             type: type,
-            user_name: window.userData.username, 
-            id: window.userData.id, 
+            user_name: window.userData.username,
+            id: window.userData.id,
         })
     })
         .then(response => response.json())
@@ -510,10 +510,10 @@ export function downloadJSON() {
         const blob = new Blob([jsonData], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        
+
         // Get filename from input or use default
         const filename = document.getElementById("documentName").value || "document.json";
-        
+
         link.href = url;
         link.download = filename;
         document.body.appendChild(link);
@@ -557,30 +557,49 @@ export function appendSegmentedRect(Rect) {
         console.error('Invalid Rect:', Rect);
         return;
     }
-    let parent = document.getElementById('previewContainerSegment');
-    let x2 = Rect[0];
-    let y2 = Rect[3];
-    let x4 = Rect[2];
-    let y4 = Rect[1];
 
-    let newRect = document.createElement('segment-rect');
-    newRect.setAttribute('x1', Rect[0]);
-    newRect.setAttribute('y1', Rect[1]);
+    const parent = document.getElementById('previewContainerSegment');
+
+    const x1 = Rect[0], y1 = Rect[1];
+    const x3 = Rect[2], y3 = Rect[3];
+    const x2 = x1, y2 = y3;
+    const x4 = x3, y4 = y1;
+
+    const xs = [x1, x2, x3, x4];
+    const ys = [y1, y2, y3, y4];
+    const minX = Math.min(...xs) - 5;
+    const minY = Math.min(...ys) - 5;
+    const maxX = Math.max(...xs) + 5;
+    const maxY = Math.max(...ys) + 5;
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    const newRect = document.createElement('segment-rect');
+    newRect.setAttribute('x1', x1);
+    newRect.setAttribute('y1', y1);
     newRect.setAttribute('x2', x2);
     newRect.setAttribute('y2', y2);
-    newRect.setAttribute('x3', Rect[2]);
-    newRect.setAttribute('y3', Rect[3]);
+    newRect.setAttribute('x3', x3);
+    newRect.setAttribute('y3', y3);
     newRect.setAttribute('x4', x4);
     newRect.setAttribute('y4', y4);
-    newRect.setAttribute('style', 'position: absolute; width: 100%; height: 100%;');
+
+    newRect.style.position = 'absolute';
+    newRect.style.left = `0`;
+    newRect.style.top = `0`;
+    newRect.style.width = `${width}px`;
+    newRect.style.height = `${height}px`;
+
+    newRect.classList.add('not-copyable');
     newRect.classList.add('rounded-xl');
     parent.appendChild(newRect);
 }
 
+
 export function CalculateAnalization(type) {
     showLoading();
 
-    const imagePath = 'path/to/your/image.jpg'; 
+    const imagePath = 'path/to/your/image.jpg';
 
     fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
         method: 'POST',
@@ -603,7 +622,7 @@ export function CalculateAnalization(type) {
             hideLoading();
             console.error('Error fetching analyzed rectangles:', error);
         });
-    }
+}
 
 
 export function appendAnalizedRects(Rects) {
@@ -613,25 +632,45 @@ export function appendAnalizedRects(Rects) {
             console.error('Invalid Rect:', Rect);
             return;
         }
-        let x2 = Rect[0];
-        let y2 = Rect[3];
-        let x4 = Rect[2];
-        let y4 = Rect[1];
 
+        // Extract points
+        const x1 = Rect[0], y1 = Rect[1];
+        const x3 = Rect[2], y3 = Rect[3];
+        const x2 = x1, y2 = y3;
+        const x4 = x3, y4 = y1;
+
+        // Compute bounding box
+        const minX = Math.min(x1, x3);
+        const minY = Math.min(y1, y3);
+        const maxX = Math.max(x1, x3);
+        const maxY = Math.max(y1, y3);
+        const width = maxX - minX;
+        const height = maxY - minY;
+
+        // Create custom element
         let newRect = document.createElement('segment-rect');
-        newRect.setAttribute('x1', Rect[0]);
-        newRect.setAttribute('y1', Rect[1]);
+        newRect.setAttribute('x1', x1);
+        newRect.setAttribute('y1', y1);
         newRect.setAttribute('x2', x2);
         newRect.setAttribute('y2', y2);
-        newRect.setAttribute('x3', Rect[2]);
-        newRect.setAttribute('y3', Rect[3]);
+        newRect.setAttribute('x3', x3);
+        newRect.setAttribute('y3', y3);
         newRect.setAttribute('x4', x4);
         newRect.setAttribute('y4', y4);
-        newRect.setAttribute('style', 'position: absolute; width: 100%; height: 100%;');
+
+        // Set exact position and size
+        newRect.style.position = 'absolute';
+        newRect.style.left = `0`;
+        newRect.style.top = `0`;
+        newRect.style.width = `${width}px`;
+        newRect.style.height = `${height}px`;
+
+        newRect.classList.add('not-copyable');
         newRect.classList.add('rounded-xl');
         parent.appendChild(newRect);
     }
 }
+
 
 
 export function CalculateLetters(type) {
@@ -660,36 +699,58 @@ export function CalculateLetters(type) {
             hideLoading();
             console.error('Error fetching analyzed rectangles:', error);
         });
-    }
+}
 
 
-    export function appendLetterRects(Rects) {
-    let parent = document.getElementById('previewContainerLetter');
-    for (let Rect of Rects) {
+export function appendLetterRects(Rects) {
+    const parent = document.getElementById('previewContainerLetter');
+
+    for (const Rect of Rects) {
         if (Rect.length !== 4) {
             console.error('Invalid Rect:', Rect);
-            return;
+            continue;
         }
-        
-        let x2 = Rect[0];
-        let y2 = Rect[3];
-        let x4 = Rect[2];
-        let y4 = Rect[1];
 
-        let newRect = document.createElement('letter-rect');
-        newRect.setAttribute('x1', Rect[0]);
-        newRect.setAttribute('y1', Rect[1]);
+        // Rectangle corners from 2 diagonal points
+        const x1 = Rect[0], y1 = Rect[1];
+        const x3 = Rect[2], y3 = Rect[3];
+        const x2 = x1, y2 = y3;
+        const x4 = x3, y4 = y1;
+
+        // Bounding box for absolute positioning
+        const xs = [x1, x2, x3, x4];
+        const ys = [y1, y2, y3, y4];
+        const minX = Math.min(...xs) - 5;
+        const minY = Math.min(...ys) - 5;
+        const maxX = Math.max(...xs) + 5;
+        const maxY = Math.max(...ys) + 5;
+        const width = maxX - minX;
+        const height = maxY - minY;
+
+        // Create and configure custom element
+        const newRect = document.createElement('letter-rect');
+        newRect.setAttribute('x1', x1);
+        newRect.setAttribute('y1', y1);
         newRect.setAttribute('x2', x2);
         newRect.setAttribute('y2', y2);
-        newRect.setAttribute('x3', Rect[2]);
-        newRect.setAttribute('y3', Rect[3]);
+        newRect.setAttribute('x3', x3);
+        newRect.setAttribute('y3', y3);
         newRect.setAttribute('x4', x4);
         newRect.setAttribute('y4', y4);
-        newRect.setAttribute('style', 'position: absolute; width: 100%; height: 100%;');
+
+        // Set proper style (based on bounding box)
+        newRect.style.position = 'absolute';
+        newRect.style.left = `0`;
+        newRect.style.top = `0`;
+        newRect.style.width = `${width}px`;
+        newRect.style.height = `${height}px`;
+
+        newRect.classList.add('not-copyable');
         newRect.classList.add('rounded-xl');
         parent.appendChild(newRect);
     }
 }
+
 export function setupPreviewNavigation() {
     const nextButtons = document.getElementsByClassName('nextBtn');
     for (let button of nextButtons) {
