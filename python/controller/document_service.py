@@ -36,6 +36,10 @@ class DocumentService:
         if os.path.exists(old_path) and os.access(old_path, os.W_OK):
             os.rename(old_path, new_path)
         else:
+            print(f"Old path: {old_path}")
+            print(f"New path: {new_path}")
+            print(f"Exists: {os.path.exists(old_path)}")
+            print(f"Writable: {os.access(old_path, os.W_OK)}")
             raise Exception('Invalid path or not writable')
 
         document.title = new_title
