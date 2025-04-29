@@ -32,7 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['error' => 'Invalid user']);
         exit;
     }
-    $flask_url = "https://python.tptimovyprojekt.software/delete_document"; // adjust if Flask is remote
+    $flask_url = "https://python.tptimovyprojekt.software/delete_document";
+    $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") .
+                 "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
     $ch = curl_init($flask_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -42,7 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'id' => $post['id'],
     ]));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
+        'Content-Type: application/json',
+        "Referer: $fullCallerUrl"
     ]);
 
     $response = curl_exec($ch);

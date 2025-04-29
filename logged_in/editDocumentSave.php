@@ -38,11 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ];
 
     $flaskUrl = 'https://python.tptimovyprojekt.software/update_document'; // Flask endpoint
+    $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") .
+                 "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
     $ch = curl_init($flaskUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
     curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Referer: $fullCallerUrl"
+    ]);
     $response = curl_exec($ch);
     $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);

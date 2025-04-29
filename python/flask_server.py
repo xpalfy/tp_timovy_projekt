@@ -9,6 +9,8 @@ from controller.document_service import DocumentService
 from sqlalchemy.exc import SQLAlchemyError
 from controller.db_controller import get_db_session
 import getpass
+import os
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 CORS(app)  
@@ -56,7 +58,7 @@ def get_example_json():
 def update_document():
     db = next(get_db_session())
     service = DocumentService(db)
-
+    folder = get_folder_from_referer()
     try:
         picture_id = int(request.form.get('id'))
         creator_id = int(request.form.get('user'))
@@ -73,7 +75,7 @@ def update_document():
                 return jsonify({'error': 'Document name already exists'}), 400
 
             if document.title != picture_name:
-                service.update_document_title(document, picture_name, creator_id)
+                service.update_document_title(document, picture_name, creator_id, folder)
                 print(f"Document title updated to {picture_name}")
 
         if shared_users:
@@ -94,6 +96,7 @@ def update_document():
 def delete_document():
     db = next(get_db_session())
     service = DocumentService(db)
+    folder = get_folder_from_referer()
 
     try:
         data = request.get_json()
@@ -106,7 +109,7 @@ def delete_document():
         if not user_id or not doc_id:
             return jsonify({'error': 'Missing required fields'}), 400
 
-        service.delete_document(int(doc_id), int(user_id))
+        service.delete_document(int(doc_id), int(user_id), folder)
 
         return jsonify({'success': True, 'message': 'Document deleted successfully'}), 200
 
@@ -115,6 +118,15 @@ def delete_document():
         return jsonify({'error': str(e)}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+def get_folder_from_referer():
+    referer = request.headers.get("Referer")
+    if referer:
+        path = urlparse(referer).path
+        segments = path.strip('/').split('/')
+        if segments:
+            return segments[0]
+    return os.getcwd().split(os.sep)[-1]
 
 if __name__ == '__main__':
     print("Starting Flask server...")
