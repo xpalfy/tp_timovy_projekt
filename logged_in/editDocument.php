@@ -22,7 +22,7 @@ if ($userId == null || $documentId == null) {
         'message' => 'Invalid URL',
         'type' => 'error'
     ];
-    header('Location: documents.php');
+    header('Location: ownCipherDipherDocuments.php');
     exit();
 }
 
@@ -31,7 +31,7 @@ if ($userId != $userData['id']) {
         'message' => 'You can only edit your own documents',
         'type' => 'error'
     ];
-    header('Location: documents.php');
+    header('Location: ownCipherDipherDocuments.php');
     exit();
 }
 
@@ -54,7 +54,7 @@ if ($result->num_rows == 0) {
             'message' => 'Document not found',
             'type' => 'error'
         ];
-        header('Location: documents.php');
+        header('Location: ownCipherDipherDocuments.php');
         exit();
     }
 
@@ -67,7 +67,7 @@ if ($result->num_rows == 0) {
             'message' => 'Document not found',
             'type' => 'error'
         ];
-        header('Location: documents.php');
+        header('Location: ownCipherDipherDocuments.php');
         exit();
     }
 }
@@ -223,10 +223,10 @@ $conn->close();
                     <div id="dropdownDocuments" class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                         <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
                             <li>
-                                <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key Documents</a>
+                                <a href="ownKeyownCipherDipherDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key Documents</a>
                             </li>
                             <li>
-                                <a href="ownCipherDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
+                                <a href="ownCipherownCipherDipherDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
                             </li>
                         </ul>
                     </div>
