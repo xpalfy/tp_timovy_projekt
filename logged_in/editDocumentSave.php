@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'message' => 'You can only edit your own documents',
             'type' => 'error'
         ];
-        header('Location: documents.php');
+        header('Location: ownCipherDocuments.php');
         exit();
     }
 
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'message' => 'Document updated successfully',
             'type' => 'success'
         ];
-        header('Location: documents.php');
+        header('Location: ownCipherDocuments.php');
         exit();
     } else {
         $_SESSION['toast'] = [
