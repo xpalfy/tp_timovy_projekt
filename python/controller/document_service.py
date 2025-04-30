@@ -79,3 +79,7 @@ class DocumentService:
         # Delete the associated directory and its contents
         if os.path.isdir(doc_directory):
             shutil.rmtree(doc_directory)
+
+    def edit_public(self, document: Document, public: bool):
+        document.public = public
+        self.db.commit()
