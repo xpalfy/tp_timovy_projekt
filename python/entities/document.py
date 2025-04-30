@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import create_engine, Column, Integer, String, Enum, Table, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Enum, Table, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from entities.users import User
@@ -51,6 +51,7 @@ class Document(Base):
     
     tags: List["Tag"] = relationship("Tag", secondary=document_tag_association, back_populates="documents")
     items: List["Item"] = relationship("Item", back_populates="document")
+    is_public = Column(Boolean, default=False, nullable=True)
 
     
     

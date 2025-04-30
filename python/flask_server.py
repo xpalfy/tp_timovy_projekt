@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controller.document_service import DocumentService
 from sqlalchemy.exc import SQLAlchemyError
-from controller.db_controller import get_db_session
+from controller.db_controller import get_db_session, init_db
 import getpass
 import os
 from urllib.parse import urlparse
@@ -64,6 +64,7 @@ def update_document():
         creator_id = int(request.form.get('user'))
         picture_name = request.form.get('name')
         shared_users_raw = request.form.get('sharedUsers', '')
+        is_public = request.form.get('isPublic', 'false').lower() == 'true'
         shared_users = [u.strip() for u in shared_users_raw.split(',') if u.strip()]
 
         document = service.get_document_by_id_and_author(picture_id, creator_id)
@@ -80,6 +81,8 @@ def update_document():
 
         if shared_users:
             service.update_shared_users(document, shared_users)
+
+        service.edit_public(document, is_public)
 
         service.save_changes()
         print(f"Document {picture_id} updated successfully")
@@ -131,6 +134,16 @@ def get_folder_from_referer():
 if __name__ == '__main__':
     print("Starting Flask server...")
     username = getpass.getuser()
+    
+    # Initialize the database schema
+    try:
+        print("Initializing database schema...")
+        init_db()
+        print("Database schema synchronized successfully.")
+    except SQLAlchemyError as e:
+        print(f"Error initializing database schema: {e}")
+        exit(1)
+        
     print(f"Script is run by user: {username}")
     classifier = Classifier(40, 60)
     print("Classifier initialized")
