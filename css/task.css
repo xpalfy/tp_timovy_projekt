@@ -1,0 +1,10 @@
+.image-card,
+.card-hover {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.image-card:hover,
+.card-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}

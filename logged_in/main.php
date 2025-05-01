@@ -22,252 +22,85 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>HandScript</title>
 
-    <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
-
-
-    <!-- Toastr Notifications -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    <!-- GSAP for animations -->
-    <!-- GSAP Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <!-- GSAP ScrollTrigger Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-    <!-- Lottie Animation Player -->
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-
-    <!-- Custom JS -->
     <script src="../js/segment-rect.js?v=<?php echo time() ?>" type="module"></script>
     <script src="../js/letter-rect.js?v=<?php echo time() ?>" type="module"></script>
-
-
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom right, #ede1c3, #cdbf9b);
-        }
-
-        #previewContainer {
-            width: 100%;
-            height: 55vh;
-            /* Fixed height for all previews */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            background-color: rgba(248, 241, 222, 0);
-            /* subtle beige background */
-            border-radius: 12px;
-        }
-
-        #imagePreview {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-            display: none;
-            border-radius: 12px;
-            transition: opacity 0.3s ease;
-        }
-
-
-        .glass {
-            background: rgba(236, 225, 193, 0.65);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-papyrus {
-            background-color: #bfa97a;
-            color: #3b2f1d;
-        }
-
-        .btn-papyrus:hover {
-            background-color: #a68f68;
-        }
-
-        .text-papyrus {
-            color: #3b2f1d;
-        }
-
-        .slide-custom {
-            padding: 2rem 4rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #arrow_down {
-            animation: zoom_and_point_down 9s infinite;
-        }
-
-
-
-        @keyframes zoom_and_point_down {
-            0% {
-                transform: scale(1);
-            }
-
-            5.55% {
-                transform: scale(1.2);
-            }
-
-            11.1% {
-                transform: scale(1);
-            }
-
-            16.65% {
-                transform: translateY(+10px);
-            }
-
-            22.2% {
-                transform: translateY(0);
-            }
-
-            27.75% {
-                transform: translateY(+10px);
-            }
-
-            33.3% {
-                transform: translateY(0);
-            }
-        }
-
-        .step-progress-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            gap: 10px;
-        }
-
-        .step-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 0.3s ease;
-        }
-
-        /* Hover group to scale both elements */
-        .step-group:hover {
-            transform: scale(1.2);
-        }
-
-        .step {
-            width: 42px;
-            height: 42px;
-            background-color: #cdbf9b;
-            color: #3b2f1d;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            z-index: 1;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            transition: background-color 0.6s;
-        }
-
-        .step.active {
-            background-color: #bfa97a;
-            color: white;
-        }
-
-        .step-info {
-            margin-top: 8px;
-            font-size: 0.95rem;
-            transition: transform 0.3s ease;
-        }
-
-        .line {
-            flex: 1;
-            height: 4px;
-            background-color: #e5d9b6;
-            border-radius: 2px;
-            transition: background-color 0.6s;
-        }
-
-        .not-copyable {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        .not-draggable {
-            -webkit-user-drag: none;
-            user-select: none;
-        }
-    </style>
-
+    <link rel="stylesheet" href="../css/main.css?v=<?php echo time() ?>">
 </head>
 
-<body class="min-h-screen flex flex-col">
-<!-- Navbar -->
-<nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
-    id="navbar">
-    <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
-        <a href="main.php"
-            class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
-            <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
-                style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-            HandScript
-        </a>
-        <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
-        <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
-        <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
-            <li class="flex items-center">
-                <a href="profile.php" class="nav-link flex items-center hover:underline">
-                    Profile
-                    <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2" style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                </a>
-            </li>
-            <li class="flex items-center ml-6">
-                <div class="relative flex items-center">
-                    <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments" class="hover:underline flex items-center">
-                        Documents
-                        <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
-                        style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
-                        </svg>
-                    </button>
-                    <div id="dropdownDocuments" class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                        <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
-                            <li>
-                                <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key Documents</a>
-                            </li>
-                            <li>
-                                <a href="ownCipherDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </li>
-            <li class="flex items-center ml-6">
-                <a href="../logout.php" class="nav-link flex items-center hover:underline">
-                    Logout
-                    <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2" style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                </a>
-            </li>
-        </ul>
+<body class="min-h-screen flex flex-col not-copyable not-draggable text-papyrus">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+        id="navbar">
+        <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+            <a href="main.php"
+                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
+                <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
+                    style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                HandScript
+            </a>
+            <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
+                <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
+                    <li class="flex items-center">
+                        <a href="profile.php" class="nav-link flex items-center hover:underline">
+                            Profile
+                            <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center ml-6">
+                        <div class="relative flex items-center">
+                            <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
+                                class="hover:underline flex items-center">
+                                Documents
+                                <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
+                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                                <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 1l4 4 4-4" />
+                                </svg>
+                            </button>
+                            <div id="dropdownDocuments"
+                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                                <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
+                                    <li>
+                                        <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
+                                            Documents</a>
+                                    </li>
+                                    <li>
+                                        <a href="ownCipherDocuments.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex items-center ml-6">
+                        <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                            Logout
+                            <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
 
     <!-- Welcome Hero Section -->
@@ -466,7 +299,8 @@ try {
                     </div>
 
                     <!-- Preview Image Container -->
-                    <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]" style="position: relative;">
+                    <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]"
+                        style="position: relative;">
                         <!-- Left Nav -->
                         <button
                             class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
@@ -493,7 +327,8 @@ try {
                     </div>
 
                     <!-- Preview Image Container -->
-                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]" style="position: relative;">
+                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]"
+                        style="position: relative;">
                         <!-- Left Nav -->
                         <button
                             class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
@@ -520,7 +355,8 @@ try {
                     </div>
 
                     <!-- Preview Image Container -->
-                    <div id="previewContainerLetter" class="relative flex justify-center items-center min-h-[250px]" style="position: relative;">
+                    <div id="previewContainerLetter" class="relative flex justify-center items-center min-h-[250px]"
+                        style="position: relative;">
                         <!-- Left Nav -->
                         <button
                             class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
@@ -546,18 +382,20 @@ try {
                             autoplay></dotlottie-player>
                     </div>
 
-                     <!-- JSON Textarea Editor -->
+                    <!-- JSON Textarea Editor -->
                     <div class="mt-4 text-left">
-                        <label for="jsonEditor" class="block text-sm font-medium text-yellow-100 mb-1">Edit JSON:</label>
-                        <textarea id="jsonEditor" rows="14" class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800"
+                        <label for="jsonEditor" class="block text-sm font-medium text-yellow-100 mb-1">Edit
+                            JSON:</label>
+                        <textarea id="jsonEditor" rows="14"
+                            class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800"
                             placeholder="{ ... }">{}</textarea>
                     </div>
 
                     <!-- document name -->
                     <div class="mt-4">
-                         <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
-                             placeholder="Document Name" />
-                     </div>
+                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
+                            placeholder="Document Name" />
+                    </div>
                 </div>
             </div>
 
@@ -588,7 +426,8 @@ try {
 
             <!-- Progress Buttons STEP 2 -> STEP 3 -->
             <div id="LettersCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment
+                    Letters</button>
             </div>
 
             <!-- Progress Buttons STEP 3 -> STEP 4 -->
@@ -600,7 +439,7 @@ try {
             <div id="EditJSONCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="editJSONCipher()">Edit JSON</button>
             </div>
-            
+
             <!-- Progress Buttons STEP 4 -> STEP Final -->
             <div id="SaveKeyBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Save Key</button>
@@ -626,7 +465,7 @@ try {
     </footer>
 
     <script>
-    // Pass PHP session toast data to JS
+        // Pass PHP session toast data to JS
         window.toastData = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
         <?php unset($_SESSION['toast']); ?> // Clear toast after reading
     </script>
