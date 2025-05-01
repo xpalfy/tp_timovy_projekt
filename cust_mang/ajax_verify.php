@@ -38,8 +38,12 @@ if ($code === $dbCode) {
     $update->execute();
     $update->close();
 
-    $_SESSION['toast'] = ['type' => 'success', 'message' => 'Email verified successfully!'];
+    $_SESSION['toast'] = [
+        'type' => 'success',
+        'message' => 'Email verified successfully, now you can login.'
+    ];
     echo json_encode(['success' => true, 'message' => 'Email verified successfully, now you can login.']);
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid verification code.']);
 }
+exit;

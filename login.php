@@ -85,14 +85,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
-    $(document).ready(function () {
-        let toast = <?php echo json_encode($toast); ?>;
+    function checkToasts() {
+        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
         if (toast) {
             toastr[toast.type](toast.message);
+            <?php unset($_SESSION['toast']); ?>
         }
-    });
+    }
     
     AOS.init({ duration: 1000, once: true });
+    checkToasts();
   </script>
 
 <!-- Navbar -->
