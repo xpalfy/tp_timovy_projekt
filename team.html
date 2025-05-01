@@ -6,196 +6,168 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HandScript: Meet the Team</title>
 
-  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- AOS -->
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
   <link href="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/team.css" />
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom right, #f5eddc, #d4c6a3);
-    }
-
-    .glass {
-      background: rgba(255, 255, 255, 0.55);
-      backdrop-filter: blur(8px);
-      border-radius: 1.25rem;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .hover-scale {
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-
-    .hover-scale:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .hover-shadow {
-      transition: box-shadow 0.4s ease;
-    }
-
-    .hover-shadow:hover {
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-papyrus {
-      background-color: #bfa97a;
-      color: #3b2f1d;
-    }
-
-    .btn-papyrus:hover {
-      background-color: #a68f68;
-    }
-  </style>
 </head>
 
 <body class="text-[#3b2f1d]">
 
-<!-- Navbar -->
-<nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
-    <div class="hidden md:flex space-x-6 text-lg items-center">
-      <a href="./index.html" class="hover:underline">Home</a>
-      <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="hover:underline flex items-center">
-        Project
-        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4"/>
-        </svg>
-      </button>
-      <div id="dropdownNavbar" class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
-        <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownLargeButton">
-          <li>
-            <a href="./task.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
-          </li>
-          <li>
-            <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
-          </li>
-        </ul>
-      </div>
-      <a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Minutes</a>
-      <a href="./login.php" class="hover:underline">Login</a>
-      <a href="./register.php" class="hover:underline">Register</a>
-    </div>
-  </div>
-</nav>
-
-<!-- Hero -->
-<header class="relative w-full h-[60vh] overflow-hidden mb-16">
-  <img src="img/team_tp.jpg" alt="Hero" class="w-full h-full object-cover" />
-  <div class="absolute inset-0 bg-black bg-opacity-40 flex justify-center items-center px-4">
-    <div class="glass p-8 border border-white/20 text-[#f8f6f1] text-center w-full max-w-2xl transition duration-300 hover:scale-105 hover:shadow-xl" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);" data-aos="zoom-in">
-      <h1 class="text-3xl md:text-4xl font-bold mb-3">Meet Our Team</h1>
-      <p class="text-base md:text-lg">The minds behind HandScript</p>
-    </div>
-  </div>
-</header>
-
-<!-- Introduction Section -->
-<section class="max-w-6xl mx-auto px-6 mb-16 text-center" data-aos="fade-up">
-  <div class="glass p-8 rounded-2xl hover-shadow">
-    <h2 class="text-3xl font-bold mb-4">About Us</h2>
-    <p class="text-lg">We are a passionate group of Applied Informatics graduates from STU Bratislava, blending expertise in security systems and intelligent software solutions. Our team is dedicated to creating innovative applications that preserve historical heritage using modern technologies. Together, we strive for quality, creativity, and technological excellence.</p>
-  </div>
-</section>
-
-<!-- Team Section -->
-<section class="max-w-6xl mx-auto px-6 mb-24">
-  <div class="flex flex-wrap justify-center gap-12">
-
-    <!-- Team Members -->
-    <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up">
-      <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Bence Both</h2>
-      <p class="text-center mb-2 text-sm">Email: <a href="mailto:xbothb@stuba.sk" class="underline">xbothb@stuba.sk</a></p>
-      <div class="text-left">
-        <p><strong>Skills:</strong></p>
-        <ul class="list-disc list-inside">
-          <li>Expert: Python, Java, Linux</li>
-          <li>Advanced: JavaScript, C, C++, SQL</li>
-          <li>Experience: HTML, CSS, WordPress</li>
-        </ul>
+  <!-- Navbar -->
+  <nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+      <div class="hidden md:flex space-x-6 text-lg items-center">
+        <a href="./index.html" class="hover:underline">Home</a>
+        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="hover:underline flex items-center">
+          Project
+          <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+        <div id="dropdownNavbar"
+          class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
+          <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownLargeButton">
+            <li>
+              <a href="./task.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
+            </li>
+            <li>
+              <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
+            </li>
+          </ul>
+        </div>
+        <a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Minutes</a>
+        <a href="./login.php" class="hover:underline">Login</a>
+        <a href="./register.php" class="hover:underline">Register</a>
       </div>
     </div>
+  </nav>
 
-    <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="100">
-      <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Matyas Horváth</h2>
-      <p class="text-center mb-2 text-sm">Email: <a href="mailto:xhorvathm2@stuba.sk" class="underline">xhorvathm2@stuba.sk</a></p>
-      <div class="text-left">
-        <p><strong>Skills:</strong></p>
-        <ul class="list-disc list-inside">
-          <li>Expert: Linux, Python, C#, .NET</li>
-          <li>Advanced: HTML, CSS, JavaScript, Java</li>
-          <li>Experience: JQuery, Bootstrap, C, C++</li>
-        </ul>
+  <!-- Hero -->
+  <header class="relative w-full h-[60vh] overflow-hidden mb-16">
+    <img src="img/team_tp.jpg" alt="Hero" class="w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black bg-opacity-40 flex justify-center items-center px-4">
+      <div
+        class="glass p-8 border border-white/20 text-[#f8f6f1] text-center w-full max-w-2xl transition duration-300 hover:scale-105 hover:shadow-xl"
+        style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);" data-aos="zoom-in">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Meet Our Team</h1>
+        <p class="text-base md:text-lg">The minds behind HandScript</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Introduction Section -->
+  <section class="max-w-6xl mx-auto px-6 mb-16 text-center" data-aos="fade-up">
+    <div class="glass p-8 rounded-2xl hover-shadow">
+      <h2 class="text-3xl font-bold mb-4">About Us</h2>
+      <p class="text-lg">We are a passionate group of Applied Informatics graduates from STU Bratislava, blending
+        expertise in security systems and intelligent software solutions. Our team is dedicated to creating innovative
+        applications that preserve historical heritage using modern technologies. Together, we strive for quality,
+        creativity, and technological excellence.</p>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="max-w-6xl mx-auto px-6 mb-24">
+    <div class="flex flex-wrap justify-center gap-12">
+
+      <!-- Team Members -->
+      <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up">
+        <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Bence Both</h2>
+        <p class="text-center mb-2 text-sm">Email: <a href="mailto:xbothb@stuba.sk"
+            class="underline">xbothb@stuba.sk</a></p>
+        <div class="text-left">
+          <p><strong>Skills:</strong></p>
+          <ul class="list-disc list-inside">
+            <li>Expert: Python, Java, Linux</li>
+            <li>Advanced: JavaScript, C, C++, SQL</li>
+            <li>Experience: HTML, CSS, WordPress</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Matyas Horváth</h2>
+        <p class="text-center mb-2 text-sm">Email: <a href="mailto:xhorvathm2@stuba.sk"
+            class="underline">xhorvathm2@stuba.sk</a></p>
+        <div class="text-left">
+          <p><strong>Skills:</strong></p>
+          <ul class="list-disc list-inside">
+            <li>Expert: Linux, Python, C#, .NET</li>
+            <li>Advanced: HTML, CSS, JavaScript, Java</li>
+            <li>Experience: JQuery, Bootstrap, C, C++</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Jozef Nyitrai</h2>
+        <p class="text-center mb-2 text-sm">Email: <a href="mailto:xnyitrai@stuba.sk"
+            class="underline">xnyitrai@stuba.sk</a></p>
+        <div class="text-left">
+          <p><strong>Skills:</strong></p>
+          <ul class="list-disc list-inside">
+            <li>Expert: HTML, CSS, JavaScript, Linux, PHP</li>
+            <li>Advanced: SQL, C, C++, Java, Python</li>
+            <li>Experience: WordPress, JQuery, Bootstrap</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="300">
+        <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Áron Tükör</h2>
+        <p class="text-center mb-2 text-sm">Email: <a href="mailto:xtukor@stuba.sk"
+            class="underline">xtukor@stuba.sk</a></p>
+        <div class="text-left">
+          <p><strong>Skills:</strong></p>
+          <ul class="list-disc list-inside">
+            <li>Expert: Python, HTML, JavaScript, PHP</li>
+            <li>Advanced: CSS, Java, C, C++, Linux</li>
+            <li>Experience: WordPress, JQuery, Bootstrap</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="400">
+        <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Vincent Pálfy</h2>
+        <p class="text-center mb-2 text-sm">Email: <a href="mailto:xpalfy@stuba.sk"
+            class="underline">xpalfy@stuba.sk</a></p>
+        <div class="text-left">
+          <p><strong>Skills:</strong></p>
+          <ul class="list-disc list-inside">
+            <li>Expert: HTML, CSS, JavaScript, SQL, PHP</li>
+            <li>Advanced: Linux, C, C++, Java, Python</li>
+            <li>Experience: WordPress, JQuery, Bootstrap</li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="200">
-      <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Jozef Nyitrai</h2>
-      <p class="text-center mb-2 text-sm">Email: <a href="mailto:xnyitrai@stuba.sk" class="underline">xnyitrai@stuba.sk</a></p>
-      <div class="text-left">
-        <p><strong>Skills:</strong></p>
-        <ul class="list-disc list-inside">
-          <li>Expert: HTML, CSS, JavaScript, Linux, PHP</li>
-          <li>Advanced: SQL, C, C++, Java, Python</li>
-          <li>Experience: WordPress, JQuery, Bootstrap</li>
-        </ul>
-      </div>
+    <!-- Team Leader -->
+    <div class="glass p-8 mt-16 hover-scale" data-aos="fade-up">
+      <h3 class="text-2xl font-semibold mb-2 text-center">👨‍🏫 Ing. Stanislav Marochok (Team Leader)</h3>
+      <p class="text-center mb-2 text-sm">Email: <a href="mailto:stanislav.marochok@stuba.sk"
+          class="underline">stanislav.marochok@stuba.sk</a></p>
+      <p class="text-center">Project Supervisor for Web Application for Historical Handwritten Documents Processing.</p>
     </div>
+  </section>
 
-    <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="300">
-      <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Áron Tükör</h2>
-      <p class="text-center mb-2 text-sm">Email: <a href="mailto:xtukor@stuba.sk" class="underline">xtukor@stuba.sk</a></p>
-      <div class="text-left">
-        <p><strong>Skills:</strong></p>
-        <ul class="list-disc list-inside">
-          <li>Expert: Python, HTML, JavaScript, PHP</li>
-          <li>Advanced: CSS, Java, C, C++, Linux</li>
-          <li>Experience: WordPress, JQuery, Bootstrap</li>
-        </ul>
-      </div>
-    </div>
+  <!-- Footer -->
+  <footer class="bg-[#d7c7a5] text-center py-6 border-t border-yellow-300 text-[#3b2f1d]">
+    &copy; 2025 HandScript — <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+  </footer>
 
-    <div class="glass p-6 hover-scale flex flex-col w-[320px] " data-aos="fade-up" data-aos-delay="400">
-      <h2 class="text-2xl font-semibold mb-2 text-center">👤 Bc. Vincent Pálfy</h2>
-      <p class="text-center mb-2 text-sm">Email: <a href="mailto:xpalfy@stuba.sk" class="underline">xpalfy@stuba.sk</a></p>
-      <div class="text-left">
-        <p><strong>Skills:</strong></p>
-        <ul class="list-disc list-inside">
-          <li>Expert: HTML, CSS, JavaScript, SQL, PHP</li>
-          <li>Advanced: Linux, C, C++, Java, Python</li>
-          <li>Experience: WordPress, JQuery, Bootstrap</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Team Leader -->
-  <div class="glass p-8 mt-16 hover-scale" data-aos="fade-up">
-    <h3 class="text-2xl font-semibold mb-2 text-center">👨‍🏫 Ing. Stanislav Marochok (Team Leader)</h3>
-    <p class="text-center mb-2 text-sm">Email: <a href="mailto:stanislav.marochok@stuba.sk" class="underline">stanislav.marochok@stuba.sk</a></p>
-    <p class="text-center">Project Supervisor for Web Application for Historical Handwritten Documents Processing.</p>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="bg-[#d7c7a5] text-center py-6 border-t border-yellow-300 text-[#3b2f1d]">
-  &copy; 2025 HandScript — <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
-</footer>
-
-<!-- AOS Init -->
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script>
-  AOS.init({ duration: 1000, once: true });
-</script>
-<script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+  <!-- AOS Init -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+  </script>
+  <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 </body>
+
 </html>

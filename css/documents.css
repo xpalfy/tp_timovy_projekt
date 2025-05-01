@@ -11,21 +11,29 @@ body {
     position: relative;
     width: 300px;
     height: 400px;
-    border: 4px solid #ddd; /* Border for the card */
-    border-radius: 10px; /* Rounded corners */
-    overflow: hidden; /* Ensures content stays inside the card */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+    border: 4px solid #ddd;
+    /* Border for the card */
+    border-radius: 10px;
+    /* Rounded corners */
+    overflow: hidden;
+    /* Ensures content stays inside the card */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for a modern look */
     margin: 20px;
-    background: #f9f9f9; /* Fallback background color */
-    transition: all 0.3s ease; /* Smooth transition on hover */
+    background: #f9f9f9;
+    /* Fallback background color */
+    transition: all 0.3s ease;
+    /* Smooth transition on hover */
 }
 
 .card-pic:hover {
-    transform: scale(1.05); /* Increases the size of the card on hover */
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Increases the shadow on hover */
+    transform: scale(1.05);
+    /* Increases the size of the card on hover */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    /* Increases the shadow on hover */
 }
 
-.card-pic img{
+.card-pic img {
     width: -webkit-fill-available;
     height: 100%;
     object-fit: cover;
@@ -37,15 +45,18 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the card without distortion */
-    filter: brightness(70%); /* Darkens the image slightly for text contrast */
+    object-fit: cover;
+    /* Ensures the image covers the card without distortion */
+    filter: brightness(70%);
+    /* Darkens the image slightly for text contrast */
 }
 
 .card-body {
     position: absolute;
     bottom: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background for text */
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background for text */
     color: white;
     padding: 15px;
     text-align: center;
@@ -77,20 +88,28 @@ body {
 
 .card-buttons {
     display: flex;
-    justify-content: space-around; /* Spaces buttons evenly */
-    gap: 10px; /* Adds space between the buttons */
+    justify-content: space-around;
+    /* Spaces buttons evenly */
+    gap: 10px;
+    /* Adds space between the buttons */
 }
 
 .btn {
-    flex: 1; /* Makes both buttons take up the same amount of space */
-    text-align: center; /* Centers the button text */
-    padding: 10px; /* Adjusts the padding inside the button */
-    font-size: 0.9em; /* Adjusts font size */
+    flex: 1;
+    /* Makes both buttons take up the same amount of space */
+    text-align: center;
+    /* Centers the button text */
+    padding: 10px;
+    /* Adjusts the padding inside the button */
+    font-size: 0.9em;
+    /* Adjusts font size */
     border: none;
-    border-radius: 5px; /* Adds rounded corners */
+    border-radius: 5px;
+    /* Adds rounded corners */
     cursor: pointer;
     transition: all 0.3s ease;
-    text-decoration: none; /* Removes underline for anchor buttons */
+    text-decoration: none;
+    /* Removes underline for anchor buttons */
 }
 
 
@@ -99,4 +118,65 @@ body {
     justify-content: center;
     align-items: flex-start;
     flex-wrap: wrap;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(to bottom right, #ede1c3, #cdbf9b);
+    height: 100%;
+}
+
+.text-papyrus {
+    color: #3b2f1d;
+}
+
+.card-img {
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.display-btns {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.item-display-btn,
+.list-display-btn {
+    background-color: rgb(189, 175, 145);
+    color: #3b2f1d;
+    border: none;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s;
+    border: 1px solid #3b2f1d;
+}
+
+.item-display-btn:hover,
+.list-display-btn:hover {
+    background-color: #cdbf9b;
+    transform: scale(1.10);
+}
+
+.item-display-btn.active,
+.list-display-btn.active {
+    background-color: #cdbf9b;
+    font-weight: bold;
+}
+
+.item-display-btn {
+    background-image: url('../img/item.png?');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center left 10px;
+}
+
+.list-display-btn {
+    background-image: url('../img/list.png?');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center left 10px;
 }

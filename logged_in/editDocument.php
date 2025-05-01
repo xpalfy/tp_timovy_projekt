@@ -93,155 +93,76 @@ $conn->close();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-
-    <!-- DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="../css/editDocument.css?v=<?php echo time(); ?>" />
 </head>
 
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background: linear-gradient(to bottom right, #ede1c3, #cdbf9b);
-    }
-
-    body {
-        height: 100%;
-    }
-
-    .text-papyrus {
-        color: #3b2f1d;
-    }
-
-    /* Reduce spacing and button size */
-    .dataTables_filter input {
-        padding: 4px 6px;
-        font-size: 0.875rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        padding: 2px 8px;
-        margin: 0 2px;
-        font-size: 0.8rem;
-        border-radius: 4px;
-    }
-
-    .dataTables_wrapper .dataTables_paginate {
-        margin-top: 0.5rem;
-    }
-
-    table.dataTable td {
-        padding: 6px 8px;
-    }
-
-    table.dataTable thead th {
-        padding: 6px 8px;
-    }
-
-    /* Style the autocomplete dropdown to match Tailwind aesthetics */
-    /* Dropdown container */
-    .ui-autocomplete {
-        z-index: 9999;
-        max-height: 12rem;
-        max-width: 10rem;
-        overflow-y: auto;
-        overflow-x: hidden;
-        background-color: white;
-        border: 2px solid #facc15;
-        /* Tailwind yellow-400 */
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-size: 0.875rem;
-        padding: 0.5rem 0;
-        /* Inner padding to avoid touching the border */
-    }
-
-    /* Dropdown item */
-    .ui-menu-item {
-        padding: 5px 5px;
-        /* space between items */
-        cursor: pointer;
-        /* rounded-md */
-    }
-
-    .ui-menu-item-wrapper {
-        padding: 5px 20px;
-        /* space between items */
-        cursor: pointer;
-        border-radius: 0.375rem;
-        /* rounded-md */
-    }
-
-    /* Active (hovered or selected) item */
-    .ui-menu-item-wrapper.ui-state-active {
-        background-color: #fef08a;
-        /* Tailwind yellow-200 */
-        color: #3b2f1d;
-    }
-</style>
-
-
-
-
 <body class="bg-gradient-to-br from-[#ede1c3] to-[#cdbf9b] text-papyrus min-h-screen flex flex-col select-none">
-<!-- Navbar -->
-<nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
-    id="navbar">
-    <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
-        <a href="main.php"
-            class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
-            <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
-                style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-            HandScript
-        </a>
-        <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
-        <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
-        <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
-            <li class="flex items-center">
-                <a href="profile.php" class="nav-link flex items-center hover:underline">
-                    Profile
-                    <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2" style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                </a>
-            </li>
-            <li class="flex items-center ml-6">
-                <div class="relative flex items-center">
-                    <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments" class="hover:underline flex items-center">
-                        Documents
-                        <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
-                        style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
-                        </svg>
-                    </button>
-                    <div id="dropdownDocuments" class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                        <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
-                            <li>
-                                <a href="ownKeyownCipherDipherDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key Documents</a>
-                            </li>
-                            <li>
-                                <a href="ownCipherownCipherDipherDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </li>
-            <li class="flex items-center ml-6">
-                <a href="../logout.php" class="nav-link flex items-center hover:underline">
-                    Logout
-                    <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2" style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                </a>
-            </li>
-        </ul>
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+        id="navbar">
+        <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+            <a href="main.php"
+                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
+                <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
+                    style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                HandScript
+            </a>
+            <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
+                <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
+                    <li class="flex items-center">
+                        <a href="profile.php" class="nav-link flex items-center hover:underline">
+                            Profile
+                            <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                    <li class="flex items-center ml-6">
+                        <div class="relative flex items-center">
+                            <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
+                                class="hover:underline flex items-center">
+                                Documents
+                                <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
+                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                                <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 1l4 4 4-4" />
+                                </svg>
+                            </button>
+                            <div id="dropdownDocuments"
+                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                                <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
+                                    <li>
+                                        <a href="ownKeyownCipherDipherDocuments.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Key Documents</a>
+                                    </li>
+                                    <li>
+                                        <a href="ownCipherownCipherDipherDocuments.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex items-center ml-6">
+                        <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                            Logout
+                            <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <main class="flex-grow container mx-auto px-4 py-10">
         <h1 class="text-4xl font-bold text-center mb-2"><?php echo $picture['name'] ?></h1>
