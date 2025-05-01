@@ -312,10 +312,19 @@ try {
                 selectedItemImagePath = itemsData.find(item => item.id == selectedItemId).image_path;
                 showSegmentor();
                 updateImagePreview();
+                deletePolygons();
                 CalculateSegmentation();
                 hideLoading();
             });
         });
+
+        function deletePolygons() {
+            const parent = document.getElementById('previewContainerSegment');
+            const polygons = parent.querySelectorAll('segment-rect');
+            polygons.forEach(polygon => {
+                parent.removeChild(polygon);
+            });
+        }
 
         function showSegmentor() {
             document.getElementById('imageSegmentor').style.display = 'block';
