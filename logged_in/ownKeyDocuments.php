@@ -113,17 +113,26 @@ try {
     <main class="flex-grow">
         <section class="container mx-auto px-6 py-10">
             <h2 class="text-4xl font-bold text-center text-papyrus mb-8">🔑 My Key Documents</h2>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
-
-                <!-- Search Field -->
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-6 mt-4">
                 <div class="w-full max-w-md">
                     <label for="search-input" class="block mb-2 text-lg font-medium text-[#3b2f1d]">🔎 Search
                         documents</label>
                     <input type="text" id="search-input" placeholder="Type to search..."
                         class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] placeholder-[#6b5b3e] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
                 </div>
+                <div class="w-full max-w-md">
+                    <label for="page-size-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📄 Documents per page</label>
+                    <select id="page-size-select"
+                        class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                        <option value="3">3</option>
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
 
-                <!-- Select Field -->
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-10">
                 <div class="w-full max-w-md">
                     <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📂 Filter by
                         type</label>
@@ -134,12 +143,13 @@ try {
                         <option value="GLOBAL">Global Documents</option>
                     </select>
                 </div>
-
             </div>
 
-            <div id="my-documents-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-                style="display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+            <div class="flex justify-center">
+                <div id="my-documents-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                </div>
             </div>
+
             <div id="pagination" class="flex justify-center mt-8"></div> <!-- This one -->
         </section>
     </main>
@@ -150,11 +160,12 @@ try {
     <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <script>
         let documentsData = [], imagesData = {};
+        let currentPageSize = 5;
 
-        function renderDocuments(documents, images) {
+        function renderDocuments(documents, images, pageSize = 5) {
             $('#pagination').pagination({
                 dataSource: documents,
-                pageSize: 3,
+                pageSize: pageSize,
                 showPrevious: true,
                 showNext: true,
                 callback: function (data, pagination) {
@@ -174,19 +185,20 @@ try {
                         const card = document.createElement('div');
                         card.className = 'card-pic';
                         card.innerHTML = `
-                    <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
-                    <div class="card-body">
-                        <h5 class="card-title">${doc.title}</h5>
-                        <div class="card-buttons">
-                            <a href="editDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                            <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
-                        </div>
-                    </div>`;
+                            <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
+                            <div class="card-body">
+                                <h5 class="card-title">${doc.title}</h5>
+                                <div class="card-buttons">
+                                    <a href="editDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                                    <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
+                                </div>
+                            </div>`;
                         grid.appendChild(card);
                     });
                 }
             });
         }
+
 
         function fetchSharedDocumentsAndImages() {
             Promise.all([
@@ -205,7 +217,7 @@ try {
                         }
                     });
 
-                    renderDocuments(documentsData, imagesData);
+                    renderDocuments(filteredDocs, imagesData, currentPageSize);
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -230,7 +242,7 @@ try {
                         }
                     });
 
-                    renderDocuments(documentsData, imagesData);
+                    renderDocuments(documentsData, imagesData, currentPageSize);
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -255,7 +267,7 @@ try {
                         }
                     });
 
-                    renderDocuments(documentsData, imagesData);
+                    renderDocuments(documentsData, imagesData, currentPageSize);
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -311,7 +323,7 @@ try {
         $('#search-input').on('input', function () {
             const searchTerm = $(this).val().toLowerCase();
             const filteredDocs = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
-            renderDocuments(filteredDocs, imagesData);
+            renderDocuments(filteredDocs, imagesData, currentPageSize);
         });
 
         $('#filter-select').on('change', function () {
@@ -323,6 +335,11 @@ try {
             } else {
                 fetchPublicDocumentsAndImages();
             }
+        });
+
+        $('#page-size-select').on('change', function () {
+            currentPageSize = parseInt($(this).val());
+            renderDocuments(documentsData, imagesData, currentPageSize);
         });
 
 
