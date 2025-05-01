@@ -60,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save it properly formatted
         $json_text = json_encode($json_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     
-
     }
 
     if ($post['type'] == 'CIPHER' && empty($post['decoded_text'])) {
@@ -184,19 +183,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $row = $result->fetch_assoc();
     $item_id = $row['id'];
-    $stmt->close();
-
-    // insert result into the database
-    $stmt = $conn->prepare('INSERT INTO processing_results (item_id, status, message, model_used, created_date, modified_date, result) VALUES (?, ?, ?, ?, ?, ?, ?)');
-    $status = 'PROCESSED';
-    $message = 'File processed successfully';
-    $model_used = 'MODEL1'; // Replace with actual model name if needed
-    $stmt->bind_param('issssss', $item_id, $status, $message, $model_used, $date, $date, $json_text);
-    if (!$stmt->execute()) {
-        http_response_code(500);
-        echo json_encode(['error' => 'Failed to insert processing result']);
-        exit;
-    }
     $stmt->close();
     $conn->close();
     echo json_encode(['success' => true, 'message' => 'File moved and database updated', 'item_id' => $item_id, 'file_path' => $new_file_path]);
