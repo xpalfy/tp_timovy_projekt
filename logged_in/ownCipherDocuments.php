@@ -99,6 +99,34 @@ try {
                         </div>
                     </li>
                     <li class="flex items-center ml-6">
+                        <div class="relative flex items-center">
+                            <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
+                                class="hover:underline flex items-center">
+                                Tools
+                                <img src="../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
+                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                                <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 1l4 4 4-4" />
+                                </svg>
+                            </button>
+                            <div id="dropdownTools"
+                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                                <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
+                                    <li>
+                                        <a href="modules/segmentModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex items-center ml-6">
                         <a href="../logout.php" class="nav-link flex items-center hover:underline">
                             Logout
                             <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
