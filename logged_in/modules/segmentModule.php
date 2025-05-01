@@ -100,7 +100,7 @@ try {
                             <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
                                 class="hover:underline flex items-center">
                                 Tools
-                                <img src="../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
+                                <img src="../../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
                                     style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                                 <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                     fill="none" viewBox="0 0 10 6">
