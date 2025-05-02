@@ -8,6 +8,7 @@ from flask_cors import CORS
 from controller.document_service import DocumentService
 from sqlalchemy.exc import SQLAlchemyError
 from controller.db_controller import get_db_session, init_db
+from validate_jwt import validate_token
 import getpass
 import os
 from urllib.parse import urlparse
@@ -56,6 +57,10 @@ def get_example_json():
 
 @app.route('/update_document', methods=['POST'])
 def update_document():
+    # token_data = validate_token(request.form.get('token'))
+    # if isinstance(token_data, tuple):
+    #     return token_data
+
     db = next(get_db_session())
     service = DocumentService(db)
     folder = get_folder_from_referer()
@@ -97,6 +102,11 @@ def update_document():
 
 @app.route('/delete_document', methods=['POST'])
 def delete_document():
+    
+    # token_data = validate_token()
+    # if isinstance(token_data, tuple):  # If `validate_token` returns a response (redirect)
+    #     return token_data
+    
     db = next(get_db_session())
     service = DocumentService(db)
     folder = get_folder_from_referer()
@@ -116,6 +126,52 @@ def delete_document():
 
         return jsonify({'success': True, 'message': 'Document deleted successfully'}), 200
 
+    except SQLAlchemyError as e:
+        db.rollback()
+        return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/add_shared_users', methods=['POST'])
+def add_shared_users():
+    # token_data = validate_token()
+    # if isinstance(token_data, tuple):  # If `validate_token` returns a response (redirect)
+    #     return token_data
+
+    db = next(get_db_session())
+    service = DocumentService(db)
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        doc_id = data.get('doc_id')
+        user_id = data.get('user_id')
+        service.add_shared_users(doc_id, user_id)
+        return jsonify({'success': True, 'message': 'Shared users added successfully'}), 200
+    except SQLAlchemyError as e:
+        db.rollback()
+        return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/remove_shared_users', methods=['POST'])
+def remove_shared_users():
+    # token_data = validate_token()
+    # if isinstance(token_data, tuple):  # If `validate_token` returns a response (redirect)
+    #     return token_data
+
+    db = next(get_db_session())
+    service = DocumentService(db)
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        doc_id = data.get('doc_id')
+        user_id = data.get('user_id')
+        service.remove_shared_users(doc_id, user_id)
+        return jsonify({'success': True, 'message': 'Shared users removed successfully'}), 200
     except SQLAlchemyError as e:
         db.rollback()
         return jsonify({'error': str(e)}), 500

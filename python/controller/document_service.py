@@ -83,3 +83,24 @@ class DocumentService:
     def edit_public(self, document: Document, public: bool):
         document.public = public
         self.db.commit()
+
+    def add_shared_user(self, document_id: int, shared_username: str):
+        document = self.db.query(Document).filter_by(id=document_id).first()
+        if not document:
+            raise Exception("Document not found")
+        user = self.db.query(User).filter_by(username=shared_username.strip()).first()
+        if not user:
+            raise Exception("User not found")
+        document.shared_with.append(user)
+        self.db.commit()
+    
+    def remove_shared_user(self, document_id: int, shared_username: str):
+        document = self.db.query(Document).filter_by(id=document_id).first()
+        if not document:
+            raise Exception("Document not found")
+        user = self.db.query(User).filter_by(username=shared_username.strip()).first()
+        if not user:
+            raise Exception("User not found")
+        document.shared_with.remove(user)
+        self.db.commit()
+        
