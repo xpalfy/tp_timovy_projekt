@@ -39,11 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if ($post['type'] == 'KEY' && empty($post['json_text'])) {
+    /*if ($post['type'] == 'KEY' && empty($post['json_text'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid JSON text']);
         exit;
     }
+
     if ($post['type'] == 'KEY') {
         $json_text = $post['json_text'];
     
@@ -60,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save it properly formatted
         $json_text = json_encode($json_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     
-    }
+    }*/
 
     if ($post['type'] == 'CIPHER' && empty($post['decoded_text'])) {
         http_response_code(400);
