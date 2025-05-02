@@ -12,6 +12,10 @@ try {
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
     header('Location: ../login.php');
 }
+
+$fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') .
+                 '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
 ?>
 
 <!DOCTYPE html>
@@ -30,6 +34,7 @@ try {
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
   <link rel="stylesheet" href="../css/editDocument.css?v=<?php echo time(); ?>" />
 </head>
 
@@ -150,7 +155,7 @@ try {
             <label for="name" class="block font-semibold mb-1">Document Name</label>
             <div class="flex items-center gap-2 mb-2">
               <input type="text" name="name" id="name" placeholder="Enter document name" class="flex-grow border border-yellow-400 rounded px-4 py-2" />
-              <button type="button" onclick="addUser()" class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
+              <button type="button" onclick="changeName()" class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
                 Change
               </button>
             </div>
@@ -159,12 +164,28 @@ try {
           <!-- Share with section -->
           <div class="mt-4 mb-8">
             <label for="share" class="block font-semibold mb-1">Share with</label>
-            <div class="flex items-center gap-2 mb-2">
-              <input type="text" id="share" placeholder="Enter username" class="flex-grow border border-yellow-400 rounded px-4 py-2" />
-              <input type="hidden" name="sharedUsers" id="sharedUsers">
-              <button type="button" onclick="addUser()" class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
-                Add
-              </button>
+            <div class="flex flex-col lg:flex-row gap-4 mb-2">
+              <div class="lg:w-5/6 w-full">
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <input type="text" id="share" placeholder="Enter username"
+                    class="flex-grow border border-yellow-400 rounded px-4 py-2" />
+                  <button type="button" onclick="addUser()"
+                    class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
+                    Add
+                  </button>
+                </div>
+                <input type="hidden" name="sharedUsers" id="sharedUsers">
+              </div>
+              <div class="lg:w-1/6 w-full flex items-center justify-center">
+                <label for="isPublic" class="flex items-center cursor-pointer select-none">
+                  <div class="relative">
+                    <input type="checkbox" id="isPublic" class="sr-only peer">
+                    <div class="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-yellow-400 transition-colors duration-300"></div>
+                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-6"></div>
+                  </div>
+                  <span class="ml-3 text-sm font-medium text-gray-700">Public</span>
+                </label>
+              </div>
             </div>
           </div>
 
@@ -208,6 +229,47 @@ try {
         }
       });
     }
+
+    function changeName() {
+      const newTitle = $('#name').val().trim();
+      const documentId = $('#docId').val();
+      const authorId = $('#userId').val();
+      const callerUrl = "<?php echo $fullCallerUrl; ?>";
+
+      if (!newTitle) {
+        toastr.error('Please enter a valid document name');
+        return;
+      }
+
+      const formData = {
+        document_id: documentId,
+        author_id: authorId,
+        new_title: newTitle,
+        token: '<?php echo $_SESSION['token']; ?>'
+      };
+
+      $.ajax({
+        url: 'https://python.tptimovyprojekt.software/update_document_title',
+        type: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        dataType: 'json',
+        headers: {
+          'X-Caller-Url': callerUrl
+        },
+        success: function (res) {
+          if (res.success) {
+            toastr.success('Document name updated');
+          } else {
+            toastr.error(res.error || 'Failed to update name');
+          }
+        },
+        error: function () {
+          toastr.error('Server error while updating document name');
+        }
+      });
+    }
+
 
     function addUser() {
       const username = $('#share').val().trim();
@@ -300,6 +362,7 @@ try {
           $('#userId').val(data.document.author_id);
           $('#name').val(data.document.title);
           $('#docTitle').text(data.document.name);
+          $('#isPublic').prop('checked', data.document.is_public);
 
           if (data.imagePaths && data.imagePaths.length > 0) {
             $('#docImage').attr('src', '../' + data.imagePaths[0]);
@@ -330,6 +393,36 @@ try {
         minLength: 1
       });
       $('.ui-helper-hidden-accessible').remove();
+
+      $('#isPublic').on('change', function () {
+        const isPublic = $(this).is(':checked');
+
+        const formData = {
+          document_id: documentId,
+          author_id: $('#userId').val(),
+          is_public: isPublic,
+          token: '<?php echo $_SESSION['token']; ?>'
+        };
+
+        $.ajax({
+          url: 'https://python.tptimovyprojekt.software/update_doc_public',
+          type: 'POST',
+          data: JSON.stringify(formData),
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function (res) {
+            if (res.success) {
+              toastr.success(`Document is now ${isPublic ? 'Public' : 'Private'}`);
+            } else {
+              toastr.error(res.error || 'Update failed');
+            }
+          },
+          error: function () {
+            toastr.error('Server error while updating visibility');
+          }
+        });
+      });
+
       
     });
   </script>
