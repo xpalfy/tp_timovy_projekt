@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require '../checkType.php';
+require '../../checkType.php';
 header('Content-Type: application/json');
 
 try {
@@ -14,7 +14,7 @@ try {
     exit;
 }
 
-require_once '../config.php';
+require_once '../../config.php';
 
 $conn = getDatabaseConnection();
 
@@ -28,19 +28,11 @@ $key = $_GET['key'];
 $public = isset($_GET['public']) && $_GET['public'] === 'true';
 
 if ($public) {
-    $sql = "SELECT d.id as document_id, i.image_path
-            FROM documents d
-            LEFT JOIN items i ON d.id = i.document_id
-            WHERE d.is_public = 1 AND d.doc_type = ?
-            GROUP BY d.id";
+    $sql = "SELECT id, title FROM documents WHERE is_public = 1 AND doc_type = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $key);
 } else {
-    $sql = "SELECT d.id as document_id, i.image_path
-            FROM documents d
-            LEFT JOIN items i ON d.id = i.document_id
-            WHERE d.author_id = ? AND d.doc_type = ?
-            GROUP BY d.id";
+    $sql = "SELECT id, title FROM documents WHERE author_id = ? AND doc_type = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("is", $userData['id'], $key);
 }
@@ -48,14 +40,12 @@ if ($public) {
 $stmt->execute();
 $result = $stmt->get_result();
 
-$images = [];
+$documents = [];
 while ($row = $result->fetch_assoc()) {
-    if (!isset($images[$row['document_id']])) {
-        $images[$row['document_id']] = $row['image_path'];
-    }
+    $documents[] = $row;
 }
 
 $stmt->close();
 $conn->close();
 
-echo json_encode($images);
+echo json_encode($documents);

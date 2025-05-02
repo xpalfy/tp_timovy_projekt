@@ -10,7 +10,7 @@ try {
 } catch (Exception $e) {
     http_response_code(500);
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit;
 }
 ?>
@@ -231,8 +231,8 @@ try {
 
         function fetchSharedDocumentsAndImages() {
             Promise.all([
-                fetch('fetchSharedDocuments.php?key=KEY').then(res => res.json()),
-                fetch('fetchSharedImages.php?key=KEY').then(res => res.json())
+                fetch('documents/fetchSharedDocuments.php?key=KEY').then(res => res.json()),
+                fetch('items/fetchSharedItems.php?key=KEY').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
@@ -256,8 +256,8 @@ try {
 
         function fetchPublicDocumentsAndImages() {
             Promise.all([
-                fetch('fetchDocuments.php?key=KEY&public=true').then(res => res.json()),
-                fetch('fetchImages.php?key=KEY&public=true').then(res => res.json())
+                fetch('documents/fetchDocuments.php?key=KEY&public=true').then(res => res.json()),
+                fetch('items/fetchItems.php?key=KEY&public=true').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
@@ -281,8 +281,8 @@ try {
 
         function fetchDocumentsAndImages() {
             Promise.all([
-                fetch('fetchDocuments.php?key=KEY&public=false').then(res => res.json()),
-                fetch('fetchImages.php?key=KEY&public=false').then(res => res.json())
+                fetch('documents/fetchDocuments.php?key=KEY&public=false').then(res => res.json()),
+                fetch('items/fetchItems.php?key=KEY&public=false').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
