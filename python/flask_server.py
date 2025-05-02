@@ -67,11 +67,13 @@ def update_document_title():
         validate_token(data.get('token'))
         author_id = data.get('author_id')
         document_id = data.get('document_id')
-        document_title = data.get('document_title')
+        document_title = data.get('new_title')
 
-        document = service.get_document_by_id_and_author(document_id, author_id)
+        document = service.get_document_by_id(document_id)
         if not document:
             return jsonify({'error': 'Document not found'}), 404
+        if document.author_id != int(author_id):
+            return jsonify({'error': 'Unauthorized'}), 403
 
         if document_title:
             if document.title != document_title:
@@ -133,7 +135,7 @@ def delete_document():
             return jsonify({'error': 'Invalid input data'}), 400
         validate_token(data.get('token'))
         user_id = data.get('id')
-        document_id = data.get('document_id')
+        document_id = data.get('doc_id')
 
         if not user_id or not document_id:
             return jsonify({'error': 'Missing required fields'}), 400
@@ -209,7 +211,7 @@ def get_key_json():
         return jsonify({'error': str(e)}), 500
 
 def get_folder_from_referer():
-    referer = request.headers.get("Referer")
+    referer = request.headers.get("X-Caller-Url")
     if referer:
         path = urlparse(referer).path
         segments = path.strip('/').split('/')
