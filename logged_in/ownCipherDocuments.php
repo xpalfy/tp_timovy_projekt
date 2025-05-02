@@ -217,7 +217,7 @@ try {
                             <div class="card-body">
                                 <h5 class="card-title">${doc.title}</h5>
                                 <div class="card-buttons">
-                                    <a href="editDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                                    <a href="editDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>
                                     <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
                                 </div>
                             </div>`;
