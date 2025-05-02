@@ -4,7 +4,7 @@ import jwt
 from jwt import InvalidTokenError
 
 
-def get_jwt_secret_from_php(path='../jwt.php'):
+def get_jwt_secret_from_php(path='jwt.php'):
     with open(path, 'r') as f:
         content = f.read()
 
@@ -22,17 +22,11 @@ def validate_token(token=None):
         response.status_code = 401
         return response
 
-    try:
-        secret = get_jwt_secret_from_php('path/to/jwt.php')
-        decoded = jwt.decode(token, secret, algorithms=['HS256'])
+    secret = get_jwt_secret_from_php()
+    decoded = jwt.decode(token, secret, algorithms=['HS256'], issuer='https://test.tptimovyprojekt.software/tp_timovy_projekt', options={"verify_aud": False})
 
-        if (decoded.get('iss') != 'https://test.tptimovyprojekt.software/tp_timovy_projekt' or
-                decoded.get('aud') != 'https://test.tptimovyprojekt.software/tp_timovy_projekt'):
-            raise InvalidTokenError('Invalid issuer or audience')
+    if (decoded.get('iss') != 'https://test.tptimovyprojekt.software/tp_timovy_projekt' or
+            decoded.get('aud') != 'https://test.tptimovyprojekt.software/tp_timovy_projekt'):
+        raise InvalidTokenError('Invalid issuer or audience')
 
-        return decoded.get('data', {})
-    except InvalidTokenError:
-        session['toast'] = {'type': 'error', 'message': 'Unauthorized: Invalid token'}
-        response = make_response(redirect('/login'))
-        response.status_code = 401
-        return response
+    return decoded.get('data', {})
