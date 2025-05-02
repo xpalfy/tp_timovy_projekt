@@ -55,42 +55,63 @@ def get_example_json():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/update_document', methods=['POST'])
-def update_document():
-    # token_data = validate_token(request.form.get('token'))
-    # if isinstance(token_data, tuple):
-    #     return token_data
-
+@app.route('/update_document_title', methods=['POST'])
+def update_document_title():
     db = next(get_db_session())
     service = DocumentService(db)
     folder = get_folder_from_referer()
     try:
-        picture_id = int(request.form.get('id'))
-        creator_id = int(request.form.get('user'))
-        picture_name = request.form.get('name')
-        shared_users_raw = request.form.get('sharedUsers', '')
-        is_public = request.form.get('isPublic', 'false').lower() == 'true'
-        shared_users = [u.strip() for u in shared_users_raw.split(',') if u.strip()]
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        author_id = data.get('author_id')
+        document_id = data.get('document_id')
+        document_title = data.get('document_title')
 
-        document = service.get_document_by_id_and_author(picture_id, creator_id)
+        document = service.get_document_by_id_and_author(document_id, author_id)
         if not document:
             return jsonify({'error': 'Document not found'}), 404
 
-        if picture_name:
-            if service.document_name_exists(picture_name, creator_id, exclude_id=picture_id):
-                return jsonify({'error': 'Document name already exists'}), 400
-
-            if document.title != picture_name:
-                service.update_document_title(document, picture_name, creator_id, folder)
-                print(f"Document title updated to {picture_name}")
-
-        if shared_users:
-            service.update_shared_users(document, shared_users)
-
-        service.edit_public(document, is_public)
+        if document_title:
+            if document.title != document_title:
+                if service.document_name_exists(document_title, author_id, exclude_id=document_id):
+                    return jsonify({'error': 'Document name already exists'}), 400
+                service.update_document_title(document, document_title, author_id, folder)
 
         service.save_changes()
-        print(f"Document {picture_id} updated successfully")
+        print(f"Document {document_id} updated successfully")
+
+        return jsonify({'success': True}), 200
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/update_doc_public', methods=['POST'])
+def update_doc_public():
+    db = next(get_db_session())
+    service = DocumentService(db)
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        author_id = data.get('author_id')
+        document_id = data.get('document_id')
+        is_public = data.get('is_public')
+
+        document = service.get_document_by_id(document_id)
+        if not document:
+            return jsonify({'error': 'Document not found'}), 404
+        if document.author_id != int(author_id):
+            return jsonify({'error': 'Unauthorized'}), 403
+        if is_public != document.is_public:
+            service.edit_public(document, is_public)
+            service.save_changes()
 
         return jsonify({'success': True}), 200
 
@@ -102,11 +123,6 @@ def update_document():
 
 @app.route('/delete_document', methods=['POST'])
 def delete_document():
-    
-    # token_data = validate_token()
-    # if isinstance(token_data, tuple):  # If `validate_token` returns a response (redirect)
-    #     return token_data
-    
     db = next(get_db_session())
     service = DocumentService(db)
     folder = get_folder_from_referer()
@@ -115,14 +131,14 @@ def delete_document():
         data = request.get_json()
         if not data:
             return jsonify({'error': 'Invalid input data'}), 400
-
+        validate_token(data.get('token'))
         user_id = data.get('id')
-        doc_id = data.get('doc_id')
+        document_id = data.get('document_id')
 
-        if not user_id or not doc_id:
+        if not user_id or not document_id:
             return jsonify({'error': 'Missing required fields'}), 400
 
-        service.delete_document(int(doc_id), int(user_id), folder)
+        service.delete_document(int(document_id), int(user_id), folder)
 
         return jsonify({'success': True, 'message': 'Document deleted successfully'}), 200
 
@@ -132,12 +148,8 @@ def delete_document():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@app.route('/add_shared_users', methods=['POST'])
+@app.route('/add_shared_user', methods=['POST'])
 def add_shared_users():
-    # token_data = validate_token()
-    # if isinstance(token_data, tuple):  # If `validate_token` returns a response (redirect)
-    #     return token_data
-
     db = next(get_db_session())
     service = DocumentService(db)
 
@@ -145,9 +157,11 @@ def add_shared_users():
         data = request.get_json()
         if not data:
             return jsonify({'error': 'Invalid input data'}), 400
-        doc_id = data.get('doc_id')
-        user_id = data.get('user_id')
-        service.add_shared_users(doc_id, user_id)
+        validate_token(data.get('token'))
+        document_id = data.get('document_id')
+        username = data.get('username')
+        
+        service.add_shared_user(document_id, username)
         return jsonify({'success': True, 'message': 'Shared users added successfully'}), 200
     except SQLAlchemyError as e:
         db.rollback()
@@ -155,11 +169,8 @@ def add_shared_users():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@app.route('/remove_shared_users', methods=['POST'])
+@app.route('/remove_shared_user', methods=['POST'])
 def remove_shared_users():
-    # token_data = validate_token()
-    # if isinstance(token_data, tuple):  # If `validate_token` returns a response (redirect)
-    #     return token_data
 
     db = next(get_db_session())
     service = DocumentService(db)
@@ -167,16 +178,35 @@ def remove_shared_users():
     try:
         data = request.get_json()
         if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        doc_id = data.get('doc_id')
-        user_id = data.get('user_id')
-        service.remove_shared_users(doc_id, user_id)
+            return jsonify({'error': 'Invalid input data'}), 400.
+        validate_token(data.get('token'))
+        document_id = data.get('document_id')
+        user_id = data.get('username')
+        service.remove_shared_user(document_id, user_id)
         return jsonify({'success': True, 'message': 'Shared users removed successfully'}), 200
     except SQLAlchemyError as e:
         db.rollback()
         return jsonify({'error': str(e)}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+@app.route('/get_key_json', methods=['POST'])
+def get_key_json():
+    db = next(get_db_session())
+    service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        document_id = data.get('document_id')
+        if not document_id:
+            return jsonify({'error': 'Document ID is required'}), 400
+        result = service.get_key_json(document_id)
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 def get_folder_from_referer():
     referer = request.headers.get("Referer")
