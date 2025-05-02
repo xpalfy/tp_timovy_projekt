@@ -18,27 +18,29 @@ require_once '../config.php';
 
 $conn = getDatabaseConnection();
 
-$sql = "SELECT document_id FROM document_user_association WHERE user_id = ?";
+if (!isset($_GET['key']) || empty($_GET['key'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing key parameter']);
+    exit;
+}
+
+$key = $_GET['key'];
+
+$sql = "
+    SELECT d.id, d.title
+    FROM document_user_association dua
+    JOIN documents d ON dua.document_id = d.id
+    WHERE dua.user_id = ? AND d.doc_type = ?
+";
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userData['id']);
+$stmt->bind_param("is", $userData['id'], $key);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $sharedDocuments = [];
-
 while ($row = $result->fetch_assoc()) {
-    $documentId = $row['document_id'];
-
-    $docStmt = $conn->prepare("SELECT id, title FROM documents WHERE id = ?");
-    $docStmt->bind_param("i", $documentId);
-    $docStmt->execute();
-    $docResult = $docStmt->get_result();
-
-    if ($docRow = $docResult->fetch_assoc()) {
-        $sharedDocuments[] = $docRow;
-    }
-
-    $docStmt->close();
+    $sharedDocuments[] = $row;
 }
 
 $stmt->close();

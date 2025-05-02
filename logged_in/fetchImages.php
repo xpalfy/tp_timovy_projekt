@@ -28,7 +28,6 @@ $key = $_GET['key'];
 $public = isset($_GET['public']) && $_GET['public'] === 'true';
 
 if ($public) {
-    // Public documents (is_public = 1)
     $sql = "SELECT d.id as document_id, i.image_path
             FROM documents d
             LEFT JOIN items i ON d.id = i.document_id
@@ -37,7 +36,6 @@ if ($public) {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $key);
 } else {
-    // Private documents (only user's own)
     $sql = "SELECT d.id as document_id, i.image_path
             FROM documents d
             LEFT JOIN items i ON d.id = i.document_id

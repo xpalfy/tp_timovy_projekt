@@ -16,37 +16,38 @@ try {
 
 require_once '../config.php';
 
+if (!isset($_GET['key']) || empty($_GET['key'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing key parameter']);
+    exit;
+}
+
+$key = $_GET['key'];
+
 $conn = getDatabaseConnection();
 
-// Get all document IDs shared with the user
-$sql = "SELECT document_id FROM document_user_association WHERE user_id = ?";
+$sql = "
+    SELECT d.id AS document_id, i.image_path
+    FROM document_user_association dua
+    JOIN documents d ON dua.document_id = d.id
+    LEFT JOIN items i ON d.id = i.document_id
+    WHERE dua.user_id = ? AND d.doc_type = ?
+    GROUP BY d.id
+";
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userData['id']);
+$stmt->bind_param("is", $userData['id'], $key);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$sharedImages = [];
-
+$images = [];
 while ($row = $result->fetch_assoc()) {
-    $documentId = $row['document_id'];
-
-    // Fetch the first image associated with the document
-    $imgStmt = $conn->prepare("SELECT image_path FROM items WHERE document_id = ? LIMIT 1");
-    $imgStmt->bind_param("i", $documentId);
-    $imgStmt->execute();
-    $imgResult = $imgStmt->get_result();
-
-    if ($imgRow = $imgResult->fetch_assoc()) {
-        $sharedImages[] = [
-            'document_id' => $documentId,
-            'image_path' => $imgRow['image_path']
-        ];
+    if (!isset($images[$row['document_id']])) {
+        $images[$row['document_id']] = $row['image_path'];
     }
-
-    $imgStmt->close();
 }
 
 $stmt->close();
 $conn->close();
 
-echo json_encode($sharedImages);
+echo json_encode($images);
