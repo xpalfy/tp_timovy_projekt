@@ -82,7 +82,9 @@ if ($status === 'UPLOADED') {
     $polygonResult = checkPolygons();
     $message = 'File analyzed successfully';
 } elseif ($status === 'PROCESSED') {
-    else {
+    $polygonResult = checkPolygons();
+    $message = 'Letters segmented successfully';
+} else {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid status']);
     exit;

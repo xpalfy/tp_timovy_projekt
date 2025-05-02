@@ -105,6 +105,14 @@ export function handleWarning(warning_message) {
 }
 
 
+export function showCreateBtns() {
+    document.getElementById('CreateBtns').style.display = 'flex';
+}
+
+export function hideCreateBtns() {
+    document.getElementById('CreateBtns').style.display = 'none';
+}
+
 export function showSegmentBtns() {
     document.getElementById('SegmentBtns').style.display = 'flex';
 }
@@ -161,20 +169,12 @@ export function hideEditJSONCipherBtn() {
     document.getElementById('EditJSONCipherBtn').style.display = 'none';
 }
 
-export function showSaveKeyBtns() {
-    document.getElementById('SaveKeyBtns').style.display = 'flex';
+export function showDownloadJSONBtn() {
+    document.getElementById('DownloadJSONBtn').style.display = 'flex';
 }
 
-export function hideSaveKeyBtns() {
-    document.getElementById('SaveKeyBtns').style.display = 'none';
-}
-
-export function showSaveCipherBtns() {
-    document.getElementById('SaveCipherBtns').style.display = 'flex';
-}
-
-export function hideSaveCipherBtns() {
-    document.getElementById('SaveCipherBtns').style.display = 'none';
+export function hideDownloadJSONBtn() {
+    document.getElementById('DownloadJSONBtn').style.display = 'none';
 }
 
 export function showSystemMessage() {
