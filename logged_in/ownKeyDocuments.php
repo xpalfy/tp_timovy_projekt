@@ -245,7 +245,7 @@ try {
                         }
                     });
 
-                    renderDocuments(filteredDocs, imagesData, currentPageSize);
+                    renderDocuments(documentsData, imagesData, currentPageSize);
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
