@@ -20,7 +20,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Analyze</title>
+    <title>Letters</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -148,7 +148,7 @@ try {
         <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
             <!-- Process Info -->
             <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">
-                Analyze owned document
+                Segment letters on owned document
             </h3>
 
             <!-- Document Selector -->
@@ -166,11 +166,11 @@ try {
                 </select>
             </div>
 
-            <!-- Image Analyzer -->
-            <div class="col-md mt-5 animate-fade-in-slow" id="imageAnalyzer" style="display: none;">
+            <!-- Image Letters -->
+            <div class="col-md mt-5 animate-fade-in-slow" id="imageLetter" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
                     <!-- Preview Image Container -->
-                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]"
+                    <div id="previewContainerLetter" class="relative flex justify-center items-center min-h-[250px]"
                         style="position: relative;">
                         <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
                             draggable="false" />
@@ -181,7 +181,7 @@ try {
             <!-- Save Button -->
             <div class="flex justify-center items-center mt-5">
                 <button id="loadItemButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
-                    disabled style="display: none;" onclick="saveAnalysisData()">Save Analysis</button>
+                    disabled style="display: none;" onclick="saveLetterData()">Save Letters</button>
             </div>
         </div>
     </main>
@@ -203,6 +203,7 @@ try {
             id: <?= json_encode($userData['id']) ?>
         };
     </script>
+    <script> src="../js/modules-helper.js"</script> 
  
     <script>
         const maxSelectItemSize = 10;
@@ -215,7 +216,7 @@ try {
         function fetchDocuments() {
             showLoading();
             Promise.all([
-                fetch('fetchDocumentsByStep.php?status=SEGMENTED').then(res => res.json())
+                fetch('fetchDocumentsByStep.php?status=CLASSIFIED').then(res => res.json())
             ])
                 .then(([docs]) => {
                     documentsData = docs;
@@ -228,7 +229,7 @@ try {
             hideLoading();
         }
 
-        function filterDocuments() {
+        /*function filterDocuments() {
             const searchTerm = document.getElementById('documentSearch').value.toLowerCase();
             const filteredDocuments = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
             return filteredDocuments;
@@ -245,7 +246,7 @@ try {
                 option.textContent = doc.title;
                 documentList.appendChild(option);
             });
-        }
+        }*/
 
         $(function () {
             fetchDocuments();
@@ -274,7 +275,7 @@ try {
 
         function fetchItems(documentId) {
             disableDocumentSearch();
-            fetch(`fetchItemsByStep.php?document_id=${documentId}$&status=SEGMENTED`)
+            fetch(`fetchItemsByStep.php?document_id=${documentId}$&status=CLASSIFIED`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(item => {
@@ -292,7 +293,7 @@ try {
             showItemSelector();
         }
 
-        function disableDocumentSearch() {
+        /*function disableDocumentSearch() {
             document.getElementById('documentSearch').disabled = true;
             document.getElementById('documentSearch').style.pointerEvents = 'none';
         }
@@ -300,7 +301,7 @@ try {
         function showItemSelector() {
             document.getElementById('itemSelector').style.display = 'block';
             hideLoading();
-        }
+        }*/
 
         $(function () {
             $("#itemSelector").change(function () {
@@ -309,28 +310,28 @@ try {
                 console.log(selectedItemId);
                 console.log(itemsData);
                 selectedItemImagePath = itemsData.find(item => item.id == selectedItemId).image_path;
-                showAnalyzer();
+                showLetterSegmentator();
                 updateImagePreview();
                 deletePolygons();
-                CalculateAnalysis();
+                CalculateLetters();
                 hideLoading();
             });
         });
 
-        function deletePolygons() {
-            const parent = document.getElementById('previewContainerAnalyze');
+        /*function deletePolygons() {
+            const parent = document.getElementById('previewContainerLetter');
             const polygons = parent.querySelectorAll('segment-rect');
             polygons.forEach(polygon => {
                 parent.removeChild(polygon);
             });
-        }
+        }*/
 
-        function showAnalyzer() {
-            document.getElementById('imageAnalyzer').style.display = 'block';
+        function showLetterSegmentator() {
+            document.getElementById('imageLetter').style.display = 'block';
             document.getElementById('loadItemButton').style.display = 'block';
         }
 
-        function updateImagePreview() {
+        /*function updateImagePreview() {
             const previewImage = document.querySelector('.imagePreview');
             previewImage.src = '../..' + selectedItemImagePath;
             previewImage.style.display = 'block';
@@ -348,14 +349,14 @@ try {
             for (let loading of loadings) {
                 loading.style.display = 'flex';
             }
-        }
+        }*/
 
-        function CalculateAnalysis() {
+        function CalculateLetters() {
             showLoading();
 
             const imagePath = 'path/to/your/image.jpg';
 
-            fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
+            fetch('https://python.tptimovyprojekt.software/segmentate_text', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -367,7 +368,7 @@ try {
                     hideLoading();
 
                     if (data.polygon && Array.isArray(data.polygon)) {
-                        appendAnalyzedRects(data.polygon);
+                        appendLetterRects(data.polygon);
                     } else {
                         console.error('Invalid response from server:', data);
                     }
@@ -378,12 +379,12 @@ try {
                 });
         }
 
-        function appendAnalyzedRects(Rects) {
-            const parent = document.getElementById('previewContainerAnalyze');
-            for (let Rect of Rects) {
+        function appendLetterRects(Rects) {
+            const parent = document.getElementById('previewContainerLetter');
+            for (const Rect of Rects) {
                 if (Rect.length !== 4) {
                     console.error('Invalid Rect:', Rect);
-                    return;
+                    continue;
                 }
 
                 const x1 = Rect[0], y1 = Rect[1];
@@ -391,14 +392,16 @@ try {
                 const x2 = x1, y2 = y3;
                 const x4 = x3, y4 = y1;
 
-                const minX = Math.min(x1, x3);
-                const minY = Math.min(y1, y3);
-                const maxX = Math.max(x1, x3);
-                const maxY = Math.max(y1, y3);
+                const xs = [x1, x2, x3, x4];
+                const ys = [y1, y2, y3, y4];
+                const minX = Math.min(...xs) - 5;
+                const minY = Math.min(...ys) - 5;
+                const maxX = Math.max(...xs) + 5;
+                const maxY = Math.max(...ys) + 5;
                 const width = maxX - minX;
                 const height = maxY - minY;
 
-                let newRect = document.createElement('segment-rect');
+                const newRect = document.createElement('letter-rect');
                 newRect.setAttribute('x1', x1);
                 newRect.setAttribute('y1', y1);
                 newRect.setAttribute('x2', x2);
@@ -420,10 +423,10 @@ try {
             }
         }
 
-        function saveAnalysisData() {
+        function saveLetterData() {
             showLoading();
 
-            let rects = document.querySelectorAll('segment-rect');
+            let rects = document.querySelectorAll('letter-rect');
             let polygons = [];
 
             rects.forEach(rect => {
@@ -440,7 +443,7 @@ try {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
-                status: 'CLASSIFIED',
+                status: 'PROCESSED',
                 polygons: polygons
             };
 
@@ -457,7 +460,7 @@ try {
                 .then(data => {
                     hideLoading();
                     if (data.success) {
-                        toastr.success('Analysis data saved successfully.');
+                        toastr.success('Letter segmentation data saved successfully.');
                         setTimeout(() => {
                             window.location.href = '../editDocument.php?id=' + selectedDocumentId + '&user=' + userData.id;
                         }, 2000);
