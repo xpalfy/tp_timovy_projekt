@@ -1,11 +1,15 @@
-# services/document_service.py
-
+from typing import TYPE_CHECKING
 import os
 import shutil
 from sqlalchemy.orm import Session
 from entities.document import Document
 from entities.users import User
 from controller.db_controller import get_db_session
+if TYPE_CHECKING:
+    from entities.document import Document, DocumentType
+    from entities.users import User
+    from entities.item import Item
+    from entities.processing_result import ProcessingResult
 
 
 class DocumentService:
@@ -16,6 +20,9 @@ class DocumentService:
 
     def get_document_by_id_and_author(self, document_id: int, author_id: int) -> Document | None:
         return self.db.query(Document).filter_by(id=document_id, author_id=author_id).first()
+    
+    def get_document_by_id(self, document_id: int):
+        return self.db.query(Document).filter_by(id=document_id).first()
 
     def document_name_exists(self, name: str, author_id: int, exclude_id: int = None) -> bool:
         query = self.db.query(Document).filter(Document.title == name, Document.author_id == author_id)
@@ -43,7 +50,6 @@ class DocumentService:
             raise Exception('Invalid path or not writable')
 
         document.title = new_title
-        # If you also store the path in DB, update it here too: document.path = new_path
 
     def update_shared_users(self, document: Document, shared_usernames: list[str]):
         document.shared_with.clear()
@@ -65,10 +71,8 @@ class DocumentService:
         if not user:
             raise Exception("User not found")
 
-        # Save directory path before deleting the document
         doc_directory = os.path.join('..', folder, 'DOCS', user.username, document.doc_type.name, document.title)
 
-        # First, delete associated items if you have a relationship (assuming cascade delete isn't set)
         if hasattr(document, 'items') and document.items:
             for item in document.items:
                 self.db.delete(item)
@@ -76,14 +80,13 @@ class DocumentService:
         self.db.delete(document)
         self.db.commit()
 
-        # Delete the associated directory and its contents
         if os.path.isdir(doc_directory):
             shutil.rmtree(doc_directory)
 
     def edit_public(self, document: Document, public: bool):
         document.public = public
         self.db.commit()
-
+    
     def add_shared_user(self, document_id: int, shared_username: str):
         document = self.db.query(Document).filter_by(id=document_id).first()
         if not document:
@@ -91,6 +94,8 @@ class DocumentService:
         user = self.db.query(User).filter_by(username=shared_username.strip()).first()
         if not user:
             raise Exception("User not found")
+        if user == document.author:
+            raise Exception("Cannot share document with the author")
         document.shared_with.append(user)
         self.db.commit()
     
@@ -103,4 +108,20 @@ class DocumentService:
             raise Exception("User not found")
         document.shared_with.remove(user)
         self.db.commit()
+    
+    def get_key_json(self, document_id: int):
+        doc: Document = self.db.query(Document).filter_by(id=document_id).first()
+        if not doc:
+            raise Exception("Document not found")
+        if doc.doc_type != DocumentType.KEY:
+            raise Exception("Document is not of type KEY")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        item: Item = doc.items[0]
+        if not item.processing_results:
+            raise Exception("No processing results found for this item")
+        processing_result: ProcessingResult = item.processing_results[0]
+        if not processing_result:
+            raise Exception("Processing result not found")
+        return processing_result.result
         
