@@ -182,8 +182,8 @@ function saveData(type) {
                             doc_id: doc_id,
                             doc_name: doc_name,
                             type: type,
-                            json_text: json_text,
-                            decoded_text: decoded_text,
+                            //json_text: json_text,
+                            //decoded_text: decoded_text,
                             user_name: window.userData.username, // Use injected data
                             id: window.userData.id,              // No PHP in JS file!
                         })
