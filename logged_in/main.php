@@ -413,26 +413,32 @@ try {
 
                     <!-- JSON Textarea Editor -->
                     <div class="mt-4 text-left">
-                        <label for="jsonEditor" class="block text-sm font-medium text-yellow-100 mb-1">Edit
-                            JSON:</label>
                         <textarea id="jsonEditor" rows="14"
                             class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800"
                             placeholder="{ ... }">{}</textarea>
                     </div>
+                </div>
+            </div>
 
-                    <!-- document name -->
-                    <div class="mt-4">
-                        <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
-                            placeholder="Document Name" />
-                    </div>
+            <!-- Progress Buttons STEP 0 -> STEP 1 -->
+            <div id="CreateBtns" class="flex flex-col items-center space-y-4 mt-6" style="display: none;">
+                <!-- Input row -->
+                <div>
+                    <input type="text" id="documentName" class="border border-yellow-300 rounded-lg px-4 py-2"
+                        placeholder="Document Name" />
+                </div>
+
+                <!-- Buttons row -->
+                <div class="flex space-x-4">
+                    <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Create Key Document</button>
+                    <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Create Cipher Document</button>
                 </div>
             </div>
 
             <!-- Progress Buttons STEP 0 -> STEP 1 -->
             <div id="SegmentBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentKey()">Process as Key</button>
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentCipher()">Process as
-                    Cipher</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentCipher()">Process as Cipher</button>
             </div>
 
             <!-- Progress Buttons STEP 1 -> STEP 2 -->
@@ -455,8 +461,7 @@ try {
 
             <!-- Progress Buttons STEP 2 -> STEP 3 -->
             <div id="LettersCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment
-                    Letters</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
             </div>
 
             <!-- Progress Buttons STEP 3 -> STEP 4 -->
@@ -470,14 +475,7 @@ try {
             </div>
 
             <!-- Progress Buttons STEP 4 -> STEP Final -->
-            <div id="SaveKeyBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Save Key</button>
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
-            </div>
-
-            <!-- Progress Buttons STEP 4 -> STEP Final -->
-            <div id="SaveCipherBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Save Cipher</button>
+            <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
             </div>
 

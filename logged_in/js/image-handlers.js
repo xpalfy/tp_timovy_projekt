@@ -125,8 +125,8 @@ function saveData(type) {
         return;
     }
     let doc_name = document.getElementById('documentName').value;
-    let json_text = null;
-    let decoded_text = null;
+    /*let json_text = null;
+    let decoded_text = null;`
     if (type === 'KEY') {
         json_text = document.getElementById('jsonEditor').value;
 
@@ -143,7 +143,7 @@ function saveData(type) {
     }
     if (type === 'CIPHER') {
         decoded_text = "Some decoded text"; // <- here call your decoding function later
-    }
+    }*/
 
     if (doc_name === '') {
         uiAnimationHandlers.handleError('Please enter a name for the document.');
@@ -199,13 +199,16 @@ function saveData(type) {
                             }
                         });
                 }
-                toastr.success('Images uploaded successfully.');
+                toastr.success('Document created successfully.');
+                uiAnimationHandlers.hideCreateBtns();
+                uiAnimationHandlers.showSegmentBtns();
                 // reset window
-                currentImageId = [];
+                /*currentImageId = [];
                 previewImages = [];
                 classificationScores = [];
                 currentPreviewIndex = 0;
                 updatePreview();
+                uiAnimationHandlers.hideCreateBtns();
                 uiAnimationHandlers.hideSegmentBtns();
                 uiAnimationHandlers.hideAnalyzeKeyBtn();
                 uiAnimationHandlers.hideAnalyzeCipherBtn();
@@ -213,11 +216,10 @@ function saveData(type) {
                 uiAnimationHandlers.hideLettersCipherBtn();
                 uiAnimationHandlers.hideEditJSONKeyBtn();
                 uiAnimationHandlers.hideEditJSONCipherBtn();
-                uiAnimationHandlers.hideSaveKeyBtns();
-                uiAnimationHandlers.hideSaveCipherBtns();
+                uiAnimationHandlers.hideDownloadJSONBtn();
                 hideLoading();
                 uiAnimationHandlers.hideSystemMessage();
-                setStep(0);
+                setStep(0);*/
             } else {
                 handleWarning(data.error);
                 return;
@@ -235,7 +237,8 @@ export function saveCipher() {
 
 export function saveImage(data, image_name) {
     console.log("Saving image...");
-    fetch('pictures/savePicture.php', {
+    console.log(data, image_name, window.userData.username, window.userData.id)
+    fetch('savePicture.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -256,7 +259,7 @@ export function saveImage(data, image_name) {
                 console.log("Image uploaded successfully. ID:", currentImageId);
                 classificationScores.push(classifyPicture(data.path));
                 if (classificationScores.length === numOfFiles && classificationScores.length > 0) {
-                    uiAnimationHandlers.showSegmentBtns();
+                    uiAnimationHandlers.showCreateBtns();
                     applyClassificationStyle(classificationScores);
                 }
             } else {
@@ -296,6 +299,7 @@ export function deleteUnsavedImage(imageId) {
     classificationScores = [];
     currentPreviewIndex = 0;
     updatePreview();
+    uiAnimationHandlers.hideCreateBtns();
     uiAnimationHandlers.hideSegmentBtns();
     uiAnimationHandlers.hideAnalyzeKeyBtn();
     uiAnimationHandlers.hideAnalyzeCipherBtn();
@@ -303,8 +307,7 @@ export function deleteUnsavedImage(imageId) {
     uiAnimationHandlers.hideLettersCipherBtn();
     uiAnimationHandlers.hideEditJSONKeyBtn();
     uiAnimationHandlers.hideEditJSONCipherBtn();
-    uiAnimationHandlers.hideSaveKeyBtns();
-    uiAnimationHandlers.hideSaveCipherBtns();
+    uiAnimationHandlers.hideDownloadJSONBtn();
     hideLoading();
     uiAnimationHandlers.hideSystemMessage();
 }
@@ -319,7 +322,7 @@ export async function classifyPicture(path) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ path })  // Sending JSON data
+            body: JSON.stringify({ path })
         });
 
         if (!response.ok) {
@@ -394,6 +397,7 @@ function resetClassificationStyle() {
 }
 export function segmentCipher() {
     setStep(1);
+    uiAnimationHandlers.hideCreateBtns();
     uiAnimationHandlers.hideSegmentBtns();
     uiAnimationHandlers.hideSystemMessage();
     uiAnimationHandlers.showAnalyzeCipherBtn();
@@ -408,6 +412,7 @@ export function segmentCipher() {
 
 export function segmentKey() {
     setStep(1);
+    uiAnimationHandlers.hideCreateBtns();
     uiAnimationHandlers.hideSegmentBtns();
     uiAnimationHandlers.hideSystemMessage();
     uiAnimationHandlers.showAnalyzeKeyBtn();
@@ -480,10 +485,10 @@ export function editJSONKey() {
     setStep(4);
     uiAnimationHandlers.hideEditJSONKeyBtn();
     uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showSaveKeyBtns();
+    uiAnimationHandlers.showDownloadJSONBtn();
     document.getElementById('imageLetters').style.display = 'none';
     document.getElementById('imageJSON').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
+    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to send the JSON.<br>If the system made some mistakes, feel free to correct them.';
     // got to #Dashboard
     scrollToBookmark('bookmark');
 }
@@ -492,10 +497,10 @@ export function editJSONCipher() {
     setStep(4);
     uiAnimationHandlers.hideEditJSONCipherBtn();
     uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showSaveCipherBtns();
+    uiAnimationHandlers.showDownloadJSONBtn();
     document.getElementById('imageLetters').style.display = 'none';
     document.getElementById('imageJSON').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
+    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to send the JSON.<br>If the system made some mistakes, feel free to correct them.';
     // got to #Dashboard
     scrollToBookmark('bookmark');
 }
@@ -512,7 +517,8 @@ export function downloadJSON() {
         const link = document.createElement("a");
 
         // Get filename from input or use default
-        const filename = document.getElementById("documentName").value || "document.json";
+        // const filename = document.getElementById("documentName").value || "document.json";
+        const filename = "document.json";
 
         link.href = url;
         link.download = filename;
