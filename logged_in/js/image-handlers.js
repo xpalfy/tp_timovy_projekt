@@ -235,7 +235,7 @@ export function saveCipher() {
 
 export function saveImage(data, image_name) {
     console.log("Saving image...");
-    fetch('savePicture.php', {
+    fetch('pictures/savePicture.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

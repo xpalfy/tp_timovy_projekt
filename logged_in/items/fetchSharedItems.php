@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require '../checkType.php';
+require '../../checkType.php';
 header('Content-Type: application/json');
 
 try {
@@ -14,7 +14,7 @@ try {
     exit;
 }
 
-require_once '../config.php';
+require_once '../../config.php';
 
 if (!isset($_GET['key']) || empty($_GET['key'])) {
     http_response_code(400);

@@ -1,8 +1,8 @@
 <?php
-require '../config.php';
+require '../../config.php';
 header('Content-Type: application/json');
 session_start();
-require '../checkType.php';
+require '../../checkType.php';
 
 try {
     $userData = validateToken();

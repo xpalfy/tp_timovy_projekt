@@ -5,8 +5,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 header('Content-Type: application/json');
 
-require '../checkType.php';
-require '../config.php';
+require '../../checkType.php';
+require '../../config.php';
 
 try {
     $userData = validateToken();

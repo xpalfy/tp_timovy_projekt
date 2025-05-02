@@ -10,7 +10,7 @@ try {
 } catch (Exception $e) {
     http_response_code(500);
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
-    header('Location: login.php');
+    header('Location: ../login.php');
 }
 ?>
 
@@ -146,7 +146,7 @@ try {
     <!-- Updated Profile Form Section -->
     <main class="flex-grow flex justify-center items-center">
         <section class="container mx-auto px-6">
-            <form action="profileUpdate.php" method="post" class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6"
+            <form action="users/profileUpdate.php" method="post" class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6"
                 data-aos="fade-up" data-aos-delay="200">
                 <h1 class="text-4xl font-bold text-center text-papyrus mb-6" data-aos="fade-up">👤 Profile</h1>
                 <p class="text-center text-lg mb-10 text-papyrus" data-aos="fade-up" data-aos-delay="100">

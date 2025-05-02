@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require '../checkType.php';
+require '../../checkType.php';
 header('Content-Type: application/json');
 
 try {
@@ -14,7 +14,7 @@ try {
     exit;
 }
 
-require_once '../config.php';
+require_once '../../config.php';
 
 $conn = getDatabaseConnection();
 
@@ -25,27 +25,25 @@ if (!isset($_GET['key']) || empty($_GET['key'])) {
 }
 
 $key = $_GET['key'];
-$public = isset($_GET['public']) && $_GET['public'] === 'true';
 
-if ($public) {
-    $sql = "SELECT id, title FROM documents WHERE is_public = 1 AND doc_type = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $key);
-} else {
-    $sql = "SELECT id, title FROM documents WHERE author_id = ? AND doc_type = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $userData['id'], $key);
-}
+$sql = "
+    SELECT d.id, d.title
+    FROM document_user_association dua
+    JOIN documents d ON dua.document_id = d.id
+    WHERE dua.user_id = ? AND d.doc_type = ?
+";
 
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("is", $userData['id'], $key);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$documents = [];
+$sharedDocuments = [];
 while ($row = $result->fetch_assoc()) {
-    $documents[] = $row;
+    $sharedDocuments[] = $row;
 }
 
 $stmt->close();
 $conn->close();
 
-echo json_encode($documents);
+echo json_encode($sharedDocuments);

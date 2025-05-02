@@ -1,8 +1,8 @@
 <?php
-require '../config.php';
+require '../../config.php';
 header('Content-Type: application/json');
 session_start();
-require '../checkType.php';
+require '../../checkType.php';
 
 try {
     $userData = validateToken();
@@ -29,7 +29,6 @@ $result = $stmt->get_result();
 if ($row = $result->fetch_assoc()) {
     $userId = $row['id'];
 
-    // Prevent duplicates
     $check = $conn->prepare("SELECT 1 FROM document_user_association WHERE document_id = ? AND user_id = ?");
     $check->bind_param("ii", $documentId, $userId);
     $check->execute();
