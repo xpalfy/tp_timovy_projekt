@@ -84,7 +84,7 @@ class DocumentService:
             shutil.rmtree(doc_directory)
 
     def edit_public(self, document: Document, public: bool):
-        document.public = public
+        document.is_public = public
         self.db.commit()
     
     def add_shared_user(self, document_id: int, shared_username: str):

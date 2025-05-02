@@ -107,7 +107,7 @@ def update_doc_public():
         document = service.get_document_by_id(document_id)
         if not document:
             return jsonify({'error': 'Document not found'}), 404
-        if document.author_id != author_id:
+        if document.author_id != int(author_id):
             return jsonify({'error': 'Unauthorized'}), 403
         if is_public != document.is_public:
             service.edit_public(document, is_public)
