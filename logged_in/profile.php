@@ -36,8 +36,6 @@ try {
 <body class="min-h-screen flex flex-col select-none">
 
     <script>
-        AOS.init({ duration: 800, once: true });
-
         function checkToasts() {
             let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
             if (toast) {
@@ -146,10 +144,9 @@ try {
     <!-- Updated Profile Form Section -->
     <main class="flex-grow flex justify-center items-center">
         <section class="container mx-auto px-6">
-            <form action="users/profileUpdate.php" method="post" class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6"
-                data-aos="fade-up" data-aos-delay="200">
-                <h1 class="text-4xl font-bold text-center text-papyrus mb-6" data-aos="fade-up">👤 Profile</h1>
-                <p class="text-center text-lg mb-10 text-papyrus" data-aos="fade-up" data-aos-delay="100">
+            <form action="users/profileUpdate.php" method="post" class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6">
+                <h1 class="text-4xl font-bold text-center text-papyrus mb-6">👤 Profile</h1>
+                <p class="text-center text-lg mb-10 text-papyrus">
                     Welcome back, <span class="font-semibold"><?php echo $userData['username']; ?></span>
                 </p>
                 <div>

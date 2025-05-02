@@ -34,22 +34,130 @@ try {
 </head>
 
 <body class="bg-gradient-to-br from-[#ede1c3] to-[#cdbf9b] text-papyrus min-h-screen flex flex-col select-none">
+  <!-- Navbar -->
+  <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+    id="navbar">
+    <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+        <a href="main.php"
+            class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
+            <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
+                style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+            HandScript
+        </a>
+        <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
+            <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
+                <li class="flex items-center">
+                    <a href="profile.php" class="nav-link flex items-center hover:underline">
+                        Profile
+                        <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
+                            style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                    </a>
+                </li>
+                <li class="flex items-center ml-6">
+                    <div class="relative flex items-center">
+                        <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
+                            class="hover:underline flex items-center">
+                            Documents
+                            <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="M1 1l4 4 4-4" />
+                            </svg>
+                        </button>
+                        <div id="dropdownDocuments"
+                            class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                            <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
+                                <li>
+                                    <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
+                                        Documents</a>
+                                </li>
+                                <li>
+                                    <a href="ownCipherDocuments.php"
+                                        class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="flex items-center ml-6">
+                    <div class="relative flex items-center">
+                        <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
+                            class="hover:underline flex items-center">
+                            Tools
+                            <img src="../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="M1 1l4 4 4-4" />
+                            </svg>
+                        </button>
+                        <div id="dropdownTools"
+                            class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                            <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
+                                <li>
+                                    <a href="./modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                </li>
+                                <li>
+                                    <a href="./modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                </li>
+                                <li>
+                                    <a href="./modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="flex items-center ml-6">
+                    <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                        Logout
+                        <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                            style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+  </nav>
   <main class="flex-grow container mx-auto px-4 py-10">
-    <h1 id="docTitle" class="text-4xl font-bold text-center mb-2"></h1>
-    <p class="text-center text-lg mb-8">Edit your document here</p>
-    <div class="flex flex-col lg:flex-row gap-10">
-      <div class="w-full lg:w-1/2">
-        <img id="docImage" src="" alt="Document" class="w-full rounded-lg border shadow-lg" />
+    <h1 id="docTitle" class="text-4xl font-bold text-center mb-10">Edit Your Document Here</h1>
+    
+    <div class="flex flex-col lg:flex-row gap-10 items-stretch">
+      
+      <!-- Left side: Image container -->
+      <div class="w-full lg:w-1/2 flex">
+        <div class="w-full">
+          <img id="docImage" src="" alt="Document" class="w-full h-full object-cover rounded-lg border shadow-lg" />
+        </div>
       </div>
-      <div class="w-full lg:w-1/2 bg-white bg-opacity-50 rounded-xl p-6 shadow-lg">
-        <form id="editForm" class="space-y-6 relative min-h-[500px]">
+
+      <!-- Right side: Form container -->
+      <div class="w-full lg:w-1/2 flex">
+        <div class="w-full bg-white bg-opacity-50 rounded-xl p-6 shadow-lg mt-4 lg:mt-0">
           <input type="hidden" name="id" id="docId">
           <input type="hidden" name="user" id="userId">
+          
+          <!-- Document Name -->
           <div>
             <label for="name" class="block font-semibold mb-1">Document Name</label>
-            <input type="text" name="name" id="name" class="w-full border border-yellow-400 rounded px-4 py-2" />
+            <div class="flex items-center gap-2 mb-2">
+              <input type="text" name="name" id="name" placeholder="Enter document name" class="flex-grow border border-yellow-400 rounded px-4 py-2" />
+              <button type="button" onclick="addUser()" class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
+                Change
+              </button>
+            </div>
           </div>
-          <div>
+
+          <!-- Share with section -->
+          <div class="mt-4 mb-8">
             <label for="share" class="block font-semibold mb-1">Share with</label>
             <div class="flex items-center gap-2 mb-2">
               <input type="text" id="share" placeholder="Enter username" class="flex-grow border border-yellow-400 rounded px-4 py-2" />
@@ -59,6 +167,8 @@ try {
               </button>
             </div>
           </div>
+
+          <!-- Shared users table -->
           <table id="sharedUsersTable" class="display w-full text-sm compact">
             <thead>
               <tr>
@@ -68,15 +178,16 @@ try {
             </thead>
             <tbody id="sharedUsersTableBody"></tbody>
           </table>
-          <div class="absolute bottom-6 right-6">
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition">
-              Save
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
+
     </div>
   </main>
+  <!-- Footer -->
+  <footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
+    &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+  </footer>
+
   <script>
     let sharedTable;
     let documentId = null;
@@ -112,7 +223,7 @@ try {
       };
 
       $.ajax({
-        url: 'https://python.tptimovyprojekt.software/add_shared_users',
+        url: 'https://python.tptimovyprojekt.software/add_shared_user',
         type: 'POST',
         data: JSON.stringify(formData),           
         contentType: 'application/json',         
@@ -127,7 +238,6 @@ try {
           }
         },
         error: function (xhr) {
-          console.error(xhr.responseText);
           toastr.error('Failed to add user');
         }
       });
@@ -142,7 +252,7 @@ try {
       };
 
       $.ajax({
-        url: 'https://python.tptimovyprojekt.software/remove_shared_users',
+        url: 'https://python.tptimovyprojekt.software/remove_shared_user',
         type: 'POST',
         data: JSON.stringify(formData),      
         contentType: 'application/json',     
@@ -156,7 +266,6 @@ try {
           }
         },
         error: function (xhr) {
-          console.error(xhr.responseText);
           toastr.error('Failed to remove user');
         }
       });
@@ -214,39 +323,13 @@ try {
               toastr.error(data.error);
               response([]);
             } else {
-              console.error("Unexpected response format:", data);
               response([]);
             }
           });
         },
         minLength: 1
       });
-
-      $('#editForm').on('submit', function (e) {
-        e.preventDefault();
-        const formData = {
-          id: $('#docId').val(),
-          user: $('#userId').val(),
-          name: $('#name').val()
-        };
-
-        $.ajax({
-          url: 'https://python.tptimovyprojekt.software/update_document',
-          type: 'POST',
-          data: formData,
-          headers: {
-            'Referer': window.location.href
-          },
-          success: function () {
-            toastr.success('Document updated successfully!');
-            setTimeout(() => window.location.href = 'ownCipherDipherDocuments.php', 1500);
-          },
-          error: function (xhr) {
-            console.error(xhr.responseText);
-            toastr.error('Failed to update document');
-          }
-        });
-      });
+      $('.ui-helper-hidden-accessible').remove();
       
     });
   </script>
