@@ -48,25 +48,20 @@ $message = '';
 $model_used = 'MODEL1';
 $polygonResult = null;
 
-if ($status === 'UPLOADED') {
-    $message = 'File uploaded successfully';
-} elseif ($status === 'SEGMENTED') {
-    $message = 'File segmented successfully';
-
-    if (!isset($post['polygon']) || empty($post['polygon'])) {
+function checkPolygons() {
+    if (!isset($post['polygons']) || empty($post['polygons'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Polygon data missing']);
         exit;
     }
 
-    $polygonData = $post['polygon'];
+    $polygonData = $post['polygons'];
     if (!is_array($polygonData)) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid polygon JSON']);
         exit;
     }
 
-    // Optional: validate each polygon point
     foreach ($polygonData as $point) {
         if (!isset($point['x'], $point['y']) || !is_numeric($point['x']) || !is_numeric($point['y'])) {
             http_response_code(400);
@@ -75,8 +70,19 @@ if ($status === 'UPLOADED') {
         }
     }
 
-    $polygonResult = $polygonData;
-} else {
+    return $polygonData;
+}
+
+if ($status === 'UPLOADED') {
+    $message = 'File uploaded successfully';
+} elseif ($status === 'SEGMENTED') {
+    $polygonResult = checkPolygons();
+    $message = 'File segmented successfully';
+} elseif ($status === 'CLASSIFIED') {
+    $polygonResult = checkPolygons();
+    $message = 'File analyzed successfully';
+} elseif ($status === 'PROCESSED') {
+    else {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid status']);
     exit;

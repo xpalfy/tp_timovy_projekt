@@ -20,7 +20,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Segment</title>
+    <title>Analyze</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -148,7 +148,7 @@ try {
         <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
             <!-- Process Info -->
             <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">
-                Segment owned document
+                Analyze owned document
             </h3>
 
             <!-- Document Selector -->
@@ -166,11 +166,11 @@ try {
                 </select>
             </div>
 
-            <!-- Image Segmentation -->
-            <div class="col-md mt-5 animate-fade-in-slow" id="imageSegmentor" style="display: none;">
+            <!-- Image Analyzer -->
+            <div class="col-md mt-5 animate-fade-in-slow" id="imageAnalyzer" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
                     <!-- Preview Image Container -->
-                    <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]"
+                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]"
                         style="position: relative;">
                         <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
                             draggable="false" />
@@ -181,7 +181,7 @@ try {
             <!-- Save Button -->
             <div class="flex justify-center items-center mt-5">
                 <button id="loadItemButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
-                    disabled style="display: none;" onclick="saveSegmentionData()">Save Segmentation</button>
+                    disabled style="display: none;" onclick="saveAnalysisData()">Save Analysis</button>
             </div>
         </div>
     </main>
@@ -203,8 +203,7 @@ try {
             id: <?= json_encode($userData['id']) ?>
         };
     </script>
-    <script type="module" src="../js/main.js?v=<?= time() ?>"></script>
-
+ 
     <script>
         const maxSelectItemSize = 10;
         let documentsData = [];
@@ -216,7 +215,7 @@ try {
         function fetchDocuments() {
             showLoading();
             Promise.all([
-                fetch('fetchDocumentsByStep.php?status=UPLOADED').then(res => res.json())
+                fetch('fetchDocumentsByStep.php?status=SEGMENTED').then(res => res.json())
             ])
                 .then(([docs]) => {
                     documentsData = docs;
@@ -275,7 +274,7 @@ try {
 
         function fetchItems(documentId) {
             disableDocumentSearch();
-            fetch(`fetchItemsByStep.php?document_id=${documentId}$&status=UPLOADED`)
+            fetch(`fetchItemsByStep.php?document_id=${documentId}$&status=SEGMENTED`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(item => {
@@ -310,24 +309,24 @@ try {
                 console.log(selectedItemId);
                 console.log(itemsData);
                 selectedItemImagePath = itemsData.find(item => item.id == selectedItemId).image_path;
-                showSegmentor();
+                showAnalyzer();
                 updateImagePreview();
                 deletePolygons();
-                CalculateSegmentation();
+                CalculateAnalysis();
                 hideLoading();
             });
         });
 
         function deletePolygons() {
-            const parent = document.getElementById('previewContainerSegment');
+            const parent = document.getElementById('previewContainerAnalyze');
             const polygons = parent.querySelectorAll('segment-rect');
             polygons.forEach(polygon => {
                 parent.removeChild(polygon);
             });
         }
 
-        function showSegmentor() {
-            document.getElementById('imageSegmentor').style.display = 'block';
+        function showAnalyzer() {
+            document.getElementById('imageAnalyzer').style.display = 'block';
             document.getElementById('loadItemButton').style.display = 'block';
         }
 
@@ -351,12 +350,12 @@ try {
             }
         }
 
-        function CalculateSegmentation() {
+        function CalculateAnalysis() {
             showLoading();
 
             const imagePath = 'path/to/your/image.jpg';
 
-            fetch('https://python.tptimovyprojekt.software/segmentate_page', {
+            fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -368,7 +367,7 @@ try {
                     hideLoading();
 
                     if (data.polygon && Array.isArray(data.polygon)) {
-                        appendSegmentedRect(data.polygon);
+                        appendAnalyzedRects(data.polygon);
                     } else {
                         console.error('Invalid response from server:', data);
                     }
@@ -378,63 +377,71 @@ try {
                     console.error('Error detecting page edges:', error);
                 });
         }
-        function appendSegmentedRect(Rect) {
-            if (Rect.length !== 4) {
-                console.error('Invalid Rect:', Rect);
-                return;
+
+        function appendAnalyzedRects(Rects) {
+            const parent = document.getElementById('previewContainerAnalyze');
+            for (let Rect of Rects) {
+                if (Rect.length !== 4) {
+                    console.error('Invalid Rect:', Rect);
+                    return;
+                }
+
+                const x1 = Rect[0], y1 = Rect[1];
+                const x3 = Rect[2], y3 = Rect[3];
+                const x2 = x1, y2 = y3;
+                const x4 = x3, y4 = y1;
+
+                const minX = Math.min(x1, x3);
+                const minY = Math.min(y1, y3);
+                const maxX = Math.max(x1, x3);
+                const maxY = Math.max(y1, y3);
+                const width = maxX - minX;
+                const height = maxY - minY;
+
+                let newRect = document.createElement('segment-rect');
+                newRect.setAttribute('x1', x1);
+                newRect.setAttribute('y1', y1);
+                newRect.setAttribute('x2', x2);
+                newRect.setAttribute('y2', y2);
+                newRect.setAttribute('x3', x3);
+                newRect.setAttribute('y3', y3);
+                newRect.setAttribute('x4', x4);
+                newRect.setAttribute('y4', y4);
+
+                newRect.style.position = 'absolute';
+                newRect.style.left = `0`;
+                newRect.style.top = `0`;
+                newRect.style.width = `${width}px`;
+                newRect.style.height = `${height}px`;
+
+                newRect.classList.add('not-copyable');
+                newRect.classList.add('rounded-xl');
+                parent.appendChild(newRect);
             }
-
-            const parent = document.getElementById('previewContainerSegment');
-
-            const x1 = Rect[0], y1 = Rect[1];
-            const x3 = Rect[2], y3 = Rect[3];
-            const x2 = x1, y2 = y3;
-            const x4 = x3, y4 = y1;
-
-            const xs = [x1, x2, x3, x4];
-            const ys = [y1, y2, y3, y4];
-            const minX = Math.min(...xs) - 5;
-            const minY = Math.min(...ys) - 5;
-            const maxX = Math.max(...xs) + 5;
-            const maxY = Math.max(...ys) + 5;
-            const width = maxX - minX;
-            const height = maxY - minY;
-
-            const newRect = document.createElement('segment-rect');
-            newRect.setAttribute('x1', x1);
-            newRect.setAttribute('y1', y1);
-            newRect.setAttribute('x2', x2);
-            newRect.setAttribute('y2', y2);
-            newRect.setAttribute('x3', x3);
-            newRect.setAttribute('y3', y3);
-            newRect.setAttribute('x4', x4);
-            newRect.setAttribute('y4', y4);
-
-            newRect.style.position = 'absolute';
-            newRect.style.left = `0`;
-            newRect.style.top = `0`;
-            newRect.style.width = `${width}px`;
-            newRect.style.height = `${height}px`;
-
-            newRect.classList.add('not-copyable');
-            newRect.classList.add('rounded-xl');
-            parent.appendChild(newRect);
         }
 
-        function saveSegmentionData() {
+        function saveAnalysisData() {
             showLoading();
-            let rect = document.querySelector('segment-rect');
-            let data = {
-                document_id: selectedDocumentId,
-                item_id: selectedItemId,
-                user_id: userData.id,
-                status: 'SEGMENTED',
-                polygons: [
+
+            let rects = document.querySelectorAll('segment-rect');
+            let polygons = [];
+
+            rects.forEach(rect => {
+                let polygon = [
                     { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
                     { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
                     { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
                     { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') }
-                ]
+                ];
+                polygons.push(polygon);
+            });
+
+            let data = {
+                document_id: selectedDocumentId,
+                item_id: selectedItemId,
+                user_id: userData.id,
+                status: 'CLASSIFIED',
+                polygons: polygons
             };
 
             console.log('Data to be sent:', data);
@@ -450,7 +457,7 @@ try {
                 .then(data => {
                     hideLoading();
                     if (data.success) {
-                        toastr.success('Segmentation data saved successfully.');
+                        toastr.success('Analysis data saved successfully.');
                         setTimeout(() => {
                             window.location.href = '../editDocument.php?id=' + selectedDocumentId + '&user=' + userData.id;
                         }, 2000);
@@ -463,7 +470,6 @@ try {
                     toastr.error('Error saving segmentation data.');
                     console.error('Error:', error);
                 });
-            hideLoading();
         }
     </script>
 </body>
