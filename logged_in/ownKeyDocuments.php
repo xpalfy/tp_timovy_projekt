@@ -115,12 +115,13 @@ try {
                                 class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                                 <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                     <li>
-                                        <a href="modules/segmentModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment
-                                        </a>
+                                        <a href="./modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                     </li>
                                     <li>
-                                        <a href="#" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                        <a href="./modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                    </li>
+                                    <li>
+                                        <a href="./modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
                                 </ul>
                             </div>
