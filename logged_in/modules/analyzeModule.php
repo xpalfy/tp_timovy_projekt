@@ -175,8 +175,10 @@ try {
                     <!-- Preview Image Container -->
                     <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]"
                         style="position: relative;">
-                        <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
-                            draggable="false" />
+                        <img class="imagePreview hidden rounded-xl not-copyable"
+                            style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain;"
+                            src="" alt="Preview" draggable="false">
+
                     </div>
                 </div>
             </div>

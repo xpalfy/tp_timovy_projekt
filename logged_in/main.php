@@ -107,13 +107,16 @@ try {
                                 class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                                 <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                     <li>
-                                        <a href="./modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                        <a href="./modules/segmentModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                     </li>
                                     <li>
-                                        <a href="./modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                        <a href="./modules/analyzeModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
                                     </li>
                                     <li>
-                                        <a href="./modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                        <a href="./modules/lettersModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
                                 </ul>
                             </div>
@@ -297,8 +300,9 @@ try {
                         upload</p>
                 </div>
                 <div id="previewContainer" class="relative mt-4 flex justify-center items-center">
-                    <img class="imagePreview max-w-full hidden rounded-xlc not-copyable" src="" alt="Preview"
-                        draggable="false">
+                    <img class="imagePreview hidden rounded-xl not-copyable"
+                        style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain;"
+                        src="" alt="Preview" draggable="false">
                     <button
                         class="prevBtn not-copyable absolute left-3 z-2 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200"
                         style="visibility: hidden;">❮</button>
@@ -430,15 +434,18 @@ try {
 
                 <!-- Buttons row -->
                 <div class="flex space-x-4">
-                    <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Create Key Document</button>
-                    <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Create Cipher Document</button>
+                    <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Create Key
+                        Document</button>
+                    <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Create Cipher
+                        Document</button>
                 </div>
             </div>
 
             <!-- Progress Buttons STEP 0 -> STEP 1 -->
             <div id="SegmentBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentKey()">Process as Key</button>
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentCipher()">Process as Cipher</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentCipher()">Process as
+                    Cipher</button>
             </div>
 
             <!-- Progress Buttons STEP 1 -> STEP 2 -->
@@ -461,7 +468,8 @@ try {
 
             <!-- Progress Buttons STEP 2 -> STEP 3 -->
             <div id="LettersCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment Letters</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment
+                    Letters</button>
             </div>
 
             <!-- Progress Buttons STEP 3 -> STEP 4 -->
