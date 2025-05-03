@@ -37,7 +37,7 @@ Promise.all([
     window.saveCipher = saveCipher; // Expose saveCipher
     window.scrollToBookmark = scrollToBookmark;
     window.downloadJSON = downloadJSON;
-    wnindow.saveProcessing = saveProcessing;
+    window.saveProcessing = saveProcessing;
 
 
     // Setup event listeners
