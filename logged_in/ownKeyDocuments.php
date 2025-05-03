@@ -38,6 +38,7 @@ try {
     <style>
         .card-pic {
             @apply bg-white rounded-xl shadow-md p-4 transition-transform transform hover:scale-105;
+            width: 300px;
         }
     </style>
 
@@ -115,13 +116,16 @@ try {
                                 class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                                 <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                     <li>
-                                        <a href="./modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                        <a href="./modules/segmentModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                     </li>
                                     <li>
-                                        <a href="./modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                        <a href="./modules/analyzeModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
                                     </li>
                                     <li>
-                                        <a href="./modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                        <a href="./modules/lettersModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
                                 </ul>
                             </div>
@@ -150,12 +154,13 @@ try {
                         class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] placeholder-[#6b5b3e] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
                 </div>
                 <div class="w-full max-w-md">
-                    <label for="page-size-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📄 Documents per page</label>
+                    <label for="page-size-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📄 Documents per
+                        page</label>
                     <select id="page-size-select"
                         class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
-                        <option value="3">3</option>
-                        <option value="5" selected>5</option>
-                        <option value="10">10</option>
+                        <option value="4" selected>4</option>
+                        <option value="8">8</option>
+                        <option value="12">12</option>
                         <option value="20">20</option>
                     </select>
                 </div>
@@ -175,7 +180,7 @@ try {
             </div>
 
             <div class="flex justify-center">
-                <div id="my-documents-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div id="my-documents-grid" class="flex flex-wrap justify-center gap-6">
                 </div>
             </div>
 
@@ -189,7 +194,7 @@ try {
     <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <script>
         let documentsData = [], imagesData = {};
-        let currentPageSize = 5;
+        let currentPageSize = 4;
 
         function renderDocuments(documents, images, pageSize = 5) {
             $('#pagination').pagination({
@@ -214,14 +219,14 @@ try {
                         const card = document.createElement('div');
                         card.className = 'card-pic';
                         card.innerHTML = `
-                            <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
-                            <div class="card-body">
-                                <h5 class="card-title">${doc.title}</h5>
-                                <div class="card-buttons">
-                                    <a href="editDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                                    <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
-                                </div>
-                            </div>`;
+                        <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
+                        <div class="card-body">
+                            <h5 class="card-title">${doc.title}</h5>
+                            <div class="card-buttons">
+                                <a href="editDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>`;
                         grid.appendChild(card);
                     });
                 }
