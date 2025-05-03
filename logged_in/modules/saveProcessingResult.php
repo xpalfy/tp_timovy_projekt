@@ -82,8 +82,13 @@ if ($status === 'UPLOADED') {
     $polygonResult = checkPolygons();
     $message = 'File analyzed successfully';
 } elseif ($status === 'PROCESSED') {
-    $polygonResult = checkPolygons();
-    $message = 'Letters segmented successfully';
+    if (isset($post['polygons'])) {
+        $polygonResult = checkPolygons();
+        $message = 'Letters segmented successfully';
+    } else {
+        $result_json = $post['jsonData'];
+        $message = 'JSON saved succesfully';
+    }
 } else {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid status']);
@@ -100,7 +105,10 @@ $result = $stmt->get_result();
 $exists = $result->num_rows > 0;
 $stmt->close();
 
-$result_json = json_encode($polygonResult ?? null);
+if (!isset($result_json)) {
+    $result_json = json_encode($polygonResult ?? null);
+}
+
 $date = date('Y-m-d H:i:s');
 
 if ($exists) {

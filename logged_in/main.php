@@ -476,6 +476,11 @@ try {
 
             <!-- Progress Buttons STEP 4 -> STEP Final -->
             <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveProccessing()">Save Work</button>
+                <div>
+                    <input type="text" id="downloadName" class="border border-yellow-300 rounded-lg px-4 py-2"
+                        placeholder="JSON Name" />
+                </div>
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
             </div>
 
