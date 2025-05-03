@@ -506,7 +506,7 @@ export function editJSONCipher() {
 }
 // etc, keep exporting each function
 
-export function saveProccessing() {
+export function saveProcessing() {
     const jsonText = document.getElementById("jsonEditor").value;
     const jsonData = JSON.stringify(JSON.parse(jsonText), null, 2);
 

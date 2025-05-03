@@ -8,7 +8,7 @@ Promise.all([
         handleDrop, uploadImageButton, handleDragOver, handleDragLeave, downloadJSON,
         hideLoading, checkToasts, setStep, setupPreviewNavigation, segmentCipher,
         deleteUnsavedImage, segmentKey, analizeKey, analizeCipher, lettersKey, lettersCipher,
-        editJSONKey, editJSONCipher, deleteImage, getImage, getImageKey, saveKey, saveCipher,
+        editJSONKey, editJSONCipher, saveProcessing, deleteImage, getImage, getImageKey, saveKey, saveCipher,
         currentImageId
     } = imageHandlers;
 
@@ -37,6 +37,7 @@ Promise.all([
     window.saveCipher = saveCipher; // Expose saveCipher
     window.scrollToBookmark = scrollToBookmark;
     window.downloadJSON = downloadJSON;
+    wnindow.saveProcessing = saveProcessing;
 
 
     // Setup event listeners
