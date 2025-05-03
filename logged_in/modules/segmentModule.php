@@ -112,13 +112,16 @@ try {
                                 class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                                 <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                     <li>
-                                        <a href="./segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                        <a href="./segmentModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                     </li>
                                     <li>
-                                        <a href="./analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                        <a href="./analyzeModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
                                     </li>
                                     <li>
-                                        <a href="./lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                        <a href="./lettersModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
                                 </ul>
                             </div>
@@ -423,18 +426,37 @@ try {
 
         function saveSegmentionData() {
             showLoading();
-            let rect = document.querySelector('segment-rect');
+            let rects = document.querySelector('segment-rect');
+            let polygons = [];
+
+            if (rects.length > 1) {
+                rects.forEach(rect => {
+                    let polygon = [
+                        { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
+                        { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
+                        { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
+                        { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') }
+                    ];
+                    polygons.push(polygon);
+                });
+            } else {
+                let polygon = [
+                    { x: rects.getAttribute('x1'), y: rects.getAttribute('y1') },
+                    { x: rects.getAttribute('x2'), y: rects.getAttribute('y2') },
+                    { x: rects.getAttribute('x3'), y: rects.getAttribute('y3') },
+                    { x: rects.getAttribute('x4'), y: rects.getAttribute('y4') }
+                ];
+                polygons.push(polygon);
+            }
+            console.log('Polygons:', polygons);
+
+
             let data = {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
                 status: 'SEGMENTED',
-                polygons: [
-                    { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
-                    { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
-                    { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
-                    { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') }
-                ]
+                polygons: polygons
             };
 
             console.log('Data to be sent:', data);

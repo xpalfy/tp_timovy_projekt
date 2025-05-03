@@ -40,15 +40,16 @@ if ($post['user_id'] !== $userData['id']) {
     exit;
 }
 
-$document_id = (int)$post['document_id'];
-$item_id = (int)$post['item_id'];
-$user_id = (int)$post['user_id'];
+$document_id = (int) $post['document_id'];
+$item_id = (int) $post['item_id'];
+$user_id = (int) $post['user_id'];
 $status = $post['status'];
 $message = '';
 $model_used = 'MODEL1';
 $polygonResult = null;
 
-function checkPolygons() {
+function checkPolygons($post)
+{
     if (!isset($post['polygons']) || empty($post['polygons'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Polygon data missing']);
@@ -62,11 +63,13 @@ function checkPolygons() {
         exit;
     }
 
-    foreach ($polygonData as $point) {
-        if (!isset($point['x'], $point['y']) || !is_numeric($point['x']) || !is_numeric($point['y'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid polygon point']);
-            exit;
+    foreach ($polygonData as $polygon) {
+        foreach ($polygon as $point) {
+            if (!isset($point['x'], $point['y']) || !is_numeric($point['x']) || !is_numeric($point['y'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid polygon point']);
+                exit;
+            }
         }
     }
 
@@ -76,14 +79,14 @@ function checkPolygons() {
 if ($status === 'UPLOADED') {
     $message = 'File uploaded successfully';
 } elseif ($status === 'SEGMENTED') {
-    $polygonResult = checkPolygons();
+    $polygonResult = checkPolygons($post);
     $message = 'File segmented successfully';
 } elseif ($status === 'CLASSIFIED') {
-    $polygonResult = checkPolygons();
+    $polygonResult = checkPolygons($post);
     $message = 'File analyzed successfully';
 } elseif ($status === 'PROCESSED') {
     if (isset($post['polygons'])) {
-        $polygonResult = checkPolygons();
+        $polygonResult = checkPolygons($post);
         $message = 'Letters segmented successfully';
     } else {
         $result_json = $post['jsonData'];
