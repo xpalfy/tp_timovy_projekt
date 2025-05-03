@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save it properly formatted
         $json_text = json_encode($json_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     
-    }*/
+    }
 
     if ($post['type'] == 'CIPHER' && empty($post['decoded_text'])) {
         http_response_code(400);
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Encode it as pretty JSON
         $json_text = json_encode($cipher_json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     
-    } 
+    }*/
 
     $doc_id = $post['doc_id'];
     $type = $post['type'];

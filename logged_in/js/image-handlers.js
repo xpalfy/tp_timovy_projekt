@@ -506,6 +506,32 @@ export function editJSONCipher() {
 }
 // etc, keep exporting each function
 
+export function saveProccessing() {
+    const jsonText = document.getElementById("jsonEditor").value;
+    const jsonData = JSON.stringify(JSON.parse(jsonText), null, 2);
+
+    fetch('modules/saveProcessingResult.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            document_id: doc_id,
+            item_id: item_id,
+            user_id: window.userData.id,
+            status: 'PROCESSED',
+            jsonData: jsonData
+        })
+    }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                toastr.success(data.message);
+                console.log(data.message);
+            } else {
+                handleError(data.error);
+            }
+        });
+}
 
 export function downloadJSON() {
     try {
@@ -516,9 +542,7 @@ export function downloadJSON() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
 
-        // Get filename from input or use default
-        // const filename = document.getElementById("documentName").value || "document.json";
-        const filename = "document.json";
+        const filename = document.getElementById("downloadName").value || "document.json";
 
         link.href = url;
         link.download = filename;
