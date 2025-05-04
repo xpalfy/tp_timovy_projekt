@@ -206,7 +206,7 @@ try {
         let documentsData = [], imagesData = {};
         let currentPageSize = 4;
 
-        function renderDocuments(documents, images, pageSize = 5) {
+        function renderDocuments(documents, images, pageSize = 5, type = 'OWN') {
             $('#pagination').pagination({
                 dataSource: documents,
                 pageSize: pageSize,
@@ -226,17 +226,39 @@ try {
 
                     data.forEach(doc => {
                         const imgPath = images[doc.id] ? '..' + images[doc.id] : '../img/default.png';
+
+                        let cardButtons = '';
+                        let editPage = '';
+                        
+                        if (type === 'OWN') {
+                            editPage = 'editOwnDocument.php';
+                            cardButtons = `
+                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
+                            `;
+                        } else if (type === 'SHARED') {
+                            editPage = 'editSharedDocument.php';
+                            cardButtons = `
+                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                                <button onclick="unshareDocument(${doc.id})" class="btn btn-danger">Unshare</button>
+                            `;
+                        } else if (type === 'PUBLIC') {
+                            editPage = 'viewPublicDocument.php';
+                            cardButtons = `
+                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>
+                            `;
+                        }
+
                         const card = document.createElement('div');
                         card.className = 'card-pic';
                         card.innerHTML = `
-                        <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
-                        <div class="card-body">
-                            <h5 class="card-title">${doc.title}</h5>
-                            <div class="card-buttons">
-                                <a href="editDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
-                            </div>
-                        </div>`;
+                            <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
+                            <div class="card-body">
+                                <h5 class="card-title">${doc.title}</h5>
+                                <div class="card-buttons">
+                                    ${cardButtons}
+                                </div>
+                            </div>`;
                         grid.appendChild(card);
                     });
                 }
@@ -261,7 +283,7 @@ try {
                         }
                     });
 
-                    renderDocuments(documentsData, imagesData, currentPageSize);
+                    renderDocuments(documentsData, imagesData, currentPageSize, 'SHARED');
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -286,7 +308,7 @@ try {
                         }
                     });
 
-                    renderDocuments(documentsData, imagesData, currentPageSize);
+                    renderDocuments(documentsData, imagesData, currentPageSize, 'PUBLIC');
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -311,7 +333,7 @@ try {
                         }
                     });
 
-                    renderDocuments(documentsData, imagesData, currentPageSize);
+                    renderDocuments(documentsData, imagesData, currentPageSize, 'OWN');
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
