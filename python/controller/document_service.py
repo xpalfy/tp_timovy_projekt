@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 import os
 import shutil
+import json
 from sqlalchemy.orm import Session
-from entities.document import Document
+from entities.document import Document, DocumentType
 from entities.users import User
 from controller.db_controller import get_db_session
 if TYPE_CHECKING:
-    from entities.document import Document, DocumentType
     from entities.users import User
     from entities.item import Item
     from entities.processing_result import ProcessingResult
@@ -109,12 +109,17 @@ class DocumentService:
         document.shared_with.remove(user)
         self.db.commit()
     
-    def get_key_json(self, document_id: int):
+    def get_key_json(self, document_id, user_id):
         doc: Document = self.db.query(Document).filter_by(id=document_id).first()
+        user: User = self.db.query(User).filter_by(id=user_id).first()
         if not doc:
             raise Exception("Document not found")
+        if not user:
+            raise Exception("User not found")
         if doc.doc_type != DocumentType.KEY:
-            raise Exception("Document is not of type KEY")
+            raise Exception("Document is not a key document")
+        if user not in doc.shared_with and user != doc.author and not doc.is_public:
+            raise Exception("User does not have access to this document")
         if not doc.items:
             raise Exception("No items found for this document")
         item: Item = doc.items[0]
@@ -124,4 +129,30 @@ class DocumentService:
         if not processing_result:
             raise Exception("Processing result not found")
         return processing_result.result
+
+    def save_key_json(self, document_id, user_id, json_data):
+        doc: Document = self.db.query(Document).filter_by(id=document_id).first()
+        user: User = self.db.query(User).filter_by(id=user_id).first()
+        if not doc:
+            raise Exception("Document not found")
+        if not user:
+            raise Exception("User not found")
+        if not isinstance(json_data, dict):
+            raise Exception("Invalid JSON data")
+        if doc.doc_type != DocumentType.KEY:
+            raise Exception("Document is not a key document")
+        if user not in doc.shared_with and user != doc.author and not doc.is_public:
+            raise Exception("User does not have access to this document")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        item: Item = doc.items[0]
+        if not item.processing_results:
+            raise Exception("No processing results found for this item")
+        processing_result: ProcessingResult = item.processing_results[0]
+        if not processing_result:
+            raise Exception("Processing result not found")
+        processing_result.result = json_data
+        self.db.commit()
+        
+        
         

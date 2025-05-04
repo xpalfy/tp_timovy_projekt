@@ -522,30 +522,54 @@ def get_key_json():
     Get key JSON from a document
     ---
     tags:
-      - Document Management
+        
     parameters:
-      - in: body
-        name: body
-        required: true
-        schema:
-          type: object
-          required:
-            - token
-            - document_id
-          properties:
-            token:
-              type: string
-            document_id:
-              type: integer
+        - in: body
+            name: body
+            required: true
+            schema:
+            type: object
+            required:
+                - token
+                - document_id
+                - user_id
+            properties:
+                token:
+                type: string
+                description: Authentication token
+                document_id:
+                type: integer
+                description: ID of the document to process
+                user_id:
+                type: integer
+                description: ID of the user making the request
     responses:
-      200:
-        description: Key JSON extracted successfully
-        schema:
-          type: object
-      400:
-        description: Invalid input
-      500:
-        description: Server error
+        200:
+            description: Key JSON extracted successfully
+            schema:
+            type: object
+            properties:
+                # Define your response schema here
+                # Example:
+                key_data:
+                type: object
+                description: The extracted key JSON data
+        400:
+            description: Invalid input
+            schema:
+            type: object
+            properties:
+                error:
+                type: string
+                description: Error message
+        500:
+            description: Server error
+            schema:
+            type: object
+            properties:
+                error:
+                type: string
+                description: Error message
     """
     db = next(get_db_session())
     service = DocumentService(db)
@@ -555,11 +579,94 @@ def get_key_json():
             return jsonify({'error': 'Invalid input data'}), 400
         validate_token(data.get('token'))
         document_id = data.get('document_id')
+        user_id = data.get('user_id')
         if not document_id:
             return jsonify({'error': 'Document ID is required'}), 400
-        result = service.get_key_json(document_id)
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+        result = service.get_key_json(document_id, user_id)
         return jsonify(result), 200
 
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/save_key_json', methods=['POST'])
+def save_key_json():
+    """
+    Save key JSON to a document
+    ---
+    tags:
+        - Document Management
+    parameters:
+        - in: body
+            name: body
+            required: true
+            schema:
+            type: object
+            required:
+                - token
+                - document_id
+                - user_id
+                - json_data
+            properties:
+                token:
+                type: string
+                description: Authentication token
+                document_id:
+                type: integer
+                description: ID of the document to update
+                user_id:
+                type: integer
+                description: ID of the user making the request
+                json_data:
+                type: object
+                description: The JSON data to be saved
+    responses:
+        200:
+            description: JSON data saved successfully
+            schema:
+            type: object
+            properties:
+                success:
+                type: boolean
+                example: true
+        400:
+            description: Invalid input
+            schema:
+            type: object
+            properties:
+                error:
+                type: string
+                example: "Document ID is required"
+        500:
+            description: Server error
+            schema:
+            type: object
+            properties:
+                error:
+                type: string
+                example: "Error message describing the issue"
+    """
+    db = next(get_db_session())
+    service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        document_id = data.get('document_id')
+        user_id = data.get('user_id')
+        json_data = data.get('json_data')
+        if not document_id:
+            return jsonify({'error': 'Document ID is required'}), 400
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+        if not json_data:
+            return jsonify({'error': 'JSON data is required'}), 400
+        service.save_key_json(document_id, user_id, json_data)
+        service.save_changes()
+        print(f"Document {document_id} updated successfully")
+        return jsonify({'success': True}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
