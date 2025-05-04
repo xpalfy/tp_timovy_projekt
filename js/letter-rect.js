@@ -132,9 +132,19 @@ class PolygonElement extends HTMLElement {
 
         const modal = document.getElementById('polygonModal');
         const modalContent = document.getElementById('polygonModalContent');
+        modalContent.style.position = 'relative';
+        modalContent.style.marginBottom = '45px';
+
+        const typeOptions = ['default', 'page', 'word', 'alphabet', 'null', 'double'];
+
         modalContent.innerHTML = `
             <h3>Rectangle Details</h3>
-            <p><strong>Type:</strong> ${type}</p>
+            <p><strong>Type:</strong>
+                <select id="typeSelect">
+                    ${typeOptions.map(opt => 
+                        `<option value="${opt}" ${opt === type ? 'selected' : ''}>${opt}</option>`).join('')}
+                </select>
+            </p>
             <p><strong>Coordinates:</strong></p>
             <ul>
               <li>P1: (${coords[0]}, ${coords[1]})</li>
@@ -144,15 +154,20 @@ class PolygonElement extends HTMLElement {
             </ul>
             <p><strong>Extracted region:</strong></p>
             <img src="${canvas.toDataURL()}" alt="Cropped image" style="width: 100%; height: 100%; max-width: 500px; max-height: 300px;" />
-            <button id="deleteButton">Delete</button>
+            <button id="deleteButton" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2" style="position: absolute; right:-18px; bottom:-53px">Delete</button>
         `;
         modal.style.display = 'flex';
         const deleteButton = modalContent.querySelector('#deleteButton');
         deleteButton.addEventListener('click', () => {
             this.parentElement.removeChild(this);
             modal.style.display = 'none';
-        }
-        );
+        });
+    
+        const typeSelect = modalContent.querySelector('#typeSelect');
+        typeSelect.addEventListener('change', (e) => {
+            this.setAttribute('type', e.target.value);
+            modal.style.display = 'none';
+        });
     }
 
     checkAndFixCrossing() {
