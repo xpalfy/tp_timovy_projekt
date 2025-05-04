@@ -69,17 +69,14 @@ class PolygonElement extends HTMLElement {
     }
 
     onHover(event) {
-        // When hover over the polygon, change the cursor to pointer
         if (event.target.tagName === 'polygon') {
             event.target.style.cursor = 'pointer';
         }
-        // When hover over the circles, change the cursor to move
         if (event.target.tagName === 'circle') {
             event.target.style.cursor = 'move';
         }
     }
     onLeave(event) {
-        // When leave the polygon, change the cursor to default
         if (event.target.tagName === 'polygon' || event.target.tagName === 'circle') {
             event.target.style.cursor = 'default';
         }
@@ -130,33 +127,27 @@ class PolygonElement extends HTMLElement {
 
         if (doLinesIntersect(A, B, C, D) || doLinesIntersect(A, D, B, C)) {
 
-            // Compute centroid
             let centroid = {
                 x: (A.x + B.x + C.x + D.x) / 4,
                 y: (A.y + B.y + C.y + D.y) / 4
             };
 
-            // Sort points clockwise
             pointsArray.sort((a, b) => {
                 let angleA = Math.atan2(a.y - centroid.y, a.x - centroid.x);
                 let angleB = Math.atan2(b.y - centroid.y, b.x - centroid.x);
                 return angleA - angleB;
             });
 
-            // Update circles
             pointsArray.forEach((point, index) => {
                 circles[index].setAttribute('cx', point.x);
                 circles[index].setAttribute('cy', point.y);
-                // Update the attributes too
                 this.setAttribute(`x${index + 1}`, point.x);
                 this.setAttribute(`y${index + 1}`, point.y);
             });
 
-            // Update polygon
             const newPoints = pointsArray.map(p => `${p.x},${p.y}`).join(' ');
             this.shadowRoot.querySelector('polygon').setAttribute('points', newPoints);
         } else {
-            // If no crossing, just update attributes normally
             pointsArray.forEach((point, index) => {
                 this.setAttribute(`x${index + 1}`, point.x);
                 this.setAttribute(`y${index + 1}`, point.y);

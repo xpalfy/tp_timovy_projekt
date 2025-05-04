@@ -52,42 +52,42 @@ class Segmentator:
         #    y = randint(0, image_height - height)
         #    polygons.append(((x, y), (x + width, y + height)))
         letters = []
-        first_box = [131, 143, 243, 389]
         for i in range(25):
-            letter = [131, 143 + i * 10, 243, 143 + (i + 1) * 10]
+            letter = [131, 149 + i * 9, 237, 149 + (i + 1) * 9, 'word']
             letters.append(letter)
 
         second_box = [135, 60, 404, 146]
         for i in range (22):
-            letter = [135 + i * 12 , 65, 135 + (i + 1) * 12, 110]
+            letter = [135 + i * 12 , 65, 135 + (i + 1) * 12, 110, 'alphabet']
             letters.append(letter)
 
-        letters.append([135, 110, 220, 120])  
+        letters.append([135, 110, 220, 124, 'null'])  
 
         for i in range(9):
-            letter = [255 + i * 12, 120, 255 + (i + 1) * 12, 145]
+            letter = [255 + i * 12, 120, 255 + (i + 1) * 12, 145, 'double']
             letters.append(letter)       
 
         third_box = [452, 61, 755, 94]
         for i in range(26):
-            letter = [455, 60, 455, 95]
+            letter = [455 + i * 12, 60, 455 + (i + 1) * 12, 95, 'alphabet']
             letters.append(letter)
 
         fourth_box = [455, 131, 570, 236]
         for i in range(10):
-            letter = [455, 131 + i * 10, 570, 131 + (i + 1) * 10]
+            letter = [455, 131 + i * 10, 570, 131 + (i + 1) * 10 , 'word']
             letters.append(letter)
 
         fifth_box = [615, 105, 734, 133]
         for i in range(9):
-            letter = [620 + i * 12, 105, 620 + (i + 1) * 12, 133]
+            letter = [620 + i * 12, 105, 620 + (i + 1) * 12, 133 , 'double']
+            letters.append(letter)
 
         sixth_box = [596, 140, 739, 173]  
-        letters.append([595, 140, 620, 175])
-        letters.append([625, 140, 645, 175])
-        letters.append([650, 140, 680, 175])
-        letters.append([685, 140, 705, 175])
-        letters.append([710, 140, 740, 175])
+        letters.append([595, 140, 620, 175, 'default'])
+        letters.append([625, 140, 645, 175 , 'default'])
+        letters.append([650, 140, 680, 175 , 'default'])
+        letters.append([685, 140, 705, 175 , 'default'])
+        letters.append([710, 140, 740, 175 , 'default'])
 
         return letters
     
