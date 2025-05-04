@@ -139,6 +139,13 @@ try {
         </div>
     </nav>
 
+    <div id="polygonModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('polygonModal').style.display='none'">&times;</span>
+            <div id="polygonModalContent"></div>
+        </div>
+    </div>
+
     <!-- Process Area -->
     <main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-10">
         <!-- Loading Overlay -->
@@ -386,7 +393,7 @@ try {
         function appendAnalyzedRects(Rects) {
             const parent = document.getElementById('previewContainerAnalyze');
             for (let Rect of Rects) {
-                if (Rect.length !== 4) {
+                if (Rect.length !== 5) {
                     console.error('Invalid Rect:', Rect);
                     return;
                 }
@@ -395,6 +402,7 @@ try {
                 const x3 = Rect[2], y3 = Rect[3];
                 const x2 = x1, y2 = y3;
                 const x4 = x3, y4 = y1;
+                const type = Rect[4]; 
 
                 const minX = Math.min(x1, x3);
                 const minY = Math.min(y1, y3);
@@ -412,6 +420,7 @@ try {
                 newRect.setAttribute('y3', y3);
                 newRect.setAttribute('x4', x4);
                 newRect.setAttribute('y4', y4);
+                newRect.setAttribute('type', type);
 
                 newRect.style.position = 'absolute';
                 newRect.style.left = `0`;
@@ -436,7 +445,8 @@ try {
                     { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
                     { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
                     { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
-                    { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') }
+                    { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') },
+                    { type: rect.getAttribute('type') }
                 ];
                 polygons.push(polygon);
             });
