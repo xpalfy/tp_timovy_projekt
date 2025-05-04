@@ -428,7 +428,6 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     $('#docId').val(data.id);
                     $('#userId').val(data.author_id);
                     $('#name').val(data.title);
-                    $('#docTitle').text(data.title);
                     $('#isPublic').prop('checked', data.ispublic === true);
 
                     if (data.imagePaths) {
