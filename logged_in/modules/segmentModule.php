@@ -401,7 +401,7 @@ try {
             const x3 = Rect[2], y3 = Rect[3];
             const x2 = x1, y2 = y3;
             const x4 = x3, y4 = y1;
-            const type = Rect[4] || 'default';
+            const type = Rect[4];
 
             const xs = [x1, x2, x3, x4];
             const ys = [y1, y2, y3, y4];

@@ -18,7 +18,7 @@ class Segmentator:
         # x = randint(0, image_width - width)
         # y = randint(0, image_height - height)
         
-        # return((x, y,x + width, y + height, type))
+        # return((x, y,x + width, y + height, type)) type can be "page", "word", "alphabet", "double", "null", "default"
         return [98, 33, 418, 504, "page"]
 
     def segmentate_sections(self, path):
@@ -35,9 +35,9 @@ class Segmentator:
         #     x = randint(0, image_width - width)
         #     y = randint(0, image_height - height)
 
-        #     polygons.append((x, y, x + width, y + height))
+        #     polygons.append((x, y, x + width, y + height, type)) type can be "page", "word", "alphabet", "double", "null", "default"
         # return polygons
-        return [[131, 143, 243, 389], [135, 60, 404, 146], [452, 61, 755, 94], [455, 131, 570, 236], [615, 105, 734, 133], [596, 140, 739, 173]]
+        return [[131, 143, 243, 389, 'word'], [133, 62, 402, 108, 'alphabet'], [133, 109, 218, 127, 'null'], [239, 108, 372, 146, 'double'], [452, 61, 755, 94, 'alphabet'] , [615, 105, 734, 133, 'double'], [490, 98, 615, 114, 'null'], [455, 132, 573, 237, 'word'], [595, 140, 742, 174, 'default']]
     
     def segmentate_text(self, path):
         # TODO: based on image
