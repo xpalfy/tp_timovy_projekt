@@ -18,8 +18,8 @@ class Segmentator:
         # x = randint(0, image_width - width)
         # y = randint(0, image_height - height)
         
-        # return((x, y,x + width, y + height))
-        return [98, 33, 770, 504]
+        # return((x, y,x + width, y + height, type))
+        return [98, 33, 418, 504, "page"]
 
     def segmentate_sections(self, path):
         # TODO: based on image
