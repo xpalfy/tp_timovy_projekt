@@ -45,6 +45,16 @@ try {
 </head>
 
 <body class="min-h-screen select-none flex flex-col">
+    <script>
+    function checkToasts() {
+        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+        if (toast) {
+            toastr[toast.type](toast.message);
+            <?php unset($_SESSION['toast']); ?>
+        }
+    }
+    checkToasts();
+    </script>
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
