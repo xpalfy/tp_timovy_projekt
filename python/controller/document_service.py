@@ -23,7 +23,20 @@ class DocumentService:
     
     def get_document_by_id(self, document_id: int):
         return self.db.query(Document).filter_by(id=document_id).first()
-
+    
+    def get_document_id_and_user_id(self, document_id: int, user_id: int) -> Document | None:
+        doc = self.get_document_by_id(document_id)
+        user = self.db.query(User).filter_by(id=user_id).first()
+        if not doc:
+            return None
+        if doc.author_id == user_id:
+            return doc
+        if doc.is_public:
+            return doc
+        if user in doc.shared_with:
+            return doc
+        return None
+    
     def document_name_exists(self, name: str, author_id: int, exclude_id: int = None) -> bool:
         query = self.db.query(Document).filter(Document.title == name, Document.author_id == author_id)
         if exclude_id:
@@ -153,6 +166,23 @@ class DocumentService:
             raise Exception("Processing result not found")
         processing_result.result = json_data
         self.db.commit()
-        
-        
-        
+
+    def get_image_paths_by_document_id(self, document_id: int) -> list[str]:
+        doc = self.get_document_by_id(document_id)
+        if not doc:
+            raise Exception("Document not found")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        item: Item = doc.items[0]
+        if not item.processing_results:
+            raise Exception("No processing results found for this item")
+        return item.image_path
+
+    def get_shared_users_by_document_id(self, document_id, user_id=None) -> list[str]:
+        doc = self.get_document_by_id(document_id)
+        shared_with_user = self.db.query(User).filter_by(id=user_id).first() if user_id else None
+        if not doc:
+            raise Exception("Document not found")
+        if not doc.shared_with:
+            raise Exception("No shared users found for this document")
+        return [user.username for user in doc.shared_with if user.username != shared_with_user.username]

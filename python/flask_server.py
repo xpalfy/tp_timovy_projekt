@@ -148,8 +148,9 @@ def segmentate_text():
               type: string
     """
     path = request.json['path']
-    print(path)
+    
     return jsonify({"polygons": segmentator.segmentate_text(path)})
+
 
 @app.route('/crop_polygon', methods=['POST'])
 def crop_polygon():
@@ -191,6 +192,47 @@ def get_example_json():
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/get_document', methods=['POST'])
+def get_document():
+    db = next(get_db_session())
+    service = DocumentService(db)
+    
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        document_id = data.get('document_id')
+        user_id = data.get('user_id')
+
+        if not document_id:
+            return jsonify({'error': 'Document ID is required'}), 400
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+
+        document = service.get_document_id_and_user_id(document_id, user_id)
+        if not document:
+            return jsonify({'error': 'Document not found'}), 404
+        # Get image paths related to the document
+        image_paths = service.get_image_paths_by_document_id(document_id)
+
+        # Get shared users for the document
+        shared_users = service.get_shared_users_by_document_id(document_id, user_id)
+ 
+        return jsonify({
+            'id': document.id,
+            'title': document.title,
+            'author_id': document.author_id,
+            'status': document.status.name,
+            'description': document.description,
+            'ispublic': document.is_public,
+            'imagePaths': image_paths,
+            'sharedUsers': shared_users
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/update_document_title', methods=['POST'])
 def update_document_title():
