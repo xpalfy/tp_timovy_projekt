@@ -168,30 +168,17 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 <!-- Share with section -->
                 <div class="mt-4 mb-8">
                     <label for="share" class="block font-semibold mb-1">Share with</label>
-                    <div class="flex flex-col lg:flex-row gap-4 mb-2">
-                        <div class="lg:w-5/6 w-full">
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" id="share" placeholder="Enter username"
-                                       class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
-                                <button type="button" onclick="addUser()"
-                                        class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
-                                    Add
-                                </button>
-                            </div>
-                            <input type="hidden" name="sharedUsers" id="sharedUsers">
-                        </div>
-                        <div class="lg:w-1/6 w-full flex items-center justify-center">
-                            <label for="isPublic" class="flex items-center cursor-pointer select-none">
-                                <div class="relative">
-                                    <input type="checkbox" id="isPublic" class="sr-only peer">
-                                    <div class="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-yellow-400 transition-colors duration-300"></div>
-                                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-6"></div>
-                                </div>
-                                <span class="ml-3 text-sm font-medium text-gray-700">Public</span>
-                            </label>
-                        </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <input type="text" id="share" placeholder="Enter username"
+                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                        <button type="button" onclick="addUser()"
+                                class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
+                            Add
+                        </button>
                     </div>
+                    <input type="hidden" name="sharedUsers" id="sharedUsers">
                 </div>
+
 
                 <!-- Shared users table -->
                 <table id="sharedUsersTable" class="display w-full text-sm compact">
@@ -214,13 +201,9 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                       class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
                       placeholder="{ }"></textarea>
             <div class="text-right">
-                <button onclick="saveKeyJson()"
-                        class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition">
-                    Save JSON
-                </button>
-                <button onclick="deleteDocument(documentId)"
+                <button onclick="unshareWithMe('<?php echo $userData['username']; ?>')"
                         class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
-                    Delete Document
+                    Unshare Document
                 </button>
             </div>
         </div>
@@ -382,76 +365,23 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         });
     }
 
-    function deleteDocument(documentId) {
+    function unshareWithMe(username) {
         Swal.fire({
             icon: 'warning',
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: `You will no longer have access to this document.`,
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, unshare it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('documents/deleteDocument.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        doc_id: documentId,
-                        id: <?php echo $userData['id']; ?>,
-                        user_name: "<?php echo $userData['username']; ?>"
-                    })
-                }).then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            toastr.error(data.error);
-                        } else {
-                            <?php $_SESSION['toast'] = ['type' => 'success', 'message' => 'Document deleted successfully']; ?>
-                            window.location.href = "ownKeyDocuments.php";
-                        }
-                    }).catch(error => {
-                    console.error('Error:', error);
-                    toastr.error("An error occurred while deleting the document");
-                });
+                removeUser(username);
+                <?php $_SESSION['toast'] = ['type' => 'success', 'message' => 'Document unshared successfully']; ?>
+                window.location.href = 'ownKeyDocuments.php';
             }
         });
     }
-
-    function saveKeyJson() {
-        let parsedJson;
-        try {
-            parsedJson = JSON.parse($('#jsonData').val());
-        } catch (e) {
-            toastr.error('Invalid JSON format');
-            return;
-        }
-
-        const formData = {
-            document_id: documentId,
-            user_id: $('#userId').val(),
-            token: '<?php echo $_SESSION['token']; ?>',
-            json_data: parsedJson
-        };
-
-        $.ajax({
-            url: 'https://python.tptimovyprojekt.software/save_key_json',
-            type: 'POST',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            dataType: 'json',
-            success: function (res) {
-                if (res.success) {
-                    toastr.success('Key JSON saved successfully');
-                } else {
-                    toastr.error(res.error || 'Failed to save key JSON');
-                }
-            },
-            error: function () {
-                toastr.error('Server error while saving key JSON');
-            }
-        });
-    }
-
 
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -465,7 +395,10 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             searching: true,
             info: false,
             autoWidth: false,
-            columnDefs: [{targets: [1], orderable: false}],
+            columnDefs: [{
+                targets: [1],
+                orderable: false
+            }],
             dom: '<"top"f>rt<"bottom"p><"clear">',
             language: {
                 search: "",
@@ -473,26 +406,46 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             }
         });
 
-        $.get(`documents/getDocument.php?user=${userId}&id=${documentId}`, function (data) {
-            if (data.error) {
-                toastr.error(data.error);
-            } else {
-                $('#docId').val(data.document.id);
-                $('#userId').val(data.document.author_id);
-                $('#name').val(data.document.title);
-                $('#docTitle').text(data.document.name);
-                $('#isPublic').prop('checked', data.document.is_public);
 
-                if (data.imagePaths && data.imagePaths.length > 0) {
-                    $('#docImage').attr('src', '../' + data.imagePaths[0]);
+        const formData = {
+            token: '<?php echo $_SESSION['token']; ?>',
+            document_id: documentId,
+            user_id: userId
+        };
+
+        fetch('https://python.tptimovyprojekt.software/get_document', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    toastr.error(data.error);
                 } else {
-                    $('#docImage').attr('alt', 'No image available');
-                }
+                    $('#docId').val(data.id);
+                    $('#userId').val(data.author_id);
+                    $('#name').val(data.title);
+                    $('#docTitle').text(data.title);
+                    $('#isPublic').prop('checked', data.ispublic === true);
 
-                fetchSharedUsers();
-                fetchKeyJson();
-            }
-        });
+                    if (data.imagePaths) {
+                        $('#docImage').attr('src', '../' + data.imagePaths);
+                    } else {
+                        $('#docImage').attr('alt', 'No image available');
+                    }
+
+                    fetchSharedUsers();
+                    fetchKeyJson();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                toastr.error('Failed to load document');
+            });
+
 
         $("#share").autocomplete({
             source: function (request, response) {
@@ -514,38 +467,9 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         });
         $('.ui-helper-hidden-accessible').remove();
 
-        $('#isPublic').on('change', function () {
-            const isPublic = $(this).is(':checked');
-
-            const formData = {
-                document_id: documentId,
-                author_id: $('#userId').val(),
-                is_public: isPublic,
-                token: '<?php echo $_SESSION['token']; ?>'
-            };
-
-            $.ajax({
-                url: 'https://python.tptimovyprojekt.software/update_doc_public',
-                type: 'POST',
-                data: JSON.stringify(formData),
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        toastr.success(`Document is now ${isPublic ? 'Public' : 'Private'}`);
-                    } else {
-                        toastr.error(res.error || 'Update failed');
-                    }
-                },
-                error: function () {
-                    toastr.error('Server error while updating visibility');
-                }
-            });
-        });
-
-
     });
 </script>
 
 </body>
+
 </html>
