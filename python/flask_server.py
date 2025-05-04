@@ -522,54 +522,52 @@ def get_key_json():
     Get key JSON from a document
     ---
     tags:
-        
+      - Document Management
     parameters:
-        - in: body
-            name: body
-            required: true
-            schema:
-            type: object
-            required:
-                - token
-                - document_id
-                - user_id
-            properties:
-                token:
-                type: string
-                description: Authentication token
-                document_id:
-                type: integer
-                description: ID of the document to process
-                user_id:
-                type: integer
-                description: ID of the user making the request
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - token
+            - document_id
+            - user_id
+          properties:
+            token:
+              type: string
+              description: Authentication token
+            document_id:
+              type: integer
+              description: ID of the document to process
+            user_id:
+              type: integer
+              description: ID of the user making the request
     responses:
-        200:
-            description: Key JSON extracted successfully
-            schema:
-            type: object
-            properties:
-                # Define your response schema here
-                # Example:
-                key_data:
-                type: object
-                description: The extracted key JSON data
-        400:
-            description: Invalid input
-            schema:
-            type: object
-            properties:
-                error:
-                type: string
-                description: Error message
-        500:
-            description: Server error
-            schema:
-            type: object
-            properties:
-                error:
-                type: string
-                description: Error message
+      200:
+        description: Key JSON extracted successfully
+        schema:
+          type: object
+          properties:
+            key_data:
+              type: object
+              description: The extracted key JSON data
+      400:
+        description: Invalid input
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message
+      500:
+        description: Server error
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message
     """
     db = next(get_db_session())
     service = DocumentService(db)
@@ -596,56 +594,56 @@ def save_key_json():
     Save key JSON to a document
     ---
     tags:
-        - Document Management
+      - Document Management
     parameters:
-        - in: body
-            name: body
-            required: true
-            schema:
-            type: object
-            required:
-                - token
-                - document_id
-                - user_id
-                - json_data
-            properties:
-                token:
-                type: string
-                description: Authentication token
-                document_id:
-                type: integer
-                description: ID of the document to update
-                user_id:
-                type: integer
-                description: ID of the user making the request
-                json_data:
-                type: object
-                description: The JSON data to be saved
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - token
+            - document_id
+            - user_id
+            - json_data
+          properties:
+            token:
+              type: string
+              description: Authentication token
+            document_id:
+              type: integer
+              description: ID of the document to update
+            user_id:
+              type: integer
+              description: ID of the user making the request
+            json_data:
+              type: object
+              description: The JSON data to be saved
     responses:
-        200:
-            description: JSON data saved successfully
-            schema:
-            type: object
-            properties:
-                success:
-                type: boolean
-                example: true
-        400:
-            description: Invalid input
-            schema:
-            type: object
-            properties:
-                error:
-                type: string
-                example: "Document ID is required"
-        500:
-            description: Server error
-            schema:
-            type: object
-            properties:
-                error:
-                type: string
-                example: "Error message describing the issue"
+      200:
+        description: JSON data saved successfully
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+      400:
+        description: Invalid input
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Document ID is required"
+      500:
+        description: Server error
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Error message describing the issue"
     """
     db = next(get_db_session())
     service = DocumentService(db)
