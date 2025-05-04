@@ -35,6 +35,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="../css/editDocument.css?v=<?php echo time(); ?>" />
 </head>
 
@@ -203,13 +204,25 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
       </div>
 
     </div>
-    <div class="mt-6">
-      <label for="jsonData" class="block font-semibold mb-2">Key JSON</label>
-      <textarea id="jsonData" rows="12" class="w-full border border-yellow-400 rounded p-4 text-sm font-mono bg-white bg-opacity-70 resize-y"></textarea>
+    <div class="mt-10 w-full">
+      <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg">
+        <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Key JSON</label>
+        <textarea id="jsonData" rows="12"
+          class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
+          placeholder="{ }"></textarea>
+        <div class="text-right">
+          <button onclick="saveKeyJson()"
+            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition">
+            Save JSON
+          </button>
+          <button onclick="deleteDocument(documentId)"
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
+            Delete Document
+          </button>
+        </div>
+      </div>
     </div>
-    <button onclick="saveKeyJson()" class="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow">
-      Save JSON
-    </button>
+
 
 
   </main>
@@ -368,6 +381,37 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
       });
     }
 
+    function deleteDocument(documentId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('documents/deleteDocument.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ doc_id: documentId, id: <?php echo $userData['id']; ?>, user_name: "<?php echo $userData['username']; ?>" })
+                    }).then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                toastr.error(data.error);
+                            } else {
+                                <?php $_SESSION['toast'] = ['type' => 'success', 'message' => 'Document deleted successfully']; ?>
+                                window.location.href = "ownKeyDocuments.php";
+                            }
+                        }).catch(error => {
+                            console.error('Error:', error);
+                            toastr.error("An error occurred while deleting the document");
+                        });
+                }
+            });
+        }
+
     function saveKeyJson() {
       let parsedJson;
       try {
@@ -381,7 +425,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         document_id: documentId,
         user_id: $('#userId').val(),
         token: '<?php echo $_SESSION['token']; ?>',
-        json_data: parsedJson  // 🟢 this key matches your Flask backend exactly
+        json_data: parsedJson
       };
 
       $.ajax({
