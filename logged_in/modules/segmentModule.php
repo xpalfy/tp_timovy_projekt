@@ -486,7 +486,7 @@ try {
                     if (data.success) {
                         toastr.success('Segmentation data saved successfully.');
                         setTimeout(() => {
-                            window.location.href = '../editDocument.php?id=' + selectedDocumentId + '&user=' + userData.id;
+                            window.location.href = '../editOwnDocument.php?id=' + selectedDocumentId + '&user=' + userData.id;
                         }, 2000);
                     } else {
                         toastr.error('Failed to save segmentation data.');

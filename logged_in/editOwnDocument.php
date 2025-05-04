@@ -223,8 +223,6 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
       </div>
     </div>
 
-
-
   </main>
   <!-- Footer -->
   <footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
