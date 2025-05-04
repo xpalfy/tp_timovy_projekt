@@ -65,7 +65,7 @@ function checkPolygons($post)
 
     foreach ($polygonData as $polygon) {
         foreach ($polygon as $point) {
-            if (!isset($point['x'], $point['y']) || !is_numeric($point['x']) || !is_numeric($point['y'])) {
+            if ((!isset($point['x'], $point['y']) || !is_numeric($point['x']) || !is_numeric($point['y'])) && !isset($point['type'])) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Invalid polygon point']);
                 exit;
