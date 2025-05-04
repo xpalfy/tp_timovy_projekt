@@ -393,7 +393,7 @@ try {
         function appendLetterRects(Rects) {
             const parent = document.getElementById('previewContainerLetter');
             for (const Rect of Rects) {
-                if (Rect.length !== 4) {
+                if (Rect.length !== 5) {
                     console.error('Invalid Rect:', Rect);
                     continue;
                 }
