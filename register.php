@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
   <link href="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="./css/login.css?v=<?php echo time(); ?>" />>
+  <link rel="stylesheet" href="./css/login.css?v=<?php echo time(); ?>" />
 </head>
 
 <body class="text-[#3b2f1d] bg-[#fefbf5]">
