@@ -23,9 +23,9 @@ $conn = getDatabaseConnection();
 $stmt = $conn->prepare("SELECT u.username
 FROM document_user_association dua
 JOIN users u ON dua.user_id = u.id
-WHERE dua.document_id = ?
+WHERE dua.document_id = ? AND dua.user_id != ?
 ");
-$stmt->bind_param("i", $documentId);
+$stmt->bind_param("ii", $documentId, $userData['id']);
 $stmt->execute();
 $result = $stmt->get_result();
 
