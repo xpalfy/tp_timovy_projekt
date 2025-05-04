@@ -190,9 +190,11 @@ try {
             </div>
 
             <!-- Save Button -->
-            <div class="flex justify-center items-center mt-5">
+            <div class="flex justify-center items-center mt-5 mb-5 gap-2">
+                <button id="addRectButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
+                    style="display: none;" onclick="addNewRect()">Add Segmentation Zone</button>
                 <button id="loadItemButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
-                    disabled style="display: none;" onclick="saveLetterData()">Save Letters</button>
+                    style="display: none;" onclick="saveLetterData()">Save Letters</button>
             </div>
         </div>
     </main>
@@ -275,7 +277,6 @@ try {
                     showLoading();
                     selectedDocumentId = ui.item.id;
                     $("#itemSelector").prop("disabled", false);
-                    $("#loadItemButton").prop("disabled", false);
                     $("#itemSelector").empty();
                     $("#itemSelector").append('<option value="" disabled selected>Select an item</option>');
                     fetchItems(selectedDocumentId);
@@ -340,6 +341,7 @@ try {
         function showLetterSegmentator() {
             document.getElementById('imageLetter').style.display = 'block';
             document.getElementById('loadItemButton').style.display = 'block';
+            document.getElementById('addRectButton').style.display = 'block';
         }
 
         /*function updateImagePreview() {
@@ -404,16 +406,7 @@ try {
                 const x4 = x3, y4 = y1;
                 const type = Rect[4];
 
-                const xs = [x1, x2, x3, x4];
-                const ys = [y1, y2, y3, y4];
-                const minX = Math.min(...xs) - 5;
-                const minY = Math.min(...ys) - 5;
-                const maxX = Math.max(...xs) + 5;
-                const maxY = Math.max(...ys) + 5;
-                const width = maxX - minX;
-                const height = maxY - minY;
-
-                const newRect = document.createElement('letter-rect');
+                let newRect = document.createElement('letter-rect');
                 newRect.setAttribute('x1', x1);
                 newRect.setAttribute('y1', y1);
                 newRect.setAttribute('x2', x2);
@@ -424,14 +417,6 @@ try {
                 newRect.setAttribute('y4', y4);
                 newRect.setAttribute('type', type);
 
-                newRect.style.position = 'absolute';
-                newRect.style.left = `0`;
-                newRect.style.top = `0`;
-                newRect.style.width = `${width}px`;
-                newRect.style.height = `${height}px`;
-
-                newRect.classList.add('not-copyable');
-                newRect.classList.add('rounded-xl');
                 parent.appendChild(newRect);
             }
         }
@@ -487,6 +472,22 @@ try {
                     toastr.error('Error saving segmentation data.');
                     console.error('Error:', error);
                 });
+        }
+
+        function addNewRect() {
+            const parent = document.getElementById('previewContainerLetter');
+            const newRect = document.createElement('letter-rect');
+            newRect.setAttribute('x1', 100);
+            newRect.setAttribute('y1', 100);
+            newRect.setAttribute('x2', 200);
+            newRect.setAttribute('y2', 100);
+            newRect.setAttribute('x3', 200);
+            newRect.setAttribute('y3', 200);
+            newRect.setAttribute('x4', 100);
+            newRect.setAttribute('y4', 200);
+            newRect.setAttribute('type', 'default');
+
+            parent.appendChild(newRect);
         }
     </script>
 </body>

@@ -191,9 +191,11 @@ try {
             </div>
 
             <!-- Save Button -->
-            <div class="flex justify-center items-center mt-5">
+            <div class="flex justify-center items-center mt-5 mb-5 gap-2">
+                <button id="addRectButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
+                    style="display: none;" onclick="addNewRect()">Add Segmentation Zone</button>
                 <button id="loadItemButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
-                    disabled style="display: none;" onclick="saveAnalysisData()">Save Analysis</button>
+                    style="display: none;" onclick="saveAnalysisData()">Save Analysis</button>
             </div>
         </div>
     </main>
@@ -275,7 +277,6 @@ try {
                     showLoading();
                     selectedDocumentId = ui.item.id;
                     $("#itemSelector").prop("disabled", false);
-                    $("#loadItemButton").prop("disabled", false);
                     $("#itemSelector").empty();
                     $("#itemSelector").append('<option value="" disabled selected>Select an item</option>');
                     fetchItems(selectedDocumentId);
@@ -340,6 +341,7 @@ try {
         function showAnalyzer() {
             document.getElementById('imageAnalyzer').style.display = 'block';
             document.getElementById('loadItemButton').style.display = 'block';
+            document.getElementById('addRectButton').style.display = 'block';
         }
 
         function updateImagePreview() {
@@ -402,14 +404,7 @@ try {
                 const x3 = Rect[2], y3 = Rect[3];
                 const x2 = x1, y2 = y3;
                 const x4 = x3, y4 = y1;
-                const type = Rect[4]; 
-
-                const minX = Math.min(x1, x3);
-                const minY = Math.min(y1, y3);
-                const maxX = Math.max(x1, x3);
-                const maxY = Math.max(y1, y3);
-                const width = maxX - minX;
-                const height = maxY - minY;
+                const type = Rect[4];
 
                 let newRect = document.createElement('segment-rect');
                 newRect.setAttribute('x1', x1);
@@ -422,14 +417,6 @@ try {
                 newRect.setAttribute('y4', y4);
                 newRect.setAttribute('type', type);
 
-                newRect.style.position = 'absolute';
-                newRect.style.left = `0`;
-                newRect.style.top = `0`;
-                newRect.style.width = `${width}px`;
-                newRect.style.height = `${height}px`;
-
-                newRect.classList.add('not-copyable');
-                newRect.classList.add('rounded-xl');
                 parent.appendChild(newRect);
             }
         }
@@ -485,6 +472,22 @@ try {
                     toastr.error('Error saving segmentation data.');
                     console.error('Error:', error);
                 });
+        }
+
+        function addNewRect() {
+            const parent = document.getElementById('previewContainerAnalyze');
+            const newRect = document.createElement('segment-rect');
+            newRect.setAttribute('x1', 100);
+            newRect.setAttribute('y1', 100);
+            newRect.setAttribute('x2', 200);
+            newRect.setAttribute('y2', 100);
+            newRect.setAttribute('x3', 200);
+            newRect.setAttribute('y3', 200);
+            newRect.setAttribute('x4', 100);
+            newRect.setAttribute('y4', 200);
+            newRect.setAttribute('type', 'default');
+
+            parent.appendChild(newRect);
         }
     </script>
 </body>
