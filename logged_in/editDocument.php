@@ -207,6 +207,10 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
       <label for="jsonData" class="block font-semibold mb-2">Key JSON</label>
       <textarea id="jsonData" rows="12" class="w-full border border-yellow-400 rounded p-4 text-sm font-mono bg-white bg-opacity-70 resize-y"></textarea>
     </div>
+    <button onclick="saveKeyJson()" class="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow">
+      Save JSON
+    </button>
+
 
   </main>
   <!-- Footer -->
@@ -363,6 +367,42 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         }
       });
     }
+
+    function saveKeyJson() {
+      let parsedJson;
+      try {
+        parsedJson = JSON.parse($('#jsonData').val());
+      } catch (e) {
+        toastr.error('Invalid JSON format');
+        return;
+      }
+
+      const formData = {
+        document_id: documentId,
+        user_id: $('#userId').val(),
+        token: '<?php echo $_SESSION['token']; ?>',
+        json_data: parsedJson  // 🟢 this key matches your Flask backend exactly
+      };
+
+      $.ajax({
+        url: 'https://python.tptimovyprojekt.software/save_key_json',
+        type: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (res) {
+          if (res.success) {
+            toastr.success('Key JSON saved successfully');
+          } else {
+            toastr.error(res.error || 'Failed to save key JSON');
+          }
+        },
+        error: function () {
+          toastr.error('Server error while saving key JSON');
+        }
+      });
+    }
+
 
     $(document).ready(function () {
       const urlParams = new URLSearchParams(window.location.search);
