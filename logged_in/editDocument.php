@@ -203,6 +203,11 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
       </div>
 
     </div>
+    <div class="mt-6">
+      <label for="jsonData" class="block font-semibold mb-2">Key JSON</label>
+      <textarea id="jsonData" rows="12" class="w-full border border-yellow-400 rounded p-4 text-sm font-mono bg-white bg-opacity-70 resize-y"></textarea>
+    </div>
+
   </main>
   <!-- Footer -->
   <footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
@@ -212,6 +217,32 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
   <script>
     let sharedTable;
     let documentId = null;
+
+    function fetchKeyJson() {
+      const formData = {
+        document_id: documentId,
+        user_id: $('#userId').val(),
+        token: '<?php echo $_SESSION['token']; ?>'
+      };
+
+      $.ajax({
+        url: 'https://python.tptimovyprojekt.software/get_key_json',
+        type: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (res) {
+          if (res.error) {
+            toastr.error(res.error || 'Failed to load key JSON');
+          } else {
+            $('#jsonData').val(JSON.stringify(res, null, 2));
+          }
+        },
+        error: function () {
+          toastr.error('Server error while fetching key JSON');
+        }
+      });
+    }
 
     function fetchSharedUsers() {
       sharedTable.clear();
@@ -356,7 +387,6 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
       $.get(`documents/getDocument.php?user=${userId}&id=${documentId}`, function (data) {
         if (data.error) {
           toastr.error(data.error);
-          window.location.href = 'ownKeyDocuments.php';
         } else {
           $('#docId').val(data.document.id);
           $('#userId').val(data.document.author_id);
@@ -371,6 +401,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
           }
 
           fetchSharedUsers(); 
+          fetchKeyJson();
         }
       });
 
