@@ -240,7 +240,7 @@ try {
                             editPage = 'editSharedDocument.php';
                             cardButtons = `
                                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                                <button onclick="unshareDocument(${doc.id})" class="btn btn-danger">Unshare</button>
+                                <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>
                             `;
                         } else if (type === 'PUBLIC') {
                             editPage = 'viewPublicDocument.php';
@@ -373,17 +373,48 @@ try {
             });
         }
 
-        function checkToasts() {
-            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
-            if (toast) {
-                toastr[toast.type](toast.message);
-                <?php unset($_SESSION['toast']); ?>
-            }
+        function unshareWithMe(username, documentId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Are you sure?',
+                text: `You will no longer have access to this document.`,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, unshare it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = {
+                        document_id: documentId,
+                        username: username,
+                        token: '<?php echo $_SESSION['token']; ?>'
+                    };
+
+                    $.ajax({
+                        url: 'https://python.tptimovyprojekt.software/remove_shared_user',
+                        type: 'POST',
+                        data: JSON.stringify(formData),
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.success) {
+                                toastr.success('Access removed successfully');
+                                fetchSharedDocumentsAndImages();
+                            } else {
+                                toastr.error(res.error || 'Failed to remove access');
+                            }
+                        },
+                        error: function () {
+                            toastr.error('Server error while unsharing');
+                        }
+                    });
+                }
+            });
         }
+
 
         $(document).ready(function () {
             fetchDocumentsAndImages();
-            checkToasts();
         });
 
         $('#search-input').on('input', function () {
