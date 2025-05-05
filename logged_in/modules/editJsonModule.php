@@ -124,8 +124,8 @@ try {
                                             class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
                                     <li>
-                                        <a href="./editJsonModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
+                                        <a href="./editJsonModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Edit
+                                            Json</a>
                                     </li>
                                 </ul>
                             </div>
@@ -362,7 +362,7 @@ try {
                 console.log(itemsData);
                 selectedItemImagePath = itemsData.find(item => item.id == selectedItemId).image_path;
                 showJsonEditor();
-                fetchJson();
+                fetchJson(itemsData.find(item => item.id == selectedItemId).type);
                 hideLoading();
             });
         });
@@ -400,7 +400,17 @@ try {
             }
         }*/
 
-        function fetchJson() {
+        function fetchJson(type) {
+            if (type === 'KEY') {
+                fetchKeyJson();
+            } else if (type === 'CIPHER') {
+                fetchCipherJson();
+            } else {
+                toastr.error('Invalid document type');
+            }
+        }
+
+        function fetchKeyJson() {
             const formData = {
                 document_id: selectedDocumentId,
                 user_id: userData.id,
@@ -426,44 +436,107 @@ try {
             });
         }
 
-        function appendLetterRects(Rects) {
-            const parent = document.getElementById('previewContainerLetter');
-            for (const Rect of Rects) {
-                if (Rect.length !== 5) {
-                    console.error('Invalid Rect:', Rect);
-                    continue;
+        function fetchCipherJson() {
+            const formData = {
+                document_id: selectedDocumentId,
+                user_id: userData.id,
+                token: '<?php echo $_SESSION['token']; ?>'
+            };
+
+            $.ajax({
+                url: 'https://python.tptimovyprojekt.software/get_cipher_json',
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.error) {
+                        toastr.error(res.error || 'Failed to load cipher JSON');
+                    } else {
+                        $('#jsonEditor').val(JSON.stringify(res, null, 2));
+                    }
+                },
+                error: function () {
+                    toastr.error('Server error while fetching cipher JSON');
                 }
-
-                const x1 = Rect[0], y1 = Rect[1];
-                const x3 = Rect[2], y3 = Rect[3];
-                const x2 = x1, y2 = y3;
-                const x4 = x3, y4 = y1;
-                const type = Rect[4];
-
-                let newRect = document.createElement('letter-rect');
-                newRect.setAttribute('x1', x1);
-                newRect.setAttribute('y1', y1);
-                newRect.setAttribute('x2', x2);
-                newRect.setAttribute('y2', y2);
-                newRect.setAttribute('x3', x3);
-                newRect.setAttribute('y3', y3);
-                newRect.setAttribute('x4', x4);
-                newRect.setAttribute('y4', y4);
-                newRect.setAttribute('type', type);
-
-                parent.appendChild(newRect);
-            }
+            });
         }
 
         function saveJson() {
             showLoading();
+
+            let fixedJson = {
+                "alphabet": {
+                    "a": { "codes": [0, 1, 2] },
+                    "b": { "codes": [3, 4] },
+                    "c": { "codes": [5, 6] },
+                    "d": { "codes": [7, 8] },
+                    "e": { "codes": [9, 10, 11] },
+                    "f": { "codes": [12, 13] },
+                    "g": { "codes": [14, 15] },
+                    "h": { "codes": [16, 17] },
+                    "i": { "codes": [18, 19, 20] },
+                    "k": { "codes": [21, 22] },
+                    "l": { "codes": [23, 24] },
+                    "m": { "codes": [25, 26] },
+                    "n": { "codes": [27, 28] },
+                    "o": { "codes": [29, 30, 31] },
+                    "p": { "codes": [32, 33] },
+                    "q": { "codes": [34, 35] },
+                    "r": { "codes": [36, 37] },
+                    "s": { "codes": [38, 39] },
+                    "t": { "codes": [40, 41] },
+                    "u": { "codes": [42, 43, 44] },
+                    "x": { "codes": [45, 46] },
+                    "y": { "codes": [47, 48] },
+                    "zeros": { "codes": [49, 50, 51, 52] }
+                },
+                "doubles": {
+                    "bb": { "code": 53 },
+                    "ff": { "code": 54 },
+                    "ll": { "code": 55 },
+                    "pp": { "code": 56 },
+                    "mm": { "code": 57 },
+                    "nn": { "code": 58 },
+                    "rr": { "code": 59 },
+                    "ss": { "code": 60 },
+                    "tt": { "code": 61 }
+                },
+                "words": {
+                    "Papa": { "code": 62 },
+                    "Rex Ferdinandus": { "code": 63 },
+                    "Veneti": { "code": 64 },
+                    "Florentini": { "code": 65 },
+                    "Dux uh": { "code": 66 },
+                    "Dux ferrarie": { "code": 67 },
+                    "Dux urbini": { "code": 68 },
+                    "Comes bier": { "code": 69 },
+                    "Cardinales": { "code": 70 },
+                    "Concilium": { "code": 71 },
+                    "Genuinfes": { "code": 72 },
+                    "Maschio mantue": { "code": 73 },
+                    "Impator": { "code": 74 },
+                    "Rex hungarie": { "code": 75 },
+                    "Rex boemie": { "code": 76 },
+                    "Rex Pollane": { "code": 77 },
+                    "Dux Saxonie": { "code": 78 },
+                    "Maschio brandinburgi": { "code": 79 },
+                    "Dux Sygimundus": { "code": 80 },
+                    "Dux Burgundie": { "code": 81 },
+                    "Comes pallatimus": { "code": 82 },
+                    "Dux baurtie": { "code": 83 },
+                    "Suyati": { "code": 84 },
+                    "Soldai": { "code": 85 },
+                    "La. Na. Os.": { "code": 86 }
+                }
+            };
 
             let data = {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
                 status: 'SAVED',
-                jsonData: document.getElementById('jsonEditor').value
+                jsonData: fixedJson
             };
 
             console.log('Data to be sent:', data);
@@ -490,22 +563,6 @@ try {
                     toastr.error('Error saving segmentation data.');
                     console.error('Error:', error);
                 });
-        }
-
-        function addNewRect() {
-            const parent = document.getElementById('previewContainerLetter');
-            const newRect = document.createElement('letter-rect');
-            newRect.setAttribute('x1', 100);
-            newRect.setAttribute('y1', 100);
-            newRect.setAttribute('x2', 200);
-            newRect.setAttribute('y2', 100);
-            newRect.setAttribute('x3', 200);
-            newRect.setAttribute('y3', 200);
-            newRect.setAttribute('x4', 100);
-            newRect.setAttribute('y4', 200);
-            newRect.setAttribute('type', 'default');
-
-            parent.appendChild(newRect);
         }
     </script>
     <script type="module" src="../js/main.js?v=<?= time() ?>"></script>
