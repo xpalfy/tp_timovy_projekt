@@ -128,6 +128,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                                 </ul>
                             </div>
                         </div>
+<<<<<<< Updated upstream
                     </li>
                     <li class="flex items-center ml-6">
                         <a href="../logout.php" class="nav-link flex items-center hover:underline">
@@ -137,6 +138,32 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                         </a>
                     </li>
                 </ul>
+=======
+                    </div>
+                </li>
+                <li class="flex items-center ml-6">
+                    <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                        Logout
+                        <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                             style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="flex-grow container mx-auto px-4 py-10">
+    <h1 id="docTitle" class="text-4xl font-bold text-center mb-10">Edit Your Own Key Document Here</h1>
+
+    <!-- Top Row: Image + JSON Textarea -->
+    <div class="flex flex-col lg:flex-row gap-10 items-stretch">
+        <!-- Left: Image -->
+        <div class="w-full lg:w-1/2 flex">
+            <div class="w-full">
+                <img id="docImage" src="" alt="Document"
+                    class="w-full h-full object-cover rounded-lg border shadow-lg cursor-pointer"
+                    onclick="openImageModal()" />
+>>>>>>> Stashed changes
             </div>
         </div>
     </nav>
@@ -183,6 +210,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     <input type="hidden" name="id" id="docId">
                     <input type="hidden" name="user" id="userId">
 
+<<<<<<< Updated upstream
                     <!-- Document Name -->
                     <div>
                         <label for="name" class="block font-semibold mb-1">Document Name</label>
@@ -260,6 +288,85 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                         <h3 class="font-semibold mb-2 text-[#3b2f1d]">Example 1: Single Object</h3>
                         <pre
                             class="bg-white bg-opacity-90 rounded px-4 py-2 text-sm font-mono text-gray-800 overflow-x-auto mb-4">
+=======
+            <div>
+                <label for="date" class="block font-semibold mb-1">Publish Date</label>
+                <div class="flex items-center gap-2 mb-2">
+                    <input type="text" name="date" id="date"
+                            class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                </div>
+            </div>
+
+            <!-- Document Name -->
+            <div>
+                <label for="name" class="block font-semibold mb-1 mt-2">Document Name</label>
+                <div class="flex items-center gap-2">
+                    <input type="text" name="name" id="name" placeholder="Enter document name"
+                           class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                    <button type="button" onclick="changeName()"
+                            class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
+                        Change
+                    </button>
+                </div>
+            </div>
+
+            <!-- Share with section -->
+            <label for="share" class="block font-semibold mb-1 mt-4">Share with</label>
+            <div class="flex flex-col lg:flex-row gap-4 mb-2">
+                <div class="lg:w-5/6 w-full">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="share" placeholder="Enter username"
+                                class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                        <button type="button" onclick="addUser()"
+                                class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
+                            Add
+                        </button>
+                    </div>
+                    <input type="hidden" name="sharedUsers" id="sharedUsers">
+                </div>
+                <div class="lg:w-1/6 w-full flex items-center justify-center">
+                    <label for="isPublic" class="flex items-center cursor-pointer select-none">
+                        <div class="relative">
+                            <input type="checkbox" id="isPublic" class="sr-only peer">
+                            <div class="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-yellow-400 transition-colors duration-300"></div>
+                            <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-6"></div>
+                        </div>
+                        <span class="ml-3 text-sm font-medium text-gray-700">Public</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Shared users table -->
+            <div class="flex-grow overflow-y-auto mt-8">
+                <table id="sharedUsersTable" class="display w-full text-sm compact">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="sharedUsersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Help panel (under textarea) -->
+    <div class="w-full lg:w-1/2 flex">
+        <div class="bg-yellow-100 bg-opacity-70 rounded-xl p-6 shadow-lg w-full min-h-[450px] flex flex-col justify-between">
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-[#3b2f1d]">How to Write a JSON Document</h2>
+                <ul class="list-disc list-inside text-sm text-gray-800 mb-10">
+                    <li>Use double quotes <code class="text-yellow-900">"</code> for keys and string values</li>
+                    <li>Keys and values are separated by a colon <code class="text-yellow-900">:</code></li>
+                    <li>Separate entries with commas <code class="text-yellow-900">,</code></li>
+                    <li>Wrap your structure in <code class="text-yellow-900">{ }</code></li>
+                    <li>Use arrays <code class="text-yellow-900">[ ]</code> for lists</li>
+                </ul>
+
+                <h3 class="font-semibold mb-2 text-[#3b2f1d]">Example 1: Single Object</h3>
+                <pre class="bg-white bg-opacity-90 rounded px-4 py-2 text-sm font-mono text-gray-800 overflow-x-auto mb-4">
+>>>>>>> Stashed changes
 [
   {
     "key": "Batman",
@@ -315,7 +422,200 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             document.body.style.overflow = '';
         }
 
+<<<<<<< Updated upstream
         function fetchKeyJson() {
+=======
+        const formData = {
+            document_id: documentId,
+            username: username,
+            token: '<?php echo $_SESSION['token']; ?>'
+        };
+
+        $.ajax({
+            url: 'https://python.tptimovyprojekt.software/add_shared_user',
+            type: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    toastr.success('User added');
+                    $('#share').val('');
+                    fetchSharedUsers();
+                } else {
+                    toastr.error(res.error || 'Failed to add user');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Failed to add user');
+            }
+        });
+    }
+
+
+    function removeUser(username) {
+        const formData = {
+            document_id: documentId,
+            username: username,
+            token: '<?php echo $_SESSION['token']; ?>'
+        };
+
+        $.ajax({
+            url: 'https://python.tptimovyprojekt.software/remove_shared_user',
+            type: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    toastr.success('User removed');
+                    fetchSharedUsers();
+                } else {
+                    toastr.error(res.error || 'Failed to remove user');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Failed to remove user');
+            }
+        });
+    }
+
+    function deleteDocument(documentId) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('documents/deleteDocument.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        doc_id: documentId,
+                        id: <?php echo $userData['id']; ?>,
+                        user_name: "<?php echo $userData['username']; ?>"
+                    })
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            toastr.error(data.error);
+                        } else {
+                            window.location.href = "ownKeyDocuments.php";
+                        }
+                    }).catch(error => {
+                    console.error('Error:', error);
+                    toastr.error("An error occurred while deleting the document");
+                });
+            }
+        });
+    }
+
+    function saveKeyJson() {
+        let parsedJson;
+        try {
+            parsedJson = JSON.parse($('#jsonData').val());
+        } catch (e) {
+            toastr.error('Invalid JSON format');
+            return;
+        }
+
+        const formData = {
+            document_id: documentId,
+            user_id: $('#userId').val(),
+            token: '<?php echo $_SESSION['token']; ?>',
+            json_data: parsedJson
+        };
+
+        $.ajax({
+            url: 'https://python.tptimovyprojekt.software/save_key_json',
+            type: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    toastr.success('Key JSON saved successfully');
+                } else {
+                    toastr.error(res.error || 'Failed to save key JSON');
+                }
+            },
+            error: function () {
+                toastr.error('Server error while saving key JSON');
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user');
+        documentId = urlParams.get('id');
+
+        sharedTable = $('#sharedUsersTable').DataTable({
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 5,
+            searching: true,
+            info: false,
+            autoWidth: false,
+            columnDefs: [{targets: [1], orderable: false}],
+            dom: '<"top"f>rt<"bottom"p><"clear">',
+            language: {
+                search: "",
+                searchPlaceholder: "Filter users..."
+            }
+        });
+
+        $.get(`documents/getDocument.php?user=${userId}&id=${documentId}`, function (data) {
+            if (data.error) {
+                toastr.error(data.error);
+            } else {
+                $('#docId').val(data.document.id);
+                $('#userId').val(data.document.author_id);
+                $('#name').val(data.document.title);
+                $('#date').val(data.publishDate);
+                $('#isPublic').prop('checked', data.document.is_public);
+                $('#date').prop('disabled', true);
+
+                if (data.imagePaths && data.imagePaths.length > 0) {
+                    $('#docImage').attr('src', '../' + data.imagePaths[0]);
+                } else {
+                    $('#docImage').attr('alt', 'No image available');
+                }
+
+                fetchSharedUsers();
+                fetchKeyJson();
+            }
+        });
+
+        $("#share").autocomplete({
+            source: function (request, response) {
+                $.get("users/fetchUsernames.php", {
+                    query: request.term,
+                    picture_id: documentId
+                }, function (data) {
+                    if (Array.isArray(data)) {
+                        response(data.map(user => user.username));
+                    } else if (data.error) {
+                        toastr.error(data.error);
+                        response([]);
+                    } else {
+                        response([]);
+                    }
+                });
+            },
+            minLength: 1
+        });
+        $('.ui-helper-hidden-accessible').remove();
+
+        $('#isPublic').on('change', function () {
+            const isPublic = $(this).is(':checked');
+
+>>>>>>> Stashed changes
             const formData = {
                 document_id: documentId,
                 user_id: $('#userId').val(),
