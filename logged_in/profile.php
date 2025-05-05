@@ -117,13 +117,20 @@ try {
                                 class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                                 <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                     <li>
-                                        <a href="./modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                        <a href="./modules/segmentModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                     </li>
                                     <li>
-                                        <a href="./modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                        <a href="./modules/analyzeModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
                                     </li>
                                     <li>
-                                        <a href="./modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                        <a href="./modules/lettersModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                    </li>
+                                    <li>
+                                        <a href="./modules/editJsonModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
                                     </li>
                                 </ul>
                             </div>
@@ -144,7 +151,8 @@ try {
     <!-- Updated Profile Form Section -->
     <main class="flex-grow flex justify-center items-center">
         <section class="container mx-auto px-6">
-            <form action="users/profileUpdate.php" method="post" class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6">
+            <form action="users/profileUpdate.php" method="post"
+                class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6">
                 <h1 class="text-4xl font-bold text-center text-papyrus mb-6">👤 Profile</h1>
                 <p class="text-center text-lg mb-10 text-papyrus">
                     Welcome back, <span class="font-semibold"><?php echo $userData['username']; ?></span>

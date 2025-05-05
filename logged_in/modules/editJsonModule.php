@@ -123,6 +123,10 @@ try {
                                         <a href="./lettersModule.php"
                                             class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
+                                    <li>
+                                        <a href="./editJsonModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -397,30 +401,30 @@ try {
         }*/
 
         function fetchJson() {
-        const formData = {
-            document_id: selectedDocumentId,
-            user_id: userData.id,
-            token: '<?php echo $_SESSION['token']; ?>'
-        };
+            const formData = {
+                document_id: selectedDocumentId,
+                user_id: userData.id,
+                token: '<?php echo $_SESSION['token']; ?>'
+            };
 
-        $.ajax({
-            url: 'https://python.tptimovyprojekt.software/get_key_json',
-            type: 'POST',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            dataType: 'json',
-            success: function (res) {
-                if (res.error) {
-                    toastr.error(res.error || 'Failed to load key JSON');
-                } else {
-                    $('#jsonEditor').val(JSON.stringify(res, null, 2));
+            $.ajax({
+                url: 'https://python.tptimovyprojekt.software/get_key_json',
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.error) {
+                        toastr.error(res.error || 'Failed to load key JSON');
+                    } else {
+                        $('#jsonEditor').val(JSON.stringify(res, null, 2));
+                    }
+                },
+                error: function () {
+                    toastr.error('Server error while fetching key JSON');
                 }
-            },
-            error: function () {
-                toastr.error('Server error while fetching key JSON');
-            }
-        });
-    }
+            });
+        }
 
         function appendLetterRects(Rects) {
             const parent = document.getElementById('previewContainerLetter');
