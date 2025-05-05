@@ -138,7 +138,7 @@ class DocumentService:
         item: Item = doc.items[0]
         if not item.processing_results:
             raise Exception("No processing results found for this item")
-        processing_result: ProcessingResult = item.processing_results[0]
+        processing_result: ProcessingResult = item.processing_results[-1]
         if not processing_result:
             raise Exception("Processing result not found")
         return processing_result.result
