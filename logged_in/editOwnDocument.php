@@ -149,30 +149,8 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             </div>
         </div>
 
-        <!-- Right: JSON Textarea -->
-        <div class="w-full lg:w-1/2 flex">
-            <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
-                <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Key JSON</label>
-                <textarea id="jsonData" rows="15"
-                          class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
-                          placeholder="{ }"></textarea>
-                <div class="text-right">
-                    <button onclick="saveKeyJson()"
-                            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition">
-                        Save JSON
-                    </button>
-                    <button onclick="deleteDocument(document.getElementById('docId').value)"
-                            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
-                        Delete Document
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Bottom Row: Form (under image) + JSON Helper (under textarea) -->
-<div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
-    <!-- Left: Form section (under image) -->
+            <!-- Left: Form section (under image) -->
     <div class="w-full lg:w-1/2 flex">
         <div class="w-full bg-white bg-opacity-50 rounded-xl p-6 shadow-lg min-h-[450px] flex flex-col">
             <input type="hidden" name="id" id="docId">
@@ -236,6 +214,30 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     </thead>
                     <tbody id="sharedUsersTableBody"></tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Bottom Row: Form (under image) + JSON Helper (under textarea) -->
+<div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
+
+    <!-- Right: JSON Textarea -->
+    <div class="w-full lg:w-1/2 flex">
+        <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
+            <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Key JSON</label>
+            <textarea id="jsonData" rows="15"
+                        class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
+                        placeholder="{ }"></textarea>
+            <div class="text-right mt-4">
+                <button onclick="saveKeyJson()"
+                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow transition">
+                    Save JSON
+                </button>
+                <button onclick="deleteDocument(document.getElementById('docId').value)"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
+                    Delete Document
+                </button>
             </div>
         </div>
     </div>
@@ -535,7 +537,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         sharedTable = $('#sharedUsersTable').DataTable({
             pagingType: "simple",
             lengthChange: false,
-            pageLength: 5,
+            pageLength: 4,
             searching: true,
             info: false,
             autoWidth: false,

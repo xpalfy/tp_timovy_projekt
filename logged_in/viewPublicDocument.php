@@ -141,15 +141,16 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         </div>
     </nav>
     <main class="flex-grow container mx-auto px-4 py-10">
-        <h1 id="docTitle" class="text-4xl font-bold text-center mb-10">Edit Your Document Here</h1>
+        <h1 id="docTitle" class="text-4xl font-bold text-center mb-10">View Public Key Document Here</h1>
 
         <div class="flex flex-col lg:flex-row gap-10 items-stretch">
 
-            <!-- Left side: Image container -->
+            <!-- Left: Image -->
             <div class="w-full lg:w-1/2 flex">
                 <div class="w-full">
                     <img id="docImage" src="" alt="Document"
-                        class="w-full h-full object-cover rounded-lg border shadow-lg" />
+                        class="w-full h-full object-cover rounded-lg border shadow-lg cursor-pointer"
+                        onclick="openImageModal()" />
                 </div>
             </div>
 
@@ -187,16 +188,61 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             </div>
 
         </div>
-        <div class="mt-10 w-full">
-            <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg">
-                <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Key JSON</label>
-                <textarea id="jsonData" rows="12"
-                    class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
+        <div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
+
+<!-- Right: JSON Textarea -->
+<div class="w-full lg:w-1/2 flex">
+    <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
+        <label for="jsonData" class="block font-semibold mb-6 text-[#3b2f1d]">Key JSON</label>
+        <textarea id="jsonData" rows="20"
+                    class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 mb-4 resize-none"
                     placeholder="{ }"></textarea>
-            </div>
+    </div>
+</div>
+
+<!-- Right: Help panel (under textarea) -->
+<div class="w-full lg:w-1/2 flex">
+    <div class="bg-yellow-100 bg-opacity-70 rounded-xl p-6 shadow-lg w-full min-h-[450px] flex flex-col justify-between">
+        <div>
+            <h2 class="text-xl font-semibold mb-4 text-[#3b2f1d]">How to Read a JSON Document</h2>
+            <ul class="list-disc list-inside text-sm text-gray-800 mb-10">
+                <li>Each JSON object is wrapped in <code class="text-yellow-900">{ }</code></li>
+                <li>Keys are always strings, enclosed in double quotes <code class="text-yellow-900">"</code></li>
+                <li>Each key maps to a value using a colon <code class="text-yellow-900">:</code></li>
+                <li>Values can be strings, numbers, arrays, booleans, or nested objects</li>
+                <li>Multiple objects can appear in an array <code class="text-yellow-900">[ ]</code></li>
+            </ul>
+
+            <h3 class="font-semibold mb-2 text-[#3b2f1d]">Example: JSON Array of Objects</h3>
+            <pre class="bg-white bg-opacity-90 rounded px-4 py-2 text-sm font-mono text-gray-800 overflow-x-auto mb-4">
+[
+  {
+    "key": "Batman",
+    "code": "BAT-001"
+  },
+  {
+    "key": "Wonder Woman",
+    "code": "WW-002"
+  }
+]
+            </pre>
         </div>
+    </div>
+</div>
+
+</div>
 
     </main>
+
+    <!-- Fullscreen Image Modal -->
+<div id="imageModal"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm p-6 overflow-auto">
+    <button onclick="closeImageModal()"
+            class="absolute top-5 right-5 text-white text-3xl font-bold z-50">&times;</button>
+    <img id="modalImage" src=""
+         alt="Full Image"
+         class="max-w-full max-h-[90vh] rounded-lg shadow-lg border-4 border-white" />
+</div>
     <!-- Footer -->
     <footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
         &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
@@ -205,6 +251,23 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     <script>
         let sharedTable;
         let documentId = null;
+
+        function openImageModal() {
+            const image = document.getElementById('docImage');
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = image.src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
 
         function fetchKeyJson() {
             const formData = {

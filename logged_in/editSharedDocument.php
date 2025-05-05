@@ -147,41 +147,29 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             </div>
         </div>
 
-        <!-- Right: JSON Textarea -->
-        <div class="w-full lg:w-1/2 flex">
-            <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
-                <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Key JSON</label>
-                <textarea id="jsonData" rows="15"
-                          class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
-                          placeholder="{ }"></textarea>
-                <div class="text-right">
-                    <button onclick="saveKeyJson()"
-                            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition">
-                        Save JSON
-                    </button>
-                    <button onclick="unshareWithMe('<?php echo $userData['username']; ?>')"
-                            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
-                        Unshare Document
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Row: Form (under image) + Placeholder Help Section -->
-    <div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
         <div class="w-full lg:w-1/2 flex">
             <div class="w-full bg-white bg-opacity-50 rounded-xl p-6 shadow-lg min-h-[580px] flex flex-col">
                 <input type="hidden" name="id" id="docId">
                 <input type="hidden" name="user" id="userId">
 
-                <div>
-                    <label for="date" class="block font-semibold mb-1">Publish Date</label>
-                    <div class="flex items-center gap-2 mb-2">
-                        <input type="text" name="date" id="date"
-                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                <div class="flex gap-4">
+                    <div class="w-1/2">
+                        <label for="date" class="block font-semibold mb-1">Publish Date</label>
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="text" name="date" id="date"
+                                    class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
+                        </div>
+                    </div>
+
+                    <div class="w-1/2">
+                        <label for="owner" class="block font-semibold mb-1">Owner</label>
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="text" name="owner" id="owner"
+                                    class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
+                        </div>
                     </div>
                 </div>
+
 
                 <!-- Document Name -->
                 <div>
@@ -226,6 +214,33 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 </div>
             </div>
         </div>
+
+
+    </div>
+
+    <!-- Bottom Row: Form (under image) + Placeholder Help Section -->
+    <div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
+
+        <!-- Right: JSON Textarea -->
+        <div class="w-full lg:w-1/2 flex">
+            <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
+                <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Key JSON</label>
+                <textarea id="jsonData" rows="16"
+                          class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
+                          placeholder="{ }"></textarea>
+                <div class="text-right mt-4">
+                    <button onclick="saveKeyJson()"
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow transition">
+                        Save JSON
+                    </button>
+                    <button onclick="unshareWithMe('<?php echo $userData['username']; ?>')"
+                            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
+                        Unshare Document
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Right: Help panel (under textarea) -->
         <div class="w-full lg:w-1/2 flex">
             <div class="bg-yellow-100 bg-opacity-70 rounded-xl p-6 shadow-lg w-full min-h-[450px] flex flex-col justify-between">
@@ -502,7 +517,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         sharedTable = $('#sharedUsersTable').DataTable({
             pagingType: "simple",
             lengthChange: false,
-            pageLength: 5,
+            pageLength: 4,
             searching: true,
             info: false,
             autoWidth: false,
@@ -538,10 +553,12 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 } else {
                     $('#docId').val(data.id);
                     $('#userId').val(data.author_id);
+                    $('#owner').val(data.author_name);
                     $('#name').val(data.title);
                     $('#date').val(data.publish_date);
                     $('#isPublic').prop('checked', data.ispublic === true);
                     $('#date').prop('disabled', true);
+                    $('#owner').prop('disabled', true);
 
 
                     if (data.imagePaths) {
