@@ -79,8 +79,10 @@ def segmentate_page():
                 type: number
     """
     path = request.json['path']
-    print(path)
-    return jsonify({"polygon": segmentator.segmentate_page(path)})
+    folder = get_folder_from_referer()
+    path = os.path.join('..',folder, path[1:])
+    result:dict = segmentator.segmentate_page(path)
+    return jsonify(result)
 
 @app.route('/segmentate_sections', methods=['POST'])
 def segmentate_sections():
@@ -188,7 +190,7 @@ def get_example_json():
         description: Internal Server Error
     """
     try:
-        data = Encoder.get_json()
+        data = Encoder.get_cipher_json()
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -228,6 +230,7 @@ def get_document():
             'id': document.id,
             'title': document.title,
             'author_id': document.author_id,
+            'author_name': document.author.username,
             'status': document.status.name,
             'description': document.description,
             'ispublic': document.is_public,
@@ -639,7 +642,7 @@ def get_key_json():
 @app.route('/save_key_json', methods=['POST'])
 def save_key_json():
     """
-    Save key JSON to a document
+    Save updated key JSON to a document
     ---
     tags:
       - Document Management
