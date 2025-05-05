@@ -217,6 +217,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     toastr.error(res.error || 'Failed to load key JSON');
                 } else {
                     $('#jsonData').val(JSON.stringify(res, null, 2));
+                    $('#jsonData').prop('disabled', true);
                 }
             },
             error: function () {
