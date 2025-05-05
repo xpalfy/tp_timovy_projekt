@@ -186,3 +186,12 @@ class DocumentService:
         if not doc.shared_with:
             raise Exception("No shared users found for this document")
         return [u.username for u in doc.shared_with if u.username != user.username and u.username != doc.author.username] if user else [u.username for u in doc.shared_with] if doc.shared_with else []
+    
+    def get_publish_date_by_document_id(self, document_id: int) -> str:
+        doc = self.get_document_by_id(document_id)
+        if not doc:
+            raise Exception("Document not found")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        item: Item = doc.items[-1]
+        return item.publish_date

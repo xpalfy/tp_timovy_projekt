@@ -219,6 +219,10 @@ def get_document():
 
         # Get shared users for the document
         shared_users = service.get_shared_users_by_document_id(document_id, user_id)
+        
+        publish_date = service.get_publish_date_by_document_id(document_id)
+        if not publish_date:
+            return jsonify({'error': 'Publish date not found'}), 404
  
         return jsonify({
             'id': document.id,
@@ -228,7 +232,9 @@ def get_document():
             'description': document.description,
             'ispublic': document.is_public,
             'imagePaths': image_paths,
-            'sharedUsers': shared_users
+            'sharedUsers': shared_users,
+            'publish_date': publish_date
+            
         }), 200
 
     except Exception as e:
