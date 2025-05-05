@@ -733,7 +733,7 @@ if __name__ == '__main__':
         exit(1)
         
     print(f"Script is run by user: {username}")
-    classifier = Classifier(40, 60)
+    classifier = Classifier(70, 90)
     print("Classifier initialized")
     print(classifier)
     segmentator = Segmentator()

@@ -7,4 +7,7 @@ class Classifier:
         self.max = max if max > 0 else int(max*100)
 
     def classify(self, path):
-        return randint(self.min, self.max)
+        if 'cipher' in path:
+            return randint(self.min, self.max)
+        else:
+            return 100 - randint(self.min, self.max)
