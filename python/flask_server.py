@@ -6,6 +6,7 @@ from modules.encoder import Encoder
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from controller.document_service import DocumentService
+from controller.user_service import UserService
 from sqlalchemy.exc import SQLAlchemyError
 from controller.db_controller import get_db_session, init_db
 from validate_jwt import validate_token
@@ -190,7 +191,7 @@ def get_example_json():
         description: Internal Server Error
     """
     try:
-        data = Encoder.get_cipher_json()
+        data = encoder.get_cipher_json()
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -750,6 +751,10 @@ if __name__ == '__main__':
     print(Segmentator)
     document_service = DocumentService()
     print("DocumentService initialized")
+    user_service = UserService()
+    print("UserService initialized")
+    encoder = Encoder()
+    print("Encoder initialized")
     
 
 
