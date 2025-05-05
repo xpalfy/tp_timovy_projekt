@@ -15,6 +15,7 @@ class ProcessingStatus(enum.Enum):
     SEGMENTED = 'segmented'
     CLASSIFIED = 'classified'
     PROCESSED = 'processed'
+    SAVED = 'saved'
     ERROR = 'error' 
     
 class Model(enum.Enum):
