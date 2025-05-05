@@ -462,7 +462,7 @@ try {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
-                status: 'PROCESSED',
+                status: 'SAVED',
                 jsonData: document.getElementById('jsonEditor').value
             };
 
