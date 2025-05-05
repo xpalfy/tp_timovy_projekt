@@ -85,13 +85,11 @@ if ($status === 'UPLOADED') {
     $polygonResult = checkPolygons($post);
     $message = 'File analyzed successfully';
 } elseif ($status === 'PROCESSED') {
-    if (isset($post['polygons'])) {
-        $polygonResult = checkPolygons($post);
-        $message = 'Letters segmented successfully';
-    } else {
-        $result_json = $post['jsonData'];
-        $message = 'JSON saved succesfully';
-    }
+    $polygonResult = checkPolygons($post);
+    $message = 'Letters segmented successfully';
+} elseif ($status === 'SAVED') {
+    $result_json = json_encode($post['jsonData'], JSON_PRETTY_PRINT);
+    $message = 'File saved successfully';
 } else {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid status']);
@@ -101,8 +99,8 @@ if ($status === 'UPLOADED') {
 $conn = getDatabaseConnection();
 
 // Check if processing result already exists
-$stmt = $conn->prepare('SELECT id FROM processing_results WHERE item_id = ? AND status = ?');
-$stmt->bind_param('is', $item_id, $status);
+$stmt = $conn->prepare('SELECT id FROM processing_results WHERE item_id = ?');
+$stmt->bind_param('i', $item_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $exists = $result->num_rows > 0;
@@ -116,8 +114,8 @@ $date = date('Y-m-d H:i:s');
 
 if ($exists) {
     // Update existing
-    $stmt = $conn->prepare('UPDATE processing_results SET modified_date = ?, result = ?, model_used = ? WHERE item_id = ? AND status = ?');
-    $stmt->bind_param('sssis', $date, $result_json, $model_used, $item_id, $status);
+    $stmt = $conn->prepare('UPDATE processing_results SET modified_date = ?, result = ?, model_used = ?, status = ? WHERE item_id = ?');
+    $stmt->bind_param('sssis', $date, $result_json, $model_used, $status, $item_id);
 } else {
     // Insert new
     $stmt = $conn->prepare('INSERT INTO processing_results (item_id, status, message, result, model_used, created_date, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
