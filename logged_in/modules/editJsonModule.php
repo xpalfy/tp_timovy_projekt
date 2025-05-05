@@ -12,9 +12,6 @@ try {
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
     header('Location: login.php');
 }
-
-// TODO: Check if the page is redirected with GET parameters, if so, validate
-
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +20,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Segment</title>
+    <title>Letters</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -161,7 +158,7 @@ try {
         <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
             <!-- Process Info -->
             <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">
-                Segment owned document
+                Edit Json on owned document
             </h3>
 
             <!-- Document Selector -->
@@ -179,25 +176,31 @@ try {
                 </select>
             </div>
 
-            <!-- Image Segmentation -->
-            <div class="col-md mt-5 animate-fade-in-slow" id="imageSegmentor" style="display: none;">
+            <!-- Image JSON STEP 4 -->
+            <div class="col-md mt-5 animate-fade-in-slow" id="imageJson" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
-                    <!-- Preview Image Container -->
-                    <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]"
-                        style="position: relative;">
-                        <img class="imagePreview hidden rounded-xl not-copyable"
-                            style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain;"
-                            src="" alt="Preview" draggable="false">
+                    <!-- Loading Overlay -->
+                    <div class="loading-cont not-copyable not-draggable"
+                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
+                        <dotlottie-player
+                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
+                            autoplay></dotlottie-player>
+                    </div>
+
+                    <!-- JSON Textarea Editor -->
+                    <div class="mt-4 text-left">
+                        <textarea id="jsonEditor" rows="14"
+                            class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800"
+                            placeholder="{ ... }">{}</textarea>
                     </div>
                 </div>
             </div>
 
-            <!-- Save Button -->
-            <div class="flex justify-center items-center mt-5 mb-5 gap-2">
-                <button id="addRectButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
-                    style="display: none;" onclick="addNewRect()">Add Segmentation Zone</button>
-                <button id="loadItemButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
-                    style="display: none;" onclick="saveSegmentionData()">Save Segmentation</button>
+            <!-- Save Btns -->
+            <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveJson()">Save Work</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
             </div>
         </div>
     </main>
@@ -219,7 +222,7 @@ try {
             id: <?= json_encode($userData['id']) ?>
         };
     </script>
-    <script type="module" src="../js/main.js?v=<?= time() ?>"></script>
+    <script src="../js/modules-helper.js"></script>
 
     <script>
         const maxSelectItemSize = 10;
@@ -242,16 +245,14 @@ try {
             return params;
         }
 
-
         function fetchDocuments() {
             showLoading();
             Promise.all([
-                fetch('fetchDocumentsByStep.php?status=UPLOADED').then(res => res.json())
+                fetch('fetchDocumentsByStep.php?status=PROCESSED').then(res => res.json())
             ])
                 .then(([docs]) => {
                     documentsData = docs;
                     console.log(documentsData);
-
                     const params = getUrlParams();
                     if (params.document_id) {
                         const selectedDoc = documentsData.find(doc => doc.id == params.document_id);
@@ -272,7 +273,7 @@ try {
             hideLoading();
         }
 
-        function filterDocuments() {
+        /*function filterDocuments() {
             const searchTerm = document.getElementById('documentSearch').value.toLowerCase();
             const filteredDocuments = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
             return filteredDocuments;
@@ -289,7 +290,7 @@ try {
                 option.textContent = doc.title;
                 documentList.appendChild(option);
             });
-        }
+        }*/
 
         $(function () {
             fetchDocuments();
@@ -317,7 +318,7 @@ try {
 
         function fetchItems(documentId, preselectItemId = null) {
             disableDocumentSearch();
-            fetch(`fetchItemsByStep.php?document_id=${documentId}&status=UPLOADED`)
+            fetch(`fetchItemsByStep.php?document_id=${documentId}&status=PROCESSED`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(item => {
@@ -328,7 +329,6 @@ try {
                     });
                     itemsData = data;
                     showItemSelector();
-
                     if (preselectItemId) {
                         $("#itemSelector").val(preselectItemId).trigger('change');
                     }
@@ -337,9 +337,10 @@ try {
                     toastr.error('Failed to load items.');
                     console.error(error);
                 });
+            showItemSelector();
         }
 
-        function disableDocumentSearch() {
+        /*function disableDocumentSearch() {
             document.getElementById('documentSearch').disabled = true;
             document.getElementById('documentSearch').style.pointerEvents = 'none';
         }
@@ -347,7 +348,7 @@ try {
         function showItemSelector() {
             document.getElementById('itemSelector').style.display = 'block';
             hideLoading();
-        }
+        }*/
 
         $(function () {
             $("#itemSelector").change(function () {
@@ -356,29 +357,26 @@ try {
                 console.log(selectedItemId);
                 console.log(itemsData);
                 selectedItemImagePath = itemsData.find(item => item.id == selectedItemId).image_path;
-                showSegmentor();
-                updateImagePreview();
-                deletePolygons();
-                CalculateSegmentation();
+                showJsonEditor();
+                fetchJson();
                 hideLoading();
             });
         });
 
-        function deletePolygons() {
-            const parent = document.getElementById('previewContainerSegment');
+        /*function deletePolygons() {
+            const parent = document.getElementById('previewContainerLetter');
             const polygons = parent.querySelectorAll('segment-rect');
             polygons.forEach(polygon => {
                 parent.removeChild(polygon);
             });
+        }*/
+
+        function showJsonEditor() {
+            document.getElementById('imageJson').style.display = 'block';
+            document.getElementById('DownloadJSONBtn').style.display = 'flex';
         }
 
-        function showSegmentor() {
-            document.getElementById('imageSegmentor').style.display = 'block';
-            document.getElementById('loadItemButton').style.display = 'block';
-            document.getElementById('addRectButton').style.display = 'block';
-        }
-
-        function updateImagePreview() {
+        /*function updateImagePreview() {
             const previewImage = document.querySelector('.imagePreview');
             previewImage.src = '../..' + selectedItemImagePath;
             previewImage.style.display = 'block';
@@ -396,98 +394,72 @@ try {
             for (let loading of loadings) {
                 loading.style.display = 'flex';
             }
-        }
+        }*/
 
-        function CalculateSegmentation() {
-            showLoading();
+        function fetchJson() {
+        const formData = {
+            document_id: selectedDocumentId,
+            user_id: userData.id,
+            token: '<?php echo $_SESSION['token']; ?>'
+        };
 
-            const imagePath = 'path/to/your/image.jpg';
-
-            fetch('https://python.tptimovyprojekt.software/segmentate_page', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ path: imagePath })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    hideLoading();
-
-                    if (data.polygon && Array.isArray(data.polygon)) {
-                        appendSegmentedRect(data.polygon);
-                    } else {
-                        console.error('Invalid response from server:', data);
-                    }
-                })
-                .catch(error => {
-                    hideLoading();
-                    console.error('Error detecting page edges:', error);
-                });
-        }
-        function appendSegmentedRect(Rect) {
-            if (Rect.length !== 5) {
-                console.error('Invalid Rect:', Rect);
-                return;
+        $.ajax({
+            url: 'https://python.tptimovyprojekt.software/get_key_json',
+            type: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (res) {
+                if (res.error) {
+                    toastr.error(res.error || 'Failed to load key JSON');
+                } else {
+                    $('#jsonEditor').val(JSON.stringify(res, null, 2));
+                }
+            },
+            error: function () {
+                toastr.error('Server error while fetching key JSON');
             }
+        });
+    }
 
-            const parent = document.getElementById('previewContainerSegment');
+        function appendLetterRects(Rects) {
+            const parent = document.getElementById('previewContainerLetter');
+            for (const Rect of Rects) {
+                if (Rect.length !== 5) {
+                    console.error('Invalid Rect:', Rect);
+                    continue;
+                }
 
-            const x1 = Rect[0], y1 = Rect[1];
-            const x3 = Rect[2], y3 = Rect[3];
-            const x2 = x1, y2 = y3;
-            const x4 = x3, y4 = y1;
-            const type = Rect[4];
+                const x1 = Rect[0], y1 = Rect[1];
+                const x3 = Rect[2], y3 = Rect[3];
+                const x2 = x1, y2 = y3;
+                const x4 = x3, y4 = y1;
+                const type = Rect[4];
 
-            let newRect = document.createElement('segment-rect');
-            newRect.setAttribute('x1', x1);
-            newRect.setAttribute('y1', y1);
-            newRect.setAttribute('x2', x2);
-            newRect.setAttribute('y2', y2);
-            newRect.setAttribute('x3', x3);
-            newRect.setAttribute('y3', y3);
-            newRect.setAttribute('x4', x4);
-            newRect.setAttribute('y4', y4);
-            newRect.setAttribute('type', type);
+                let newRect = document.createElement('letter-rect');
+                newRect.setAttribute('x1', x1);
+                newRect.setAttribute('y1', y1);
+                newRect.setAttribute('x2', x2);
+                newRect.setAttribute('y2', y2);
+                newRect.setAttribute('x3', x3);
+                newRect.setAttribute('y3', y3);
+                newRect.setAttribute('x4', x4);
+                newRect.setAttribute('y4', y4);
+                newRect.setAttribute('type', type);
 
-            parent.appendChild(newRect);
+                parent.appendChild(newRect);
+            }
         }
 
-        function saveSegmentionData() {
+        function saveJson() {
             showLoading();
-            let rects = document.querySelector('segment-rect');
-            let polygons = [];
-
-            if (rects.length > 1) {
-                rects.forEach(rect => {
-                    let polygon = [
-                        { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
-                        { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
-                        { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
-                        { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') },
-                        { type: rect.getAttribute('type') || 'default' },
-                    ];
-                    polygons.push(polygon);
-                });
-            } else {
-                let polygon = [
-                    { x: rects.getAttribute('x1'), y: rects.getAttribute('y1') },
-                    { x: rects.getAttribute('x2'), y: rects.getAttribute('y2') },
-                    { x: rects.getAttribute('x3'), y: rects.getAttribute('y3') },
-                    { x: rects.getAttribute('x4'), y: rects.getAttribute('y4') },
-                    { type: rects.getAttribute('type') || 'default' },
-                ];
-                polygons.push(polygon);
-            }
-            console.log('Polygons:', polygons);
-
 
             let data = {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
-                status: 'SEGMENTED',
-                polygons: polygons
+                status: 'PROCESSED',
+                jsonData: document.getElementById('jsonEditor').value
             };
 
             console.log('Data to be sent:', data);
@@ -503,8 +475,8 @@ try {
                 .then(data => {
                     hideLoading();
                     if (data.success) {
-                        toastr.success('Segmentation data saved successfully.');
-                        goToAnalyzation(selectedDocumentId, selectedItemId);
+                        toastr.success('Letter segmentation data saved successfully.');
+                        window.location.href = `../editOwnDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
                     } else {
                         toastr.error('Failed to save segmentation data.');
                     }
@@ -514,12 +486,11 @@ try {
                     toastr.error('Error saving segmentation data.');
                     console.error('Error:', error);
                 });
-            hideLoading();
         }
 
         function addNewRect() {
-            const parent = document.getElementById('previewContainerSegment');
-            const newRect = document.createElement('segment-rect');
+            const parent = document.getElementById('previewContainerLetter');
+            const newRect = document.createElement('letter-rect');
             newRect.setAttribute('x1', 100);
             newRect.setAttribute('y1', 100);
             newRect.setAttribute('x2', 200);

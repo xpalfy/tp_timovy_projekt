@@ -319,110 +319,7 @@ try {
                 </button>
             </div>
 
-            <!-- Image Segmentation STEP 1 -->
-            <div class="col-md mt-5 animate-fade-in-slow" id="imageSegmentor" style="display: none;">
-                <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
-                    <!-- Loading Overlay -->
-                    <div class="loading-cont not-copyable not-draggable"
-                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
-                        <dotlottie-player
-                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
-                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
-                            autoplay></dotlottie-player>
-                    </div>
-
-                    <!-- Preview Image Container -->
-                    <div id="previewContainerSegment" class="relative flex justify-center items-center min-h-[250px]"
-                        style="position: relative;">
-                        <!-- Left Nav -->
-                        <button
-                            class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
-                        <!-- Image Preview -->
-                        <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
-                            draggable="false" />
-                        <!-- Right Nav -->
-                        <button
-                            class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image Analysis STEP 2 -->
-            <div class="col-md mt-5 animate-fade-in-slow" id="imageAnalyzer" style="display: none;">
-                <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
-                    <!-- Loading Overlay -->
-                    <div class="loading-cont not-copyable not-draggable"
-                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
-                        <dotlottie-player
-                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
-                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
-                            autoplay></dotlottie-player>
-                    </div>
-
-                    <!-- Preview Image Container -->
-                    <div id="previewContainerAnalyze" class="relative flex justify-center items-center min-h-[250px]"
-                        style="position: relative;">
-                        <!-- Left Nav -->
-                        <button
-                            class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
-                        <!-- Image Preview -->
-                        <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
-                            draggable="false" />
-                        <!-- Right Nav -->
-                        <button
-                            class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image Letters STEP 3 -->
-            <div class="col-md mt-5 animate-fade-in-slow" id="imageLetters" style="display: none;">
-                <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
-                    <!-- Loading Overlay -->
-                    <div class="loading-cont not-copyable not-draggable"
-                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
-                        <dotlottie-player
-                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
-                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
-                            autoplay></dotlottie-player>
-                    </div>
-
-                    <!-- Preview Image Container -->
-                    <div id="previewContainerLetter" class="relative flex justify-center items-center min-h-[250px]"
-                        style="position: relative;">
-                        <!-- Left Nav -->
-                        <button
-                            class="not-copyable prevBtn absolute left-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❮</button>
-                        <!-- Image Preview -->
-                        <img class="not-copyable imagePreview max-w-full hidden rounded-xl" src="" alt="Preview"
-                            draggable="false" />
-                        <!-- Right Nav -->
-                        <button
-                            class="not-copyable nextBtn absolute right-3 z-20 bg-yellow-100 hover:bg-yellow-200 text-papyrus font-bold px-3 py-1 rounded-full shadow transition duration-200">❯</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image JSON STEP 4 -->
-            <div class="col-md mt-5 animate-fade-in-slow" id="imageJSON" style="display: none;">
-                <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
-                    <!-- Loading Overlay -->
-                    <div class="loading-cont not-copyable not-draggable"
-                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
-                        <dotlottie-player
-                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
-                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
-                            autoplay></dotlottie-player>
-                    </div>
-
-                    <!-- JSON Textarea Editor -->
-                    <div class="mt-4 text-left">
-                        <textarea id="jsonEditor" rows="14"
-                            class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800"
-                            placeholder="{ ... }">{}</textarea>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Progress Buttons STEP 0 -> STEP 1 -->
             <div id="CreateBtns" class="flex flex-col items-center space-y-4 mt-6" style="display: none;">
@@ -433,7 +330,7 @@ try {
                 </div>
 
                 <!-- Buttons row -->
-                <div class="flex space-x-4">
+                <div class="flex space-x-4" id="CreateBtnsBtns">
                     <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveKey()">Create Key
                         Document</button>
                     <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveCipher()">Create Cipher
@@ -443,53 +340,7 @@ try {
 
             <!-- Progress Buttons STEP 0 -> STEP 1 -->
             <div id="SegmentBtns" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentKey()">Process as Key</button>
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="segmentCipher()">Process as
-                    Cipher</button>
-            </div>
-
-            <!-- Progress Buttons STEP 1 -> STEP 2 -->
-            <div id="AnalyzeKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="analizeKey()">Analyze Key (Now Save
-                    WIP)</button>
-            </div>
-
-            <!-- Progress Buttons STEP 1 -> STEP 2 -->
-            <div id="AnalyzeCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="analizeCipher()">Analyze Cipher (Now
-                    Save
-                    WIP)</button>
-            </div>
-
-            <!-- Progress Buttons STEP 2 -> STEP 3 -->
-            <div id="LettersKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersKey()">Segment Letters</button>
-            </div>
-
-            <!-- Progress Buttons STEP 2 -> STEP 3 -->
-            <div id="LettersCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="lettersCipher()">Segment
-                    Letters</button>
-            </div>
-
-            <!-- Progress Buttons STEP 3 -> STEP 4 -->
-            <div id="EditJSONKeyBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="editJSONKey()">Edit JSON</button>
-            </div>
-
-            <!-- Progress Buttons STEP 3 -> STEP 4 -->
-            <div id="EditJSONCipherBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="editJSONCipher()">Edit JSON</button>
-            </div>
-
-            <!-- Progress Buttons STEP 4 -> STEP Final -->
-            <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveProcessing()">Save Work</button>
-                <div>
-                    <input type="text" id="downloadName" class="border border-yellow-300 rounded-lg px-4 py-2"
-                        placeholder="JSON Name" />
-                </div>
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="goToSegmentation()">Process the document</button>
             </div>
 
             <!-- System Message -->
