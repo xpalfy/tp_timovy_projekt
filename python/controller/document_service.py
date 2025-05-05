@@ -180,9 +180,9 @@ class DocumentService:
 
     def get_shared_users_by_document_id(self, document_id, user_id=None) -> list[str]:
         doc = self.get_document_by_id(document_id)
-        shared_with_user = self.db.query(User).filter_by(id=user_id).first() if user_id else None
+        user = self.db.query(User).filter_by(id=user_id).first() if user_id else None
         if not doc:
             raise Exception("Document not found")
         if not doc.shared_with:
             raise Exception("No shared users found for this document")
-        return [user.username for user in doc.shared_with if user.username != shared_with_user.username]
+        return [u.username for u in doc.shared_with if u.username != user.username and u.username != doc.author.username] if user else [u.username for u in doc.shared_with] if doc.shared_with else []
