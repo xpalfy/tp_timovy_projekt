@@ -28,7 +28,7 @@ $status = $_GET['status'];
 $document_id = $_GET['document_id'];
 
 // Check if the document belongs to the user
-$sql = "SELECT id FROM documents WHERE id = ? AND author_id = ?";
+$sql = "SELECT id, doc_type FROM documents WHERE id = ? AND author_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $document_id, $userData['id']);
 $stmt->execute();
@@ -38,6 +38,7 @@ if ($result->num_rows === 0) {
     echo json_encode(['error' => 'Document not found or access denied']);
     exit;
 }
+$type = $result->fetch_assoc()['doc_type'];
 $stmt->close();
 
 // Fetch Items in document owned by user that have the specified status
@@ -48,7 +49,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $items = [];
 while ($row = $result->fetch_assoc()) {
-    $items[] = $row;
+    $items[] = $row + ['type' => $type];
 }
 $stmt->close();
 $conn->close();
