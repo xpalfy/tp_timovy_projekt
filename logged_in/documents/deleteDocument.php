@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        "Referer: $fullCallerUrl"
+        "X-Caller-Url: $fullCallerUrl"
     ]);
 
     $response = curl_exec($ch);
