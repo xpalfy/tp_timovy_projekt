@@ -7,19 +7,14 @@ class Segmentator:
 
     def segmentate_page(self, path):
         # TODO: based on image
-        # image_width, image_height = get_image_size(image_path)
-        # image_width = 400
-        # image_height = 600
+        img_size = get_image_size(path)
+        image_width, image_height = img_size if img_size else (400, 600)
+        raw_yolo_output = "0 0.99 0.037941176470588236 0.06102272727272727 0.047058823529411764 0.10704545454545454"  # Example YOLO output
+        class_names = ["page"]
         
-        # width = randint(300, 400)
-        # height = randint(550, 600)
-
-        # # Ensure the polygon remains within bounds
-        # x = randint(0, image_width - width)
-        # y = randint(0, image_height - height)
-        
-        # return((x, y,x + width, y + height, type)) type can be "page", "word", "alphabet", "double", "null", "default"
-        return [98, 33, 418, 504, "page"]
+        yolo_result = self.yolo_to_dict_list(raw_yolo_output, image_width, image_height, class_names)
+        print(yolo_result)
+        return yolo_result
 
     def segmentate_sections(self, path):
         # TODO: based on image
@@ -92,6 +87,49 @@ class Segmentator:
         return letters
     
     #def generate_codes(self, path):
+    def yolo_to_dict_list(self, raw_yolo_output, image_width, image_height, class_names):
+        """
+            Converts raw YOLO output (Darknet format) to a list of dictionaries.
+            
+            Args:
+                raw_yolo_output (str): Raw YOLO output as a string (per line: class_id conf x_center y_center w h).
+                image_width (int): Width of the image.
+                image_height (int): Height of the image.
+                class_names (list): List of class names (e.g., ["person", "car", "chair"]).
+            
+            Returns:
+                list: List of dictionaries in the format {"polygon": [x1,y1,x2,y2], "type": class_name}.
+            """
+        detections = []
+        lines = raw_yolo_output.strip().split('\n')
+        
+        for line in lines:
+            parts = line.split()
+            if len(parts) != 6:
+                continue  # Skip malformed lines
+            
+            class_id = int(parts[0])
+            confidence = float(parts[1])
+            x_center = float(parts[2]) * image_width
+            y_center = float(parts[3]) * image_height
+            width = float(parts[4]) * image_width
+            height = float(parts[5]) * image_height
+            
+            # Convert center coordinates to [x1, y1, x2, y2] (polygon format)
+            x1 = int(x_center - width / 2)
+            y1 = int(y_center - height / 2)
+            x2 = int(x_center + width / 2)
+            y2 = int(y_center + height / 2)
+            
+            # Get class name (handle out-of-range class_id)
+            class_name = class_names[class_id] if class_id < len(class_names) else f"class_{class_id}"
+            
+            detections.append({
+                "polygon": [x1, y1, x2, y2],
+                "type": class_name
+            })
+        
+        return detections
      
        
     def crop_polygon(image_path, polygon):
@@ -136,6 +174,10 @@ class Segmentator:
         # Convert to PIL image for easy display
         return Image.fromarray(cv2.cvtColor(warped, cv2.COLOR_BGR2RGB))
 
-    def get_image_size(image_path):
+def get_image_size(image_path):
+    try:
         with Image.open(image_path) as img:
             return img.size 
+    except Exception as e:
+        print(f"Error opening image: {e}")
+        return None
