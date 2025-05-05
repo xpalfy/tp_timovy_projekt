@@ -118,6 +118,10 @@ try {
                                         <a href="./modules/lettersModule.php"
                                             class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
+                                    <li>
+                                        <a href="./modules/editJsonModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
