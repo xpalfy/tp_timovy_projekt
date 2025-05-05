@@ -62,6 +62,10 @@ table.dataTable thead th {
     /* rounded-md */
 }
 
+div.dataTables_filter {
+    margin-bottom: 2rem; /* or whatever value you need */
+  }
+
 .ui-menu-item-wrapper {
     padding: 5px 20px;
     /* space between items */
