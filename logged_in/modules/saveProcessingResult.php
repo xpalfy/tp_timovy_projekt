@@ -115,7 +115,7 @@ $date = date('Y-m-d H:i:s');
 if ($exists) {
     // Update existing
     $stmt = $conn->prepare('UPDATE processing_results SET modified_date = ?, result = ?, model_used = ?, status = ? WHERE item_id = ?');
-    $stmt->bind_param('sssis', $date, $result_json, $model_used, $status, $item_id);
+    $stmt->bind_param('ssssi', $date, $result_json, $model_used, $status, $item_id);
 } else {
     // Insert new
     $stmt = $conn->prepare('INSERT INTO processing_results (item_id, status, message, result, model_used, created_date, modified_date) VALUES (?, ?, ?, ?, ?, ?, ?)');
