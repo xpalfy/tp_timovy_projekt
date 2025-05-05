@@ -33,7 +33,7 @@
     }
 
     AOS.init({ duration: 1000, once: true });
-    document.addEventListener('DOMContentLoaded', checkToasts);
+    checkToasts();
   </script>
 
   <!-- Navbar -->

@@ -25,9 +25,9 @@ if (!$userId || !$documentId || $userId != $userData['id']) {
 $conn = getDatabaseConnection();
 
 // Step 1: Get the document
-$sql = "SELECT * FROM documents WHERE id = ? AND author_id = ?";
+$sql = "SELECT * FROM documents WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $documentId, $userId);
+$stmt->bind_param("i", $documentId);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -39,8 +39,22 @@ if ($result->num_rows === 0) {
 
 $document = $result->fetch_assoc();
 
+//from document author_id I have to connect users table to get the author name
+$sql = "SELECT username FROM users WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $document['author_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    http_response_code(404);
+    echo json_encode(['error' => 'Author not found']);
+    exit();
+}
+$author = $result->fetch_assoc();
+$document['author_name'] = $author['username'];
+
 // Step 2: Get items related to the document and collect image paths
-$sql = "SELECT image_path FROM items WHERE document_id = ?";
+$sql = "SELECT image_path, publish_date FROM items WHERE document_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $documentId);
 $stmt->execute();
@@ -49,6 +63,11 @@ $result = $stmt->get_result();
 $imagePaths = [];
 while ($row = $result->fetch_assoc()) {
     $imagePaths[] = $row['image_path'];
+    if (empty($row['publish_date'])) {
+        $publishDate = null; 
+    } else {
+        $publishDate = $row['publish_date'];
+    }
 }
 
 // Step 3: Get shared users
@@ -71,5 +90,6 @@ $conn->close();
 echo json_encode([
     'document' => $document,
     'imagePaths' => $imagePaths,
+    'publishDate' => $publishDate,
     'sharedUsers' => $sharedUsers
 ]);
