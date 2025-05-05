@@ -6,9 +6,9 @@ Promise.all([
 ]).then(([imageHandlers, uiAnimationHandlers]) => {
     const {
         handleDrop, uploadImageButton, handleDragOver, handleDragLeave, downloadJSON,
-        hideLoading, checkToasts, setStep, setupPreviewNavigation, segmentCipher,
-        deleteUnsavedImage, segmentKey, analizeKey, analizeCipher, lettersKey, lettersCipher,
-        editJSONKey, editJSONCipher, saveProcessing, deleteImage, getImage, getImageKey, saveKey, saveCipher,
+        hideLoading, checkToasts, setStep, setupPreviewNavigation, goToSegmentation,
+        deleteUnsavedImage, goToAnalyzation, goToLetterSegmentation,
+        goToJsonEdit, saveProcessing, deleteImage, getImage, getImageKey, saveKey, saveCipher,
         currentImageId
     } = imageHandlers;
 
@@ -21,14 +21,10 @@ Promise.all([
     window.uploadImageButton = uploadImageButton;
     window.handleDragOver = handleDragOver;
     window.handleDragLeave = handleDragLeave;
-    window.segmentCipher = segmentCipher;
-    window.segmentKey = segmentKey;
-    window.analizeKey = analizeKey; // Expose analizeKey
-    window.analizeCipher = analizeCipher; // Expose analizeCipher
-    window.lettersKey = lettersKey; // Expose lettersKey
-    window.lettersCipher = lettersCipher; // Expose lettersCipher
-    window.editJSONKey = editJSONKey; // Expose editJSONKey
-    window.editJSONCipher = editJSONCipher; // Expose editJSONCipher
+    window.goToSegmentation = goToSegmentation; // Expose goToSegmentation
+    window.goToAnalyzation = goToAnalyzation; // Expose goToAnalyzation
+    window.goToLetterSegmentation = goToLetterSegmentation; // Expose goToLetterSegmentation
+    window.goToJsonEdit = goToJsonEdit;
     window.deleteImage = deleteImage; // Expose deleteImage
     window.getImage = getImage; // Expose getImage
     window.getImageKey = getImageKey; // Expose getImageKey
@@ -49,7 +45,7 @@ Promise.all([
         console.log("Page is being unloaded...");
         // Perform any necessary cleanup or state saving here
         deleteUnsavedImage(currentImageId);
-        
+
         // Optionally call deleteUnsavedImage if needed
     });
 

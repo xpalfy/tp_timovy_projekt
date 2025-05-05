@@ -349,7 +349,7 @@ export async function classifyPicture(path) {
 
 
 export function applyClassificationStyle(classification_score) {
-    let parentOfBtns = document.getElementById('SegmentBtns');
+    let parentOfBtns = document.getElementById('CreateBtnsBtns');
     let segmentKeyBtn = parentOfBtns.children[0];
     let segmentCipherBtn = parentOfBtns.children[1];
     let messageContainer = document.getElementById('SystemMessage');
@@ -381,7 +381,7 @@ export function applyClassificationStyle(classification_score) {
     })
 }
 function resetClassificationStyle() {
-    let parentOfBtns = document.getElementById('SegmentBtns');
+    let parentOfBtns = document.getElementById('CreateBtnsBtns');
     let segmentKeyBtn = parentOfBtns.children[0];
     let segmentCipherBtn = parentOfBtns.children[1];
     let messageContainer = document.getElementById('SystemMessage');
@@ -395,114 +395,20 @@ function resetClassificationStyle() {
     // Clear the message container
     messageContainer.innerHTML = "";
 }
-export function segmentCipher() {
-    setStep(1);
-    uiAnimationHandlers.hideCreateBtns();
-    uiAnimationHandlers.hideSegmentBtns();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showAnalyzeCipherBtn();
-    document.getElementById('imageUploader').style.display = 'none';
-    document.getElementById('imageSegmentor').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
-    updatePreview();
-    CalculateSegmentation('Cipher');
+export function goToSegmentation() {
+    window.location.href = 'modules/segmentModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
 
-export function segmentKey() {
-    setStep(1);
-    uiAnimationHandlers.hideCreateBtns();
-    uiAnimationHandlers.hideSegmentBtns();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showAnalyzeKeyBtn();
-    document.getElementById('imageUploader').style.display = 'none';
-    document.getElementById('imageSegmentor').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to process the images.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
-    updatePreview();
-    CalculateSegmentation('Key');
+export function goToAnalyzation(doc_id, item_id) {
+    window.location.href = 'analyzeModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
 
-export function analizeKey() {
-    setStep(2);
-    uiAnimationHandlers.hideAnalyzeKeyBtn();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showLettersKeyBtn();
-    document.getElementById('imageSegmentor').style.display = 'none';
-    document.getElementById('imageAnalyzer').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to analyze the images.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
-    updatePreview();
-    CalculateAnalization('Key');
+export function goToLetterSegmentation(doc_id, item_id) {
+    window.location.href = 'lettersModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
 
-export function analizeCipher() {
-    setStep(2);
-    uiAnimationHandlers.hideAnalyzeCipherBtn();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showLettersCipherBtn();
-    document.getElementById('imageSegmentor').style.display = 'none';
-    document.getElementById('imageAnalyzer').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to analyze the images.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
-    updatePreview();
-    CalculateAnalization('Cipher');
-}
-
-export function lettersKey() {
-    setStep(3);
-    uiAnimationHandlers.hideLettersKeyBtn();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showEditJSONKeyBtn();
-    document.getElementById('imageAnalyzer').style.display = 'none';
-    document.getElementById('imageLetters').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
-    updatePreview();
-    CalculateLetters('Key');
-}
-
-export function lettersCipher() {
-    setStep(3);
-    uiAnimationHandlers.hideLettersCipherBtn();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showEditJSONCipherBtn();
-    document.getElementById('imageAnalyzer').style.display = 'none';
-    document.getElementById('imageLetters').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to segment the letters.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
-    updatePreview();
-    CalculateLetters('Cipher');
-}
-
-export function editJSONKey() {
-    setStep(4);
-    uiAnimationHandlers.hideEditJSONKeyBtn();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showDownloadJSONBtn();
-    document.getElementById('imageLetters').style.display = 'none';
-    document.getElementById('imageJSON').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to send the JSON.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
-}
-
-export function editJSONCipher() {
-    setStep(4);
-    uiAnimationHandlers.hideEditJSONCipherBtn();
-    uiAnimationHandlers.hideSystemMessage();
-    uiAnimationHandlers.showDownloadJSONBtn();
-    document.getElementById('imageLetters').style.display = 'none';
-    document.getElementById('imageJSON').style.display = 'block';
-    document.getElementById('ProcessInfo').innerHTML = 'Wait for the system to send the JSON.<br>If the system made some mistakes, feel free to correct them.';
-    // got to #Dashboard
-    scrollToBookmark('bookmark');
+export function goToJsonEdit(doc_id, item_id) {
+        window.location.href = 'editJsonModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
 // etc, keep exporting each function
 

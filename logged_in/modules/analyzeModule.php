@@ -226,6 +226,19 @@ try {
         let selectedItemId = null;
         let selectedItemImagePath = null;
 
+        function getUrlParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const vars = queryString.split("&");
+
+            vars.forEach(function (v) {
+                const pair = v.split("=");
+                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+            });
+
+            return params;
+        }
+
         function fetchDocuments() {
             showLoading();
             Promise.all([
@@ -234,6 +247,18 @@ try {
                 .then(([docs]) => {
                     documentsData = docs;
                     console.log(documentsData);
+                    const params = getUrlParams();
+                    if (params.document_id) {
+                        const selectedDoc = documentsData.find(doc => doc.id == params.document_id);
+                        if (selectedDoc) {
+                            selectedDocumentId = selectedDoc.id;
+                            $("#documentSearch").val(selectedDoc.title);
+                            $("#itemSelector").prop("disabled", false);
+                            $("#itemSelector").empty();
+                            $("#itemSelector").append('<option value="" disabled selected>Select an item</option>');
+                            fetchItems(selectedDocumentId, params.item_id);
+                        }
+                    }
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -285,9 +310,9 @@ try {
             });
         });
 
-        function fetchItems(documentId) {
+        function fetchItems(documentId, preselectItemId = null) {
             disableDocumentSearch();
-            fetch(`fetchItemsByStep.php?document_id=${documentId}$&status=SEGMENTED`)
+            fetch(`fetchItemsByStep.php?document_id=${documentId}&status=SEGMENTED`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(item => {
@@ -297,6 +322,11 @@ try {
                         document.getElementById('itemSelector').appendChild(option);
                     });
                     itemsData = data;
+                    showItemSelector();
+
+                    if (preselectItemId) {
+                        $("#itemSelector").val(preselectItemId).trigger('change');
+                    }
                 })
                 .catch(error => {
                     toastr.error('Failed to load items.');
@@ -460,9 +490,7 @@ try {
                     hideLoading();
                     if (data.success) {
                         toastr.success('Analysis data saved successfully.');
-                        setTimeout(() => {
-                            window.location.href = '../editOwnDocument.php?id=' + selectedDocumentId + '&user=' + userData.id;
-                        }, 2000);
+                        goToLetterSegmentation(selectedDocumentId, selectedItemId);
                     } else {
                         toastr.error('Failed to save segmentation data.');
                     }
@@ -490,6 +518,7 @@ try {
             parent.appendChild(newRect);
         }
     </script>
+    <script type="module" src="../js/main.js?v=<?= time() ?>"></script>
 </body>
 
 </html>

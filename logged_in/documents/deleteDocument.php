@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     http_response_code($httpcode);
     echo $response;
-
+    $_SESSION['toast'] = ['type' => 'success', 'message' => 'Document deleted successfully'];
 } else {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
