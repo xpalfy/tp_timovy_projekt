@@ -17,35 +17,28 @@ class Segmentator:
         return yolo_result
 
     def segmentate_sections(self, path):
-        # TODO: based on image
-        # image_width, image_height = get_image_size(image_path)
-        # image_width = 400
-        # image_height = 600
-        # polygons = []
-        # for _ in range(randint(4,6)):
-        #     width = randint(100, 300)
-        #     height = randint(100, 300)
+        # TODO: get raw yolo output like in segmentate_page convert it to dict list and return it
 
-        #     # Ensure the polygon remains within bounds
-        #     x = randint(0, image_width - width)
-        #     y = randint(0, image_height - height)
+        #return [[131, 143, 243, 389, 'word'], [133, 62, 402, 108, 'alphabet'], [133, 109, 218, 127, 'null'], [239, 108, 372, 146, 'double'], [452, 61, 755, 94, 'alphabet'] , [615, 105, 734, 133, 'double'], [490, 98, 615, 114, 'null'], [455, 132, 573, 237, 'word'], [595, 140, 742, 174, 'default']]
+        example_output_for_key = [{'polygon': [131, 143, 243, 389], 'type': 'word'},
+                                  {'polygon': [133, 62, 402, 108], 'type': 'alphabet'},
+                                  {'polygon': [133, 109, 218, 127], 'type': 'null'},
+                                  {'polygon': [239, 108, 372, 146], 'type': 'double'},
+                                  {'polygon': [452, 61, 755, 94], 'type': 'alphabet'},
+                                  {'polygon': [615, 105, 734, 133], 'type': 'double'},
+                                  {'polygon': [490, 98, 615, 114], 'type': 'null'},
+                                  {'polygon': [455, 132, 573, 237], 'type': 'word'},
+                                  {'polygon': [595, 140, 742, 174], 'type': 'default'}]
+        
+        example_output_for_cipher = [{'polygon': [131, 143, 243, 389], 'type': 'word'},
+                                  {'polygon': [133, 62, 402, 108], 'type': 'alphabet'}]
+        if 'cipher' not in path:
+            return example_output_for_key
+        else:
+            return example_output_for_cipher
 
-        #     polygons.append((x, y, x + width, y + height, type)) type can be "page", "word", "alphabet", "double", "null", "default"
-        # return polygons
-        return [[131, 143, 243, 389, 'word'], [133, 62, 402, 108, 'alphabet'], [133, 109, 218, 127, 'null'], [239, 108, 372, 146, 'double'], [452, 61, 755, 94, 'alphabet'] , [615, 105, 734, 133, 'double'], [490, 98, 615, 114, 'null'], [455, 132, 573, 237, 'word'], [595, 140, 742, 174, 'default']]
-    
     def segmentate_text(self, path):
-        # TODO: based on image
-        # image_width, image_height = get_image_size(image_path)
-        #image_width = 400
-        #image_height = 600
-        #polygons = []
-        #for i in range(randint(20,50)):
-        #    width = randint(10, 30)
-        #    height = randint(10, 30)
-        #    x = randint(0, image_width - width)
-        #    y = randint(0, image_height - height)
-        #    polygons.append(((x, y), (x + width, y + height)))
+        # TODO: based on yolo output like in segmentate_page and segmentate_sections
         letters = []
         for i in range(25):
             letter = [131, 149 + i * 9, 237, 149 + (i + 1) * 9, 'word']
@@ -84,7 +77,8 @@ class Segmentator:
         letters.append([685, 140, 705, 175 , 'default'])
         letters.append([710, 140, 740, 175 , 'default'])
 
-        return letters
+        dict_list = [{"polygon": item[:4], "type": item[4]} for item in letters]
+        return dict_list
     
     #def generate_codes(self, path):
     def yolo_to_dict_list(self, raw_yolo_output, image_width, image_height, class_names):
