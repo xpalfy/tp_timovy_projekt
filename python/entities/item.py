@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Enum, Table, Fore
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from .base import Base
-from entities.processing_result import ProcessingResult
+from entities.processing_result import ProcessingResult, ProcessingStatus
 
 
 
@@ -13,15 +13,6 @@ if TYPE_CHECKING:
     from entities.document import Document
 
 
-
-class ProcessingStatus(enum.Enum):
-    UPLOADED = 'uploaded'
-    SEGMENTED = 'segmented'
-    CLASSIFIED = 'classified'
-    PROCESSED = 'processed'
-    SAVED = 'saved'
-    ERROR = 'error'
-    
 
 class Item(Base):
     __tablename__ = 'items'

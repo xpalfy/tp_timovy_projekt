@@ -232,11 +232,13 @@ class DocumentService:
         item = self.get_item_by_id_and_document_id(item_id, document_id)
         if not item:
             raise Exception("Item not found")
+        
+        new_status = ProcessingStatus(status_str)
 
         now = datetime.utcnow().isoformat()
         proc_result = ProcessingResult(
             item_id=item_id,
-            status=ProcessingStatus(status_str),
+            status=new_status,
             message=status_messages[status_str],
             model_used=model_used,
             created_date=now,
@@ -245,6 +247,8 @@ class DocumentService:
         )
         item.processing_results.append(proc_result)
         item.modified_date = now
+        if item.status < new_status:
+            item.status = new_status
         self.db.add(proc_result)
         self.db.commit()   
         
