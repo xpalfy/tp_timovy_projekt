@@ -536,12 +536,13 @@ try {
                 item_id: selectedItemId,
                 user_id: userData.id,
                 status: 'SAVED',
-                jsonData: fixedJson
+                jsonData: fixedJson,
+                token: '<?php echo $_SESSION["token"]; ?>' 
             };
 
             console.log('Data to be sent:', data);
 
-            fetch('saveProcessingResult.php', {
+            fetch('https://python.tptimovyprojekt.software/save_processing_result', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

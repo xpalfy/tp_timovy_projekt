@@ -463,44 +463,33 @@ try {
 
         function saveSegmentionData() {
             showLoading();
-            let rects = document.querySelector('segment-rect');
+            let rects = document.querySelectorAll('segment-rect');
             let polygons = [];
 
-            if (rects.length > 1) {
-                rects.forEach(rect => {
-                    let polygon = [
-                        { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
-                        { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
-                        { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
-                        { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') },
-                        { type: rect.getAttribute('type') || 'default' },
-                    ];
-                    polygons.push(polygon);
-                });
-            } else {
+            rects.forEach(rect => {
                 let polygon = [
-                    { x: rects.getAttribute('x1'), y: rects.getAttribute('y1') },
-                    { x: rects.getAttribute('x2'), y: rects.getAttribute('y2') },
-                    { x: rects.getAttribute('x3'), y: rects.getAttribute('y3') },
-                    { x: rects.getAttribute('x4'), y: rects.getAttribute('y4') },
-                    { type: rects.getAttribute('type') || 'default' },
+                    { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
+                    { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
+                    { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
+                    { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') },
+                    { type: rect.getAttribute('type') }
                 ];
                 polygons.push(polygon);
-            }
+            });
             console.log('Polygons:', polygons);
-
 
             let data = {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
                 status: 'SEGMENTED',
-                polygons: polygons
+                polygons: polygons,
+                token: '<?php echo $_SESSION["token"]; ?>' 
             };
 
             console.log('Data to be sent:', data);
 
-            fetch('saveProcessingResult.php', {
+            fetch('https://python.tptimovyprojekt.software/save_processing_result', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

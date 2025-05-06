@@ -1,16 +1,22 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 import os
 import shutil
 import json
 from sqlalchemy.orm import Session
 from entities.document import Document, DocumentType
+from entities.processing_result import ProcessingResult, ProcessingStatus
+from entities.item import Item
 from entities.users import User
 from controller.db_controller import get_db_session
 if TYPE_CHECKING:
     from entities.users import User
-    from entities.item import Item
-    from entities.processing_result import ProcessingResult
 
+status_messages = {'uploaded': 'File uploaded successfully',
+                   'segmented': 'File segmented successfully',
+                   'classified': 'File analyzed successfully',
+                   'processed': 'Letters segmented successfully',
+                   'saved': 'File saved successfully'}
 
 class DocumentService:
     def __init__(self, db: Session=None):
@@ -23,6 +29,9 @@ class DocumentService:
     
     def get_document_by_id(self, document_id: int):
         return self.db.query(Document).filter_by(id=document_id).first()
+    
+    def get_item_by_id_and_document_id(self, item_id: int, document_id: int) -> Item | None:
+        return self.db.query(Item).filter_by(id=item_id, document_id=document_id).first()
     
     def get_document_id_and_user_id(self, document_id: int, user_id: int) -> Document | None:
         doc = self.get_document_by_id(document_id)
@@ -191,3 +200,51 @@ class DocumentService:
             raise Exception("No items found for this document")
         item: Item = doc.items[-1]
         return item.publish_date
+    
+    def save_processing_result(self, data: dict) -> str:
+
+        document_id = int(data['document_id'])
+        item_id = int(data['item_id'])
+        status_str = str(data['status']).lower()
+        user_id = int(data['user_id'])
+        model_used = 'MODEL1'
+        result_json = None
+        polygons = data.get('polygons')
+        if polygons and result_json is None:
+            result_json = {
+                'polygons': polygons
+            }
+        
+        #check if status is valid
+        if status_str not in [status.value for status in ProcessingStatus]:
+            raise ValueError("Invalid status")
+        
+        doc = self.get_document_by_id(document_id)
+        if not doc:
+            raise Exception("Document not found")
+        user = self.db.query(User).filter_by(id=user_id).first()
+        if not user:
+            raise Exception("User not found")
+        if doc.author_id != user_id and user not in doc.shared_with:
+            raise Exception("User does not have access to this document")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        item = self.get_item_by_id_and_document_id(item_id, document_id)
+        if not item:
+            raise Exception("Item not found")
+
+        now = datetime.utcnow().isoformat()
+        proc_result = ProcessingResult(
+            item_id=item_id,
+            status=ProcessingStatus(status_str),
+            message=status_messages[status_str],
+            model_used=model_used,
+            created_date=now,
+            modified_date=now,
+            result=result_json
+        )
+        item.processing_results.append(proc_result)
+        item.modified_date = now
+        self.db.add(proc_result)
+        self.db.commit()   
+        

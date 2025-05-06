@@ -713,12 +713,33 @@ def save_json_to_db():
             return jsonify({'error': 'User ID is required'}), 400
         if not json_data:
             return jsonify({'error': 'JSON data is required'}), 400
-        service.save_key_json(document_id, user_id, json_data)
+        service.save_json_to_db(document_id, user_id, json_data)
         service.save_changes()
         print(f"Document {document_id} updated successfully")
         return jsonify({'success': True}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/save_processing_result', methods=['POST'])
+def save_processing_result():
+    db = next(get_db_session())
+    service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        required_fields = ['document_id', 'item_id', 'user_id', 'status']
+        if not all(field in data for field in required_fields):
+            raise ValueError("Invalid input data")
+        service.save_processing_result(data)
+    except SQLAlchemyError as e:
+        db.rollback()
+        return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    return jsonify({'success': True}), 200
+    
 
 def get_folder_from_referer():
     referer = request.headers.get("X-Caller-Url")
