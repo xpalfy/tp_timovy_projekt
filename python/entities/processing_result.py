@@ -17,6 +17,17 @@ class ProcessingStatus(enum.Enum):
     PROCESSED = 'processed'
     SAVED = 'saved'
     ERROR = 'error' 
+    def __gt__(self, other):
+        if self.__class__ is other.__class__:
+            # Compare based on the order of definition
+            return list(self.__class__).index(self) > list(self.__class__).index(other)
+        return NotImplemented
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            # Compare based on the order of definition
+            return list(self.__class__).index(self) < list(self.__class__).index(other)
+        return NotImplemented
     
 class Model(enum.Enum):
     MODEL1 = 'model1'
