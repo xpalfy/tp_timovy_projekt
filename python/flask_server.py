@@ -568,10 +568,10 @@ def remove_shared_users():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@app.route('/get_key_json', methods=['POST'])
-def get_key_json():
+@app.route('/get_json', methods=['POST'])
+def get_json_from_db():
     """
-    Get key JSON from a document
+    Get JSON from a document
     ---
     tags:
       - Document Management
@@ -634,14 +634,14 @@ def get_key_json():
             return jsonify({'error': 'Document ID is required'}), 400
         if not user_id:
             return jsonify({'error': 'User ID is required'}), 400
-        result = service.get_key_json(document_id, user_id)
+        result = service.get_json_from_db(document_id, user_id)
         return jsonify(result), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/save_key_json', methods=['POST'])
-def save_key_json():
+@app.route('/save_json', methods=['POST'])
+def save_json_to_db():
     """
     Save updated key JSON to a document
     ---
