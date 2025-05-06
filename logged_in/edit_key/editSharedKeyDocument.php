@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require '../checkType.php';
+require '../../checkType.php';
 
 try {
     $userData = validateToken();
@@ -36,7 +36,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="../css/editDocument.css?v=<?php echo time(); ?>"/>
+    <link rel="stylesheet" href="../../css/editDocument.css?v=<?php echo time(); ?>"/>
 </head>
 
 <body class="bg-gradient-to-br from-[#ede1c3] to-[#cdbf9b] text-papyrus min-h-screen flex flex-col select-none">
@@ -44,9 +44,9 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
      id="navbar">
     <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
-        <a href="main.php"
+        <a href="../main.php"
            class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
-            <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
+            <img src="../../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
                  style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
             HandScript
         </a>
@@ -59,9 +59,9 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
             <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
                 <li class="flex items-center">
-                    <a href="profile.php" class="nav-link flex items-center hover:underline">
+                    <a href="../profile.php" class="nav-link flex items-center hover:underline">
                         Profile
-                        <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
+                        <img src="../../img/account.png" alt="profile" class="w-6 h-6 ml-2"
                              style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                     </a>
                 </li>
@@ -70,7 +70,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                         <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
                                 class="hover:underline flex items-center">
                             Documents
-                            <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
+                            <img src="../../img/document.png" alt="document" class="w-6 h-6 ml-2"
                                  style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                             <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                  fill="none" viewBox="0 0 10 6">
@@ -82,11 +82,11 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                              class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                             <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
                                 <li>
-                                    <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
+                                    <a href="../ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
                                         Documents</a>
                                 </li>
                                 <li>
-                                    <a href="ownCipherDocuments.php"
+                                    <a href="../ownCipherDocuments.php"
                                        class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
                                 </li>
                             </ul>
@@ -98,7 +98,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                         <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
                                 class="hover:underline flex items-center">
                             Tools
-                            <img src="../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
+                            <img src="../../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
                                  style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                             <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                  fill="none" viewBox="0 0 10 6">
@@ -110,22 +110,22 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                              class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                             <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                 <li>
-                                    <a href="./modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                    <a href="../modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                 </li>
                                 <li>
-                                    <a href="./modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                    <a href="../modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
                                 </li>
                                 <li>
-                                    <a href="./modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                    <a href="../modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </li>
                 <li class="flex items-center ml-6">
-                    <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                    <a href="../../logout.php" class="nav-link flex items-center hover:underline">
                         Logout
-                        <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                        <img src="../../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
                              style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                     </a>
                 </li>
@@ -374,7 +374,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     
     function fetchSharedUsers() {
         sharedTable.clear();
-        $.get(`users/getSharedUsers.php?id=${documentId}`, function (data) {
+        $.get(`../users/getSharedUsers.php?id=${documentId}`, function (data) {
             if (Array.isArray(data)) {
                 data.forEach(username => {
                     sharedTable.row.add([
@@ -504,7 +504,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         }).then((result) => {
             if (result.isConfirmed) {
                 removeUser(username);
-                window.location.href = 'ownKeyDocuments.php';
+                window.location.href = '../ownKeyDocuments.php';
             }
         });
     }
@@ -562,7 +562,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 
 
                     if (data.imagePaths) {
-                        $('#docImage').attr('src', '../' + data.imagePaths);
+                        $('#docImage').attr('src', '../../' + data.imagePaths);
                     } else {
                         $('#docImage').attr('alt', 'No image available');
                     }
@@ -579,7 +579,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 
         $("#share").autocomplete({
             source: function (request, response) {
-                $.get("users/fetchUsernames.php", {
+                $.get("../users/fetchUsernames.php", {
                     query: request.term,
                     picture_id: documentId
                 }, function (data) {

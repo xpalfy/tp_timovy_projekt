@@ -160,7 +160,7 @@ try {
 
     <main class="flex-grow">
         <section class="container mx-auto px-6 py-10">
-            <h2 class="text-4xl font-bold text-center text-papyrus mb-8">🔑 My Key Documents</h2>
+            <h2 class="text-4xl font-bold text-center text-papyrus mb-8">🧾 My Cipher Document</h2>
             <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-6 mt-4">
                 <div class="w-full max-w-md">
                     <label for="search-input" class="block mb-2 text-lg font-medium text-[#3b2f1d]">🔎 Search
@@ -236,19 +236,19 @@ try {
                         let editPage = '';
 
                         if (type === 'OWN') {
-                            editPage = 'edit_key/editOwnKeyDocument.php';
+                            editPage = 'edit_cipher/editOwnCipherDocument.php';
                             cardButtons = `
                                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
                                 <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
                             `;
                         } else if (type === 'SHARED') {
-                            editPage = 'edit_key/editSharedKeyDocument.php';
+                            editPage = 'edit_cipher/editSharedCipherDocument.php';
                             cardButtons = `
                                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
                                 <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>
                             `;
                         } else if (type === 'PUBLIC') {
-                            editPage = 'edit_key/viewPublicKeyDocument.php';
+                            editPage = 'edit_cipher/viewPublicCipherDocument.php';
                             cardButtons = `
                                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>
                             `;
@@ -273,8 +273,8 @@ try {
 
         function fetchSharedDocumentsAndImages() {
             Promise.all([
-                fetch('documents/fetchSharedDocuments.php?key=KEY').then(res => res.json()),
-                fetch('items/fetchSharedItems.php?key=KEY').then(res => res.json())
+                fetch('documents/fetchSharedDocuments.php?key=CIPHER').then(res => res.json()),
+                fetch('items/fetchSharedItems.php?key=CIPHER').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
@@ -298,8 +298,8 @@ try {
 
         function fetchPublicDocumentsAndImages() {
             Promise.all([
-                fetch('documents/fetchDocuments.php?key=KEY&public=true').then(res => res.json()),
-                fetch('items/fetchItems.php?key=KEY&public=true').then(res => res.json())
+                fetch('documents/fetchDocuments.php?key=CIPHER&public=true').then(res => res.json()),
+                fetch('items/fetchItems.php?key=CIPHER&public=true').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
@@ -323,8 +323,8 @@ try {
 
         function fetchDocumentsAndImages() {
             Promise.all([
-                fetch('documents/fetchDocuments.php?key=KEY&public=false').then(res => res.json()),
-                fetch('items/fetchItems.php?key=KEY&public=false').then(res => res.json())
+                fetch('documents/fetchDocuments.php?key=CIPHER&public=false').then(res => res.json()),
+                fetch('items/fetchItems.php?key=CIPHER&public=false').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
