@@ -122,15 +122,13 @@ class DocumentService:
         document.shared_with.remove(user)
         self.db.commit()
     
-    def get_key_json(self, document_id, user_id):
+    def get_json_from_db(self, document_id, user_id):
         doc: Document = self.db.query(Document).filter_by(id=document_id).first()
         user: User = self.db.query(User).filter_by(id=user_id).first()
         if not doc:
             raise Exception("Document not found")
         if not user:
             raise Exception("User not found")
-        if doc.doc_type != DocumentType.KEY:
-            raise Exception("Document is not a key document")
         if user not in doc.shared_with and user != doc.author and not doc.is_public:
             raise Exception("User does not have access to this document")
         if not doc.items:
@@ -143,7 +141,7 @@ class DocumentService:
             raise Exception("Processing result not found")
         return processing_result.result
 
-    def save_key_json(self, document_id, user_id, json_data):
+    def save_json_to_db(self, document_id, user_id, json_data):
         doc: Document = self.db.query(Document).filter_by(id=document_id).first()
         user: User = self.db.query(User).filter_by(id=user_id).first()
         if not doc:
@@ -152,8 +150,6 @@ class DocumentService:
             raise Exception("User not found")
         if not isinstance(json_data, dict):
             raise Exception("Invalid JSON data")
-        if doc.doc_type != DocumentType.KEY:
-            raise Exception("Document is not a key document")
         if user not in doc.shared_with and user != doc.author and not doc.is_public:
             raise Exception("User does not have access to this document")
         if not doc.items:
