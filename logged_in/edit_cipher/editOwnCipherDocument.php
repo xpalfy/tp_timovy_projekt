@@ -134,7 +134,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     </div>
 </nav>
 <main class="flex-grow container mx-auto px-4 py-10">
-    <h1 id="docTitle" class="text-4xl font-bold text-center mb-10">Edit Your Own Key Document Here</h1>
+    <h1 id="docTitle" class="text-4xl font-bold text-center mb-10">Edit Your Own Cipher Document Here</h1>
 
 
     
@@ -225,12 +225,12 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     <!-- Right: JSON Textarea -->
     <div class="w-full lg:w-1/2 flex">
         <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
-            <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Key JSON</label>
+            <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Cipher JSON</label>
             <textarea id="jsonData" rows="15"
                         class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
                         placeholder="{ }"></textarea>
             <div class="text-right mt-4">
-                <button onclick="saveKeyJson()"
+                <button onclick="saveJson()"
                         class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow transition">
                     Save JSON
                 </button>
@@ -313,7 +313,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         document.body.style.overflow = '';
     }
 
-    function fetchKeyJson() {
+    function fetchJson() {
         const formData = {
             document_id: documentId,
             user_id: $('#userId').val(),
@@ -321,20 +321,20 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/get_key_json',
+            url: 'https://python.tptimovyprojekt.software/get_json',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
             dataType: 'json',
             success: function (res) {
                 if (res.error) {
-                    toastr.error(res.error || 'Failed to load key JSON');
+                    toastr.error(res.error || 'Failed to load JSON');
                 } else {
                     $('#jsonData').val(JSON.stringify(res, null, 2));
                 }
             },
             error: function () {
-                toastr.error('Server error while fetching key JSON');
+                toastr.error('Server error while fetching JSON');
             }
         });
     }
@@ -483,7 +483,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                         if (data.error) {
                             toastr.error(data.error);
                         } else {
-                            window.location.href = "../ownKeyDocuments.php";
+                            window.location.href = "../ownCipherDocuments.php";
                         }
                     }).catch(error => {
                     console.error('Error:', error);
@@ -493,7 +493,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         });
     }
 
-    function saveKeyJson() {
+    function saveJson() {
         let parsedJson;
         try {
             parsedJson = JSON.parse($('#jsonData').val());
@@ -510,20 +510,20 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/save_key_json',
+            url: 'https://python.tptimovyprojekt.software/save_json',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
             dataType: 'json',
             success: function (res) {
                 if (res.success) {
-                    toastr.success('Key JSON saved successfully');
+                    toastr.success('JSON saved successfully');
                 } else {
-                    toastr.error(res.error || 'Failed to save key JSON');
+                    toastr.error(res.error || 'Failed to save JSON');
                 }
             },
             error: function () {
-                toastr.error('Server error while saving key JSON');
+                toastr.error('Server error while saving JSON');
             }
         });
     }
@@ -567,7 +567,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 }
 
                 fetchSharedUsers();
-                fetchKeyJson();
+                fetchJson();
             }
         });
 
