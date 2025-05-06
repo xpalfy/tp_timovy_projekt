@@ -413,31 +413,34 @@ try {
                 .then(data => {
                     hideLoading();
 
-                    if (data.polygons && Array.isArray(data.polygons)) {
-                        appendLetterRects(data.polygons);
+                    if (data && Array.isArray(data.polygons)) {
+                        appendLetterRects(data.polygons); // Process the polygons array
                     } else {
                         console.error('Invalid response from server:', data);
                     }
                 })
                 .catch(error => {
                     hideLoading();
-                    console.error('Error detecting page edges:', error);
+                    console.error('Error detecting letters:', error);
                 });
         }
 
-        function appendLetterRects(Rects) {
+        function appendLetterRects(segments) {
             const parent = document.getElementById('previewContainerLetter');
-            for (const Rect of Rects) {
-                if (Rect.length !== 5) {
-                    console.error('Invalid Rect:', Rect);
+            
+            for (const segment of segments) {
+                const polygon = segment.polygon;
+                const type = segment.type;
+
+                if (!Array.isArray(polygon) || polygon.length < 4) {
+                    console.error('Invalid polygon in segment:', segment);
                     continue;
                 }
 
-                const x1 = Rect[0], y1 = Rect[1];
-                const x3 = Rect[2], y3 = Rect[3];
+                const x1 = polygon[0], y1 = polygon[1];
+                const x3 = polygon[2], y3 = polygon[3];
                 const x2 = x1, y2 = y3;
                 const x4 = x3, y4 = y1;
-                const type = Rect[4];
 
                 let newRect = document.createElement('letter-rect');
                 newRect.setAttribute('x1', x1);
@@ -448,7 +451,7 @@ try {
                 newRect.setAttribute('y3', y3);
                 newRect.setAttribute('x4', x4);
                 newRect.setAttribute('y4', y4);
-                newRect.setAttribute('type', type);
+                newRect.setAttribute('type', type || 'unknown');
 
                 parent.appendChild(newRect);
             }
