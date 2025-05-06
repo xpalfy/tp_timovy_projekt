@@ -236,19 +236,19 @@ try {
                         let editPage = '';
 
                         if (type === 'OWN') {
-                            editPage = 'editOwnDocument.php';
+                            editPage = 'edit_key/editOwnKeyDocument.php';
                             cardButtons = `
                                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
                                 <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
                             `;
                         } else if (type === 'SHARED') {
-                            editPage = 'editSharedDocument.php';
+                            editPage = 'edit_key/editSharedKeyDocument.php';
                             cardButtons = `
                                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
                                 <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>
                             `;
                         } else if (type === 'PUBLIC') {
-                            editPage = 'viewPublicDocument.php';
+                            editPage = 'edit_key/viewPublicKeyDocument.php';
                             cardButtons = `
                                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>
                             `;
