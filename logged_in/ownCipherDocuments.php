@@ -22,6 +22,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HandScript - Documents</title>
 
+    <link rel="stylesheet" href="../css/documents.css?v=<?php echo time(); ?>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -33,7 +34,6 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.min.js"></script>
-    <link rel="stylesheet" href="../css/documents.css?v=<?php echo time(); ?>">
 
     <style>
         .card-pic {
@@ -45,6 +45,17 @@ try {
 </head>
 
 <body class="min-h-screen select-none flex flex-col">
+    <script>
+        function checkToasts() {
+            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+            if (toast) {
+                toastr[toast.type](toast.message);
+                <?php unset($_SESSION['toast']); ?>
+            }
+        }
+
+        checkToasts();
+    </script>
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
@@ -149,7 +160,7 @@ try {
 
     <main class="flex-grow">
         <section class="container mx-auto px-6 py-10">
-            <h2 class="text-4xl font-bold text-center text-papyrus mb-8">🔐 My Cipher Documents</h2>
+            <h2 class="text-4xl font-bold text-center text-papyrus mb-8">🔑 My Key Documents</h2>
             <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-6 mt-4">
                 <div class="w-full max-w-md">
                     <label for="search-input" class="block mb-2 text-lg font-medium text-[#3b2f1d]">🔎 Search
@@ -169,6 +180,7 @@ try {
                     </select>
                 </div>
             </div>
+
             <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-10">
                 <div class="w-full max-w-md">
                     <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📂 Filter by
@@ -187,7 +199,7 @@ try {
                 </div>
             </div>
 
-            <div id="pagination" class="flex justify-center mt-8"></div>
+            <div id="pagination" class="flex justify-center mt-8"></div> <!-- This one -->
         </section>
     </main>
 
@@ -199,7 +211,7 @@ try {
         let documentsData = [], imagesData = {};
         let currentPageSize = 4;
 
-        function renderDocuments(documents, images, pageSize = 5) {
+        function renderDocuments(documents, images, pageSize = 5, type = 'OWN') {
             $('#pagination').pagination({
                 dataSource: documents,
                 pageSize: pageSize,
@@ -219,17 +231,39 @@ try {
 
                     data.forEach(doc => {
                         const imgPath = images[doc.id] ? '..' + images[doc.id] : '../img/default.png';
+
+                        let cardButtons = '';
+                        let editPage = '';
+
+                        if (type === 'OWN') {
+                            editPage = 'edit_key/editOwnKeyDocument.php';
+                            cardButtons = `
+                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
+                            `;
+                        } else if (type === 'SHARED') {
+                            editPage = 'edit_key/editSharedKeyDocument.php';
+                            cardButtons = `
+                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                                <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>
+                            `;
+                        } else if (type === 'PUBLIC') {
+                            editPage = 'edit_key/viewPublicKeyDocument.php';
+                            cardButtons = `
+                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>
+                            `;
+                        }
+
                         const card = document.createElement('div');
                         card.className = 'card-pic';
                         card.innerHTML = `
-                        <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
-                        <div class="card-body">
-                            <h5 class="card-title">${doc.title}</h5>
-                            <div class="card-buttons">
-                                <a href="editOwnDocument.php?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
-                            </div>
-                        </div>`;
+                            <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
+                            <div class="card-body">
+                                <h5 class="card-title">${doc.title}</h5>
+                                <div class="card-buttons">
+                                    ${cardButtons}
+                                </div>
+                            </div>`;
                         grid.appendChild(card);
                     });
                 }
@@ -239,8 +273,8 @@ try {
 
         function fetchSharedDocumentsAndImages() {
             Promise.all([
-                fetch('documents/fetchSharedDocuments.php?key=CIPHER').then(res => res.json()),
-                fetch('items/fetchSharedItems.php?key=CIPHER').then(res => res.json())
+                fetch('documents/fetchSharedDocuments.php?key=KEY').then(res => res.json()),
+                fetch('items/fetchSharedItems.php?key=KEY').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
@@ -253,7 +287,8 @@ try {
                             preloadImg.src = fullPath;
                         }
                     });
-                    renderDocuments(documentsData, imagesData, currentPageSize);
+
+                    renderDocuments(documentsData, imagesData, currentPageSize, 'SHARED');
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -263,8 +298,8 @@ try {
 
         function fetchPublicDocumentsAndImages() {
             Promise.all([
-                fetch('documents/fetchDocuments.php?key=CIPHER&public=true').then(res => res.json()),
-                fetch('items/fetchItems.php?key=CIPHER&public=true').then(res => res.json())
+                fetch('documents/fetchDocuments.php?key=KEY&public=true').then(res => res.json()),
+                fetch('items/fetchItems.php?key=KEY&public=true').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
@@ -277,7 +312,8 @@ try {
                             preloadImg.src = fullPath;
                         }
                     });
-                    renderDocuments(documentsData, imagesData, currentPageSize);
+
+                    renderDocuments(documentsData, imagesData, currentPageSize, 'PUBLIC');
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -287,8 +323,8 @@ try {
 
         function fetchDocumentsAndImages() {
             Promise.all([
-                fetch('documents/fetchDocuments.php?key=CIPHER&public=false').then(res => res.json()),
-                fetch('items/fetchItems.php?key=CIPHER&public=false').then(res => res.json())
+                fetch('documents/fetchDocuments.php?key=KEY&public=false').then(res => res.json()),
+                fetch('items/fetchItems.php?key=KEY&public=false').then(res => res.json())
             ])
                 .then(([docs, imgs]) => {
                     documentsData = docs;
@@ -301,7 +337,8 @@ try {
                             preloadImg.src = fullPath;
                         }
                     });
-                    renderDocuments(documentsData, imagesData, currentPageSize);
+
+                    renderDocuments(documentsData, imagesData, currentPageSize, 'OWN');
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
@@ -324,7 +361,11 @@ try {
                     fetch('documents/deleteDocument.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ doc_id: documentId, id: <?php echo $userData['id']; ?>, user_name: "<?php echo $userData['username']; ?>" })
+                        body: JSON.stringify({
+                            doc_id: documentId,
+                            id: <?php echo $userData['id']; ?>,
+                            user_name: "<?php echo $userData['username']; ?>"
+                        })
                     }).then(response => response.json())
                         .then(data => {
                             if (data.error) {
@@ -341,17 +382,48 @@ try {
             });
         }
 
-        function checkToasts() {
-            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
-            if (toast) {
-                toastr[toast.type](toast.message);
-                <?php unset($_SESSION['toast']); ?>
-            }
+        function unshareWithMe(username, documentId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Are you sure?',
+                text: `You will no longer have access to this document.`,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, unshare it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = {
+                        document_id: documentId,
+                        username: username,
+                        token: '<?php echo $_SESSION['token']; ?>'
+                    };
+
+                    $.ajax({
+                        url: 'https://python.tptimovyprojekt.software/remove_shared_user',
+                        type: 'POST',
+                        data: JSON.stringify(formData),
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.success) {
+                                toastr.success('Access removed successfully');
+                                fetchSharedDocumentsAndImages();
+                            } else {
+                                toastr.error(res.error || 'Failed to remove access');
+                            }
+                        },
+                        error: function () {
+                            toastr.error('Server error while unsharing');
+                        }
+                    });
+                }
+            });
         }
+
 
         $(document).ready(function () {
             fetchDocumentsAndImages();
-            checkToasts();
         });
 
         $('#search-input').on('input', function () {
@@ -375,6 +447,7 @@ try {
             currentPageSize = parseInt($(this).val());
             renderDocuments(documentsData, imagesData, currentPageSize);
         });
+
 
     </script>
 

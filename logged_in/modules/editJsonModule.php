@@ -553,7 +553,7 @@ try {
                     hideLoading();
                     if (data.success) {
                         toastr.success('Letter segmentation data saved successfully.');
-                        window.location.href = `../editOwnDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
+                        window.location.href = `../edit_key/editOwnKeyDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
                     } else {
                         toastr.error('Failed to save segmentation data.');
                     }
