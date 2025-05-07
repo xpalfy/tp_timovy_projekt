@@ -208,7 +208,7 @@ class DocumentService:
         status_str = str(data['status']).lower()
         user_id = int(data['user_id'])
         model_used = 'MODEL1'
-        result_json = None
+        result_json = data.get('json_data')
         polygons = data.get('polygons')
         if polygons and result_json is None:
             result_json = {
