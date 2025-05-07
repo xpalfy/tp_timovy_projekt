@@ -1,4 +1,5 @@
 <?php
+// TODO: remove this if not needed
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

@@ -739,7 +739,71 @@ def save_processing_result():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
     return jsonify({'success': True}), 200
-    
+
+@app.route('/get_documents_by_user_and_status', methods=['POST'])
+def get_documents_by_user_and_status():
+    db = next(get_db_session())
+    service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        user_id = data.get('user_id')
+        status = data.get('status')
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+        if not status:
+            return jsonify({'error': 'Status is required'}), 400
+        documents = service.get_documents_by_user_id_and_status(user_id, status)
+        result = [
+            {
+                'id': doc.id,
+                'title': doc.title,
+                'doc_type': doc.doc_type.name
+            }
+            for doc in documents
+        ]
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/get_items_by_doc_and_status', methods=['POST'])
+def get_items_by_doc_and_status():
+    db = next(get_db_session())
+    service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        document_id = data.get('document_id')
+        user_id = data.get('user_id')
+        status = data.get('status')
+        if not document_id:
+            return jsonify({'error': 'Document ID is required'}), 400
+        if not status:
+            return jsonify({'error': 'Status is required'}), 400
+          
+        items = service.get_items_by_document_id_and_status(document_id, status, user_id)
+        if not items:
+            return jsonify([]), 200  # match PHP: return empty array if no results
+
+        # Get doc_type from document to inject into each item
+        document = service.get_document_by_id(document_id)
+        doc_type = document.doc_type
+        result = [
+            {
+                'id': item.id,
+                'title': item.title,
+                'image_path': item.image_path,
+                'type': doc_type.name
+            }
+            for item in items
+        ]
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 def get_folder_from_referer():
     referer = request.headers.get("X-Caller-Url")

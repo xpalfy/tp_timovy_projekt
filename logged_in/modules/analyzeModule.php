@@ -245,12 +245,26 @@ try {
 
         function fetchDocuments() {
             showLoading();
-            Promise.all([
-                fetch('fetchDocumentsByStep.php?status=SEGMENTED').then(res => res.json())
-            ])
-                .then(([docs]) => {
+
+            let data = {
+                token: '<?php echo $_SESSION["token"]; ?>',
+                user_id: userData.id,
+                status: 'SEGMENTED'
+            };
+
+            fetch('https://python.tptimovyprojekt.software/get_documents_by_user_and_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(docs => {
+                    hideLoading();
+
                     documentsData = docs;
-                    console.log(documentsData);
+
                     const params = getUrlParams();
                     if (params.document_id) {
                         const selectedDoc = documentsData.find(doc => doc.id == params.document_id);
@@ -266,7 +280,7 @@ try {
                 })
                 .catch(error => {
                     toastr.error('Failed to load documents.');
-                    console.error(error);
+                    console.error('Error fetching documents:', error);
                 });
             hideLoading();
         }
@@ -316,17 +330,39 @@ try {
 
         function fetchItems(documentId, preselectItemId = null) {
             disableDocumentSearch();
-            fetch(`fetchItemsByStep.php?document_id=${documentId}&status=SEGMENTED`)
+            showItemSelector();
+
+            let data = {
+                token: '<?php echo $_SESSION["token"]; ?>',
+                user_id: userData.id,
+                document_id: documentId,
+                status: 'SEGMENTED'
+            };
+
+            console.log('Requesting items with:', data);
+
+            fetch('https://python.tptimovyprojekt.software/get_items_by_doc_and_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
                 .then(response => response.json())
-                .then(data => {
-                    data.forEach(item => {
+                .then(items => {
+                    console.log('Fetched items:', items);
+
+                    $("#itemSelector").empty();
+                    $("#itemSelector").append('<option value="" disabled selected>Select an item</option>');
+
+                    items.forEach(item => {
                         const option = document.createElement('option');
                         option.value = item.id;
                         option.textContent = item.title;
                         document.getElementById('itemSelector').appendChild(option);
                     });
-                    itemsData = data;
-                    showItemSelector();
+
+                    itemsData = items;
 
                     if (preselectItemId) {
                         $("#itemSelector").val(preselectItemId).trigger('change');
@@ -334,10 +370,10 @@ try {
                 })
                 .catch(error => {
                     toastr.error('Failed to load items.');
-                    console.error(error);
+                    console.error('Error fetching items:', error);
                 });
-            showItemSelector();
         }
+
 
         function disableDocumentSearch() {
             document.getElementById('documentSearch').disabled = true;
