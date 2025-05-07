@@ -251,4 +251,43 @@ class DocumentService:
             item.status = new_status
         self.db.add(proc_result)
         self.db.commit()   
+    
+    def get_documents_by_user_id_and_status(self, user_id: int, status: ProcessingStatus) -> list[Document] | None:
+        user = self.db.query(User).filter_by(id=user_id).first()
+        if not user:
+            raise Exception("User not found")
+        documents: list[Document] = self.db.query(Document).filter_by(author_id=user_id).all()
+        if not documents:
+            raise Exception("No documents found for this user")
+        filtered_documents = []
+        for doc in documents:
+            if doc.author_id != user_id and user not in doc.shared_with:
+                continue
+            if doc.items:
+                for item in doc.items:
+                    if item.status.name == status:
+                        filtered_documents.append(doc)
+                        break
+        if not filtered_documents:
+            raise Exception("No documents found with this status and user access")
+        return filtered_documents
         
+        
+    def get_items_by_document_id_and_status(self, document_id: int, status: ProcessingStatus, user_id: int) -> list[Item] | None:
+        doc = self.get_document_by_id(document_id)
+        user = self.db.query(User).filter_by(id=user_id).first()
+        if not doc:
+            raise Exception("Document not found")
+        if not user:
+            raise Exception("User not found")
+        if doc.author_id != user_id and user not in doc.shared_with:
+            raise Exception("User does not have access to this document")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        filtered_items = []
+        for item in doc.items:
+            if item.status.name == status:
+                filtered_items.append(item)
+        if not filtered_items:
+            raise Exception("No items found with this status and user access")
+        return filtered_items
