@@ -249,7 +249,9 @@ class DocumentService:
             model_used=model_used,
             created_date=now,
             modified_date=now,
-            result=result_json
+            result=result_json,
+            created_by_id=user_id,
+            created_by=user
         )
         item.processing_results.append(proc_result)
         item.modified_date = now
@@ -262,7 +264,7 @@ class DocumentService:
         user = self.db.query(User).filter_by(id=user_id).first()
         if not user:
             raise Exception("User not found")
-        documents: list[Document] = self.db.query(Document).filter_by(author_id=user_id).all()
+        documents = self.db.query(Document).filter((Document.author_id == user_id) | (Document.shared_with.any(id=user_id))).all()
         if not documents:
             raise Exception("No documents found for this user")
         filtered_documents = []

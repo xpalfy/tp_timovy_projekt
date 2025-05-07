@@ -40,11 +40,13 @@ class ProcessingResult(Base):
     __tablename__ = 'processing_results'
     id = Column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(Integer, ForeignKey('items.id'))
-    item: Item = relationship("Item", back_populates="processing_results")
     status = Column(Enum(ProcessingStatus, name='processing_status'))
     message = Column(String(255))
     model_used = Column(Enum(Model, name='model_used'))
     created_date = Column(String(255))
     modified_date = Column(String(255))
     result = Column(JSON)
-    
+    created_by_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    item: Item = relationship("Item", back_populates="processing_results")
+    created_by = relationship("User", back_populates="processing_results_created")

@@ -14,3 +14,4 @@ class User(Base):
 
     documents = relationship("Document", back_populates="author")
     shared_documents = relationship("Document", secondary="document_user_association", back_populates="shared_with")
+    processing_results_created = relationship("ProcessingResult", back_populates="created_by")
