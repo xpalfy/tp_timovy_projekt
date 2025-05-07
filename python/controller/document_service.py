@@ -84,7 +84,7 @@ class DocumentService:
     def save_changes(self):
         self.db.commit()
     
-    def delete_document(self, document_id: int, user_id: int, folder:str = None):
+    def delete_document(self, document_id: int, user_id: int, folder: str = None):
         document = self.get_document_by_id_and_author(document_id, user_id)
         if not document:
             raise Exception("Document not found")
@@ -95,13 +95,19 @@ class DocumentService:
 
         doc_directory = os.path.join('..', folder, 'DOCS', user.username, document.doc_type.name, document.title)
 
+        # Delete processing results associated with items
         if hasattr(document, 'items') and document.items:
             for item in document.items:
+                if hasattr(item, 'processing_results') and item.processing_results:
+                    for result in item.processing_results:
+                        self.db.delete(result)
                 self.db.delete(item)
 
+        # Delete the document itself
         self.db.delete(document)
         self.db.commit()
 
+        # Remove the document directory if it exists
         if os.path.isdir(doc_directory):
             shutil.rmtree(doc_directory)
 
