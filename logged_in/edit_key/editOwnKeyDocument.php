@@ -321,7 +321,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/get_key_json',
+            url: 'https://python.tptimovyprojekt.software/get_json',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
