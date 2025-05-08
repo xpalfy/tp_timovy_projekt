@@ -17,7 +17,7 @@ def get_jwt_secret_from_php(path='jwt.php'):
 def validate_token(token=None):
 
     if not token:
-        session['toast'] = {'type': 'error', 'message': 'Unauthorized: Token not found'}
+        session['toast'] = {'type': 'error', 'message': 'You have to login first'}
         response = make_response(redirect('/login'))
         response.status_code = 401
         return response

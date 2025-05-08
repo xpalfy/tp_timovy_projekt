@@ -38,7 +38,7 @@ function validateToken() {
 
     if (!$token) {
         http_response_code(401);
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Unauthorized: Token not found'];
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'You have to login first'];
         header('Location: login.php');
         exit();
     }
