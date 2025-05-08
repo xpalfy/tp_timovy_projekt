@@ -11,8 +11,9 @@ require '../../config.php';
 try {
     $userData = validateToken();
 } catch (Exception $e) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Token validation failed']);
+    http_response_code(500);
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    header('Location: ../../login.php');
     exit();
 }
 
