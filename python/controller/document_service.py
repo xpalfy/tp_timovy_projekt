@@ -299,3 +299,13 @@ class DocumentService:
         if not filtered_items:
             raise Exception("No items found with this status and user access")
         return filtered_items
+    
+    def delete_user_documents(self, user_id: int, folder: str = None):
+        user = self.db.query(User).filter_by(id=user_id).first()
+        if not user:
+            raise Exception("User not found")
+        documents = self.db.query(Document).filter_by(author_id=user_id).all()
+        if not documents:
+            raise Exception("No documents found for this user")
+        for doc in documents:
+            self.delete_document(doc.id, user_id, folder)
