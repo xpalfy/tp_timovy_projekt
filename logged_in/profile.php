@@ -154,59 +154,86 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     </div>
 </nav>
 
-<main class="flex-grow flex justify-center items-center">
-    <section class="container mx-auto px-6">
-        <form action="users/profileUpdate.php" method="post"
-              class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6">
-            
-            <div class="flex items-center justify-center gap-4 mb-6">
+<main class="min-h-[90vh] flex justify-center items-start pt-16 px-4 bg-transparent">
+    <section class="container mx-auto max-w-6xl mt-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-start justify-center mt-4">
+
+            <!-- Profile Update Form -->
+            <form action="users/profileUpdate.php" method="post"
+                  class="glass rounded-xl p-10 space-y-6 shadow-lg w-full">
+
+                <div class="flex items-center gap-4 mb-10">
+                    <h1 class="text-4xl font-bold text-papyrus">Change Information</h1>
+                </div>
+
+                <div>
+                    <label class="block text-papyrus mb-1 font-semibold">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Username"
+                           class="w-full border rounded px-4 py-3"/>
+                </div>
+
+                <div>
+                    <label class="block text-papyrus mb-1 font-semibold">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Email"
+                           class="w-full border rounded px-4 py-3"/>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-papyrus mb-1 font-semibold">New Password</label>
+                        <input type="password" name="password" id="password"
+                               autocomplete="off" placeholder="New Password"
+                               class="w-full border rounded px-4 py-3"/>
+                    </div>
+                    <div>
+                        <label class="block text-papyrus mb-1 font-semibold">Repeat New Password</label>
+                        <input type="password" name="password_confirm" id="password_confirm"
+                               autocomplete="off" placeholder="New Password Again"
+                               class="w-full border rounded px-4 py-3"/>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn-papyrus px-8 py-3 rounded font-semibold transition text-white mt-6">
+                        Submit
+                    </button>
+                    <button type="button" id="deleteAccountButton" onClick="deleteUser()"
+                            class="btn-papyrus px-8 py-3 rounded font-semibold transition text-white mt-6 ml-4">
+                        Delete Account
+                    </button>
+                </div>
+            </form>
+
+            <!-- Profile Overview Panel -->
+            <div class="glass rounded-2xl p-10 shadow-xl flex flex-col items-center space-y-6 w-full">
                 <img 
                     src="../img/avatars/avatar_<?php echo $userData['avatarId']; ?>.png" 
                     alt="User Avatar" 
-                    class="w-16 h-16 rounded-full border shadow-md mb-3 mr-3"
+                    class="rounded-full object-cover mb-6"
+                    id="currentAvatarImage"
                 >
-                <h1 class="text-4xl font-bold text-papyrus">Profile</h1>
-            </div>
 
-            <p class="text-center text-lg mb-10 text-papyrus">
-                Welcome back, <span class="font-semibold"><?php echo $userData['username']; ?></span>
-            </p>
+                <h2 class="text-3xl font-bold text-papyrus">📄 Profile Overview</h2>
 
-            <div>
-                <label class="block text-papyrus mb-1 font-semibold">Username</label>
-                <input type="text" name="username" id="username" oninput="isValidInput(this)" placeholder="Username"
-                       class="w-full border rounded px-4 py-3"/>
-            </div>
-            <div>
-                <label class="block text-papyrus mb-1 font-semibold">Email</label>
-                <input type="email" name="email" id="email" oninput="isValidEmail(this)" placeholder="Email"
-                       class="w-full border rounded px-4 py-3"/>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-papyrus mb-1 font-semibold">New Password</label>
-                    <input type="password" name="password" id="password" oninput="isValidPassword(this)"
-                           autocomplete="off" placeholder="New Password" class="w-full border rounded px-4 py-3"/>
-                </div>
-                <div>
-                    <label class="block text-papyrus mb-1 font-semibold">Repeat New Password</label>
-                    <input type="password" name="password_confirm" id="password_confirm"
-                           oninput="isValidPassword(this)" autocomplete="off" placeholder="New Password Again"
-                           class="w-full border rounded px-4 py-3"/>
+                <div class="grid grid-cols-2 gap-x-4 w-full text-papyrus">
+                    <p class="font-semibold mt-2">Username:</p>
+                    <p id="currentUsername"><?php echo $userData['username']; ?></p>
+
+                    <p class="font-semibold mt-2">Email:</p>
+                    <p id="currentEmail"><?php echo $userData['email']; ?></p>
+
+                    <p class="font-semibold mt-2">Avatar ID:</p>
+                    <p id="currentAvatarId"><?php echo $userData['avatarId']; ?></p>
+
+                    <p class="font-semibold mt-2">User ID:</p>
+                    <p id="currentUserId"><?php echo $userData['id']; ?></p>
                 </div>
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn-papyrus px-8 py-3 rounded font-semibold transition text-white mt-4">
-                    Submit
-                </button>
-                <button type="button" id="deleteAccountButton" onClick="deleteUser()"
-                        class="btn-papyrus px-8 py-3 rounded font-semibold transition text-white mt-4 ml-6">
-                    Delete Account
-                </button>
-            </div>
-        </form>
+
+        </div>
     </section>
 </main>
+
 
 <!-- Footer -->
 <footer class="bg-[#d7c7a5] border-t border-yellow-300 text-[#3b2f1d] py-6">
@@ -285,6 +312,8 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             }
         });
     }
+
+    
 
 </script>
 
