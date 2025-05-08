@@ -163,13 +163,23 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 <input type="hidden" name="id" id="docId">
                 <input type="hidden" name="user" id="userId">
 
-                <div>
-                    <label for="date" class="block font-semibold mb-1">Publish Date</label>
-                    <div class="flex items-center gap-2 mb-2">
-                        <input type="text" name="date" id="date"
-                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                <div class="flex gap-4">
+                    <div class="w-1/2">
+                        <label for="date" class="block font-semibold mb-1">Publish Date</label>
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="text" name="date" id="date"
+                                   class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="w-1/2">
+                        <label for="applied_key" class="block font-semibold mb-1">Applied Key</label>
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="text" name="applied_key" id="applied_key"
+                                   class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
+                        </div>
+                    </div>
+                </div>                
 
                 <!-- Document Name -->
                 <div>
@@ -571,8 +581,10 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 $('#userId').val(data.document.author_id);
                 $('#name').val(data.document.title);
                 $('#date').val(data.publishDate);
+                $('#applied_key').val(data.document.applied_key);
                 $('#isPublic').prop('checked', data.document.is_public);
                 $('#date').prop('disabled', true);
+                $('#applied_key').prop('disabled', true);
 
                 if (data.imagePaths && data.imagePaths.length > 0) {
                     $('#docImage').attr('src', '../../' + data.imagePaths[0]);
