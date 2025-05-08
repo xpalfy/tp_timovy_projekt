@@ -39,7 +39,7 @@ function validateToken() {
     if (!$token) {
         http_response_code(401);
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'You have to login first'];
-        header('Location: login.php');
+        throw new Exception('You have to login first');
         exit();
     }
 
@@ -58,7 +58,7 @@ function validateToken() {
     } catch (Exception $e) {
         http_response_code(401);
         $_SESSION['toast'] = ['type' => 'error', 'message' => 'Unauthorized: Invalid token'];
-        header('Location: ../login.php');
+        throw new Exception('Unauthorized: Invalid token');
         exit();
     }
 }
