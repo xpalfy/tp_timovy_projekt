@@ -72,7 +72,7 @@ if (isset($_GET['code'])) {
             $conn->close();
 
             // Generate and store JWT token
-            $jwt = generateToken($userId, $username);
+            $jwt = generateToken($userId, $username, $g_email);
             $_SESSION['token'] = $jwt;
 
             $_SESSION['toast'] = ['type' => 'success', 'message' => 'Prihlásenie cez Google bolo úspešné.'];
