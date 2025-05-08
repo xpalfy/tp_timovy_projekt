@@ -12,6 +12,7 @@ try {
     http_response_code(500);
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
     header('Location: ../../login.php');
+    exit();
 }
 
 
