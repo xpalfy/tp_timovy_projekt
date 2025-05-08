@@ -55,7 +55,7 @@ if (!$is_verified) {
 }
 
 require_once '../checkType.php';
-$token = generateToken($id, $uname);
+$token = generateToken($id, $uname, $email);
 $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login successful!'];
 $_SESSION['token'] = $token;
 

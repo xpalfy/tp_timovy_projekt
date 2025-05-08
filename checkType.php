@@ -16,7 +16,7 @@ function getJwtSecret(): string {
     return $secret['secret'];
 }
 
-function generateToken($userId, $username): string {
+function generateToken($userId, $username, $email): string {
     $secret = getJwtSecret();
     $payload = [
         'iss' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
@@ -26,6 +26,7 @@ function generateToken($userId, $username): string {
         'data' => [
             'id' => $userId,
             'username' => $username,
+            'email' => $email,
         ],
     ];
 
