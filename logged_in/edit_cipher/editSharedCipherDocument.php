@@ -110,13 +110,20 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                              class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                             <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                 <li>
-                                    <a href="../modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                    <a href="../modules/segmentModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                 </li>
                                 <li>
-                                    <a href="../modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                    <a href="../modules/analyzeModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
                                 </li>
                                 <li>
-                                    <a href="../modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                    <a href="../modules/lettersModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                </li>
+                                <li>
+                                    <a href="../modules/editJsonModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
                                 </li>
                             </ul>
                         </div>
@@ -157,7 +164,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                         <label for="date" class="block font-semibold mb-1">Publish Date</label>
                         <div class="flex items-center gap-2 mb-2">
                             <input type="text" name="date" id="date"
-                                    class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
+                                   class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
                         </div>
                     </div>
 
@@ -165,7 +172,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                         <label for="owner" class="block font-semibold mb-1">Owner</label>
                         <div class="flex items-center gap-2 mb-2">
                             <input type="text" name="owner" id="owner"
-                                    class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
+                                   class="flex-grow border border-yellow-400 rounded px-4 py-2 w-full"/>
                         </div>
                     </div>
                 </div>
@@ -285,8 +292,15 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 </main>
 
 <!-- Footer -->
-<footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
-    &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+<footer class="bg-[#d7c7a5] border-t border-yellow-300 text-[#3b2f1d] py-6">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <p class="text-center md:text-left">&copy; 2025 HandScript</p>
+        <div class="flex space-x-4 text-sm">
+            <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
+                Page</a>
+            <a href="../../faq.html" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#5a452e] transition">FAQ</a>
+        </div>
+    </div>
 </footer>
 
 <script>
@@ -371,7 +385,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             }
         });
     }
-    
+
     function fetchSharedUsers() {
         sharedTable.clear();
         $.get(`../users/getSharedUsers.php?id=${documentId}`, function (data) {

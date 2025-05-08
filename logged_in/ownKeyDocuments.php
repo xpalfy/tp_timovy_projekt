@@ -214,8 +214,16 @@ try {
 </main>
 
 
-<footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
-    &copy; 2025 HandScript - <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+<!-- Footer -->
+<footer class="bg-[#d7c7a5] border-t border-yellow-300 text-[#3b2f1d] py-6">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <p class="text-center md:text-left">&copy; 2025 HandScript</p>
+        <div class="flex space-x-4 text-sm">
+            <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
+                Page</a>
+            <a href="../faq.html" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#5a452e] transition">FAQ</a>
+        </div>
+    </div>
 </footer>
 <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 <script>
