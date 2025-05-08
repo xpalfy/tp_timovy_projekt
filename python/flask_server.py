@@ -805,6 +805,31 @@ def get_items_by_doc_and_status():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/delete_user', methods=['DELETE'])
+def delete_user():
+    db = next(get_db_session())
+    u_service = UserService(db)
+    db_service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        user_id = data.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+        folder = get_folder_from_referer()
+        db_service.delete_user_documents(user_id, folder)
+        u_service.delete_user(user_id)
+        db.commit()
+        return jsonify({'success': True}), 200
+    except SQLAlchemyError as e:
+        db.rollback()
+        return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    
+
 def get_folder_from_referer():
     referer = request.headers.get("X-Caller-Url")
     if referer:

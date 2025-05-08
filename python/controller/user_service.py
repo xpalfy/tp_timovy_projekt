@@ -23,3 +23,11 @@ class UserService:
             return user.username
         return None
     
+    def delete_user(self, user_id: int) -> bool:
+        user = self.db.query(User).filter_by(id=user_id).first()
+        if user:
+            self.db.delete(user)
+            self.db.commit()
+            return True
+        return False
+    
