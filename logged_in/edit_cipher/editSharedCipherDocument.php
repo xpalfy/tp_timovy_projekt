@@ -179,6 +179,14 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 </div>
 
 
+                <div>
+                    <label for="applied_key" class="block font-semibold mb-1 mt-2">Applied Key</label>
+                    <div class="flex items-center gap-2 mb-2">
+                        <input type="text" name="applied_key" id="applied_key"
+                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                    </div>
+                </div>
+
                 <!-- Document Name -->
                 <div>
                     <label for="name" class="block font-semibold mb-1 mt-2">Document Name</label>
@@ -571,9 +579,11 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     $('#owner').val(data.author_name);
                     $('#name').val(data.title);
                     $('#date').val(data.publish_date);
+                    $('#applied_key').val(data.applied_key);
                     $('#isPublic').prop('checked', data.ispublic === true);
                     $('#date').prop('disabled', true);
                     $('#owner').prop('disabled', true);
+                    $('#applied_key').prop('disabled', true);
 
 
                     if (data.imagePaths) {
