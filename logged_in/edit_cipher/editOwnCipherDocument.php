@@ -110,13 +110,20 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                              class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                             <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
                                 <li>
-                                    <a href="../modules/segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                    <a href="../modules/segmentModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
                                 </li>
                                 <li>
-                                    <a href="../modules/analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                    <a href="../modules/analyzeModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
                                 </li>
                                 <li>
-                                    <a href="../modules/lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                    <a href="../modules/lettersModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                </li>
+                                <li>
+                                    <a href="../modules/editJsonModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
                                 </li>
                             </ul>
                         </div>
@@ -137,126 +144,125 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     <h1 id="docTitle" class="text-4xl font-bold text-center mb-10">Edit Your Own Cipher Document Here</h1>
 
 
-    
     <!-- Top Row: Image + JSON Textarea -->
     <div class="flex flex-col lg:flex-row gap-10 items-stretch">
         <!-- Left: Image -->
         <div class="w-full lg:w-1/2 flex">
             <div class="w-full">
                 <img id="docImage" src="" alt="Document"
-                    class="w-full h-full object-cover rounded-lg border shadow-lg cursor-pointer"
-                    onclick="openImageModal()" />
+                     class="w-full h-full object-cover rounded-lg border shadow-lg cursor-pointer"
+                     onclick="openImageModal()"/>
             </div>
         </div>
 
 
-            <!-- Left: Form section (under image) -->
-    <div class="w-full lg:w-1/2 flex">
-        <div class="w-full bg-white bg-opacity-50 rounded-xl p-6 shadow-lg min-h-[450px] flex flex-col">
-            <input type="hidden" name="id" id="docId">
-            <input type="hidden" name="user" id="userId">
+        <!-- Left: Form section (under image) -->
+        <div class="w-full lg:w-1/2 flex">
+            <div class="w-full bg-white bg-opacity-50 rounded-xl p-6 shadow-lg min-h-[450px] flex flex-col">
+                <input type="hidden" name="id" id="docId">
+                <input type="hidden" name="user" id="userId">
 
-            <div>
-                <label for="date" class="block font-semibold mb-1">Publish Date</label>
-                <div class="flex items-center gap-2 mb-2">
-                    <input type="text" name="date" id="date"
-                            class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                <div>
+                    <label for="date" class="block font-semibold mb-1">Publish Date</label>
+                    <div class="flex items-center gap-2 mb-2">
+                        <input type="text" name="date" id="date"
+                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Document Name -->
-            <div>
-                <label for="name" class="block font-semibold mb-1 mt-2">Document Name</label>
-                <div class="flex items-center gap-2">
-                    <input type="text" name="name" id="name" placeholder="Enter document name"
-                           class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
-                    <button type="button" onclick="changeName()"
-                            class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
-                        Change
-                    </button>
-                </div>
-            </div>
-
-            <!-- Share with section -->
-            <label for="share" class="block font-semibold mb-1 mt-4">Share with</label>
-            <div class="flex flex-col lg:flex-row gap-4 mb-2">
-                <div class="lg:w-5/6 w-full">
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="share" placeholder="Enter username"
-                                class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
-                        <button type="button" onclick="addUser()"
+                <!-- Document Name -->
+                <div>
+                    <label for="name" class="block font-semibold mb-1 mt-2">Document Name</label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="name" id="name" placeholder="Enter document name"
+                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                        <button type="button" onclick="changeName()"
                                 class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
-                            Add
+                            Change
                         </button>
                     </div>
-                    <input type="hidden" name="sharedUsers" id="sharedUsers">
                 </div>
-                <div class="lg:w-1/6 w-full flex items-center justify-center">
-                    <label for="isPublic" class="flex items-center cursor-pointer select-none">
-                        <div class="relative">
-                            <input type="checkbox" id="isPublic" class="sr-only peer">
-                            <div class="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-yellow-400 transition-colors duration-300"></div>
-                            <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-6"></div>
-                        </div>
-                        <span class="ml-3 text-sm font-medium text-gray-700">Public</span>
-                    </label>
-                </div>
-            </div>
 
-            <!-- Shared users table -->
-            <div class="flex-grow overflow-y-auto mt-8">
-                <table id="sharedUsersTable" class="display w-full text-sm compact">
-                    <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="sharedUsersTableBody"></tbody>
-                </table>
+                <!-- Share with section -->
+                <label for="share" class="block font-semibold mb-1 mt-4">Share with</label>
+                <div class="flex flex-col lg:flex-row gap-4 mb-2">
+                    <div class="lg:w-5/6 w-full">
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="share" placeholder="Enter username"
+                                   class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                            <button type="button" onclick="addUser()"
+                                    class="px-4 py-2 bg-yellow-300 text-[#3b2f1d] rounded shadow hover:bg-yellow-400 transition">
+                                Add
+                            </button>
+                        </div>
+                        <input type="hidden" name="sharedUsers" id="sharedUsers">
+                    </div>
+                    <div class="lg:w-1/6 w-full flex items-center justify-center">
+                        <label for="isPublic" class="flex items-center cursor-pointer select-none">
+                            <div class="relative">
+                                <input type="checkbox" id="isPublic" class="sr-only peer">
+                                <div class="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-yellow-400 transition-colors duration-300"></div>
+                                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-6"></div>
+                            </div>
+                            <span class="ml-3 text-sm font-medium text-gray-700">Public</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Shared users table -->
+                <div class="flex-grow overflow-y-auto mt-8">
+                    <table id="sharedUsersTable" class="display w-full text-sm compact">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="sharedUsersTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- Bottom Row: Form (under image) + JSON Helper (under textarea) -->
-<div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
+    <div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
 
-    <!-- Right: JSON Textarea -->
-    <div class="w-full lg:w-1/2 flex">
-        <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
-            <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Cipher JSON</label>
-            <textarea id="jsonData" rows="15"
-                        class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
-                        placeholder="{ }"></textarea>
-            <div class="text-right mt-4">
-                <button onclick="saveJson()"
-                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow transition">
-                    Save JSON
-                </button>
-                <button onclick="deleteDocument(document.getElementById('docId').value)"
-                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
-                    Delete Document
-                </button>
+        <!-- Right: JSON Textarea -->
+        <div class="w-full lg:w-1/2 flex">
+            <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
+                <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Cipher JSON</label>
+                <textarea id="jsonData" rows="15"
+                          class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
+                          placeholder="{ }"></textarea>
+                <div class="text-right mt-4">
+                    <button onclick="saveJson()"
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow transition">
+                        Save JSON
+                    </button>
+                    <button onclick="deleteDocument(document.getElementById('docId').value)"
+                            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2">
+                        Delete Document
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Right: Help panel (under textarea) -->
-    <div class="w-full lg:w-1/2 flex">
-        <div class="bg-yellow-100 bg-opacity-70 rounded-xl p-6 shadow-lg w-full min-h-[450px] flex flex-col justify-between">
-            <div>
-                <h2 class="text-xl font-semibold mb-4 text-[#3b2f1d]">How to Write a JSON Document</h2>
-                <ul class="list-disc list-inside text-sm text-gray-800 mb-10">
-                    <li>Use double quotes <code class="text-yellow-900">"</code> for keys and string values</li>
-                    <li>Keys and values are separated by a colon <code class="text-yellow-900">:</code></li>
-                    <li>Separate entries with commas <code class="text-yellow-900">,</code></li>
-                    <li>Wrap your structure in <code class="text-yellow-900">{ }</code></li>
-                    <li>Use arrays <code class="text-yellow-900">[ ]</code> for lists</li>
-                </ul>
+        <!-- Right: Help panel (under textarea) -->
+        <div class="w-full lg:w-1/2 flex">
+            <div class="bg-yellow-100 bg-opacity-70 rounded-xl p-6 shadow-lg w-full min-h-[450px] flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 text-[#3b2f1d]">How to Write a JSON Document</h2>
+                    <ul class="list-disc list-inside text-sm text-gray-800 mb-10">
+                        <li>Use double quotes <code class="text-yellow-900">"</code> for keys and string values</li>
+                        <li>Keys and values are separated by a colon <code class="text-yellow-900">:</code></li>
+                        <li>Separate entries with commas <code class="text-yellow-900">,</code></li>
+                        <li>Wrap your structure in <code class="text-yellow-900">{ }</code></li>
+                        <li>Use arrays <code class="text-yellow-900">[ ]</code> for lists</li>
+                    </ul>
 
-                <h3 class="font-semibold mb-2 text-[#3b2f1d]">Example 1: Single Object</h3>
-                <pre class="bg-white bg-opacity-90 rounded px-4 py-2 text-sm font-mono text-gray-800 overflow-x-auto mb-4">
+                    <h3 class="font-semibold mb-2 text-[#3b2f1d]">Example 1: Single Object</h3>
+                    <pre class="bg-white bg-opacity-90 rounded px-4 py-2 text-sm font-mono text-gray-800 overflow-x-auto mb-4">
 [
   {
     "key": "Batman",
@@ -268,28 +274,35 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
   }
 ]
                 </pre>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Fullscreen Image Modal -->
-<div id="imageModal"
-     class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm p-6 overflow-auto">
-    <button onclick="closeImageModal()"
-            class="absolute top-5 right-5 text-white text-3xl font-bold z-50">&times;</button>
-    <img id="modalImage" src=""
-         alt="Full Image"
-         class="max-w-full max-h-[90vh] rounded-lg shadow-lg border-4 border-white" />
-</div>
-
+    <!-- Fullscreen Image Modal -->
+    <div id="imageModal"
+         class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm p-6 overflow-auto">
+        <button onclick="closeImageModal()"
+                class="absolute top-5 right-5 text-white text-3xl font-bold z-50">&times;
+        </button>
+        <img id="modalImage" src=""
+             alt="Full Image"
+             class="max-w-full max-h-[90vh] rounded-lg shadow-lg border-4 border-white"/>
+    </div>
 
 
 </main>
 
 <!-- Footer -->
-<footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
-    &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+<footer class="bg-[#d7c7a5] border-t border-yellow-300 text-[#3b2f1d] py-6">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <p class="text-center md:text-left">&copy; 2025 HandScript</p>
+        <div class="flex space-x-4 text-sm">
+            <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
+                Page</a>
+            <a href="../../faq.html" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#5a452e] transition">FAQ</a>
+        </div>
+    </div>
 </footer>
 
 <script>
