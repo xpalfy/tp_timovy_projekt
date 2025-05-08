@@ -154,15 +154,24 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     </div>
 </nav>
 
-<!-- Updated Profile Form Section -->
 <main class="flex-grow flex justify-center items-center">
     <section class="container mx-auto px-6">
         <form action="users/profileUpdate.php" method="post"
               class="glass max-w-2xl mx-auto rounded-xl p-10 space-y-6">
-            <h1 class="text-4xl font-bold text-center text-papyrus mb-6">👤 Profile</h1>
+            
+            <div class="flex items-center justify-center gap-4 mb-6">
+                <img 
+                    src="../img/avatars/avatar_<?php echo $userData['avatarId']; ?>.png" 
+                    alt="User Avatar" 
+                    class="w-16 h-16 rounded-full border shadow-md mb-3 mr-3"
+                >
+                <h1 class="text-4xl font-bold text-papyrus">Profile</h1>
+            </div>
+
             <p class="text-center text-lg mb-10 text-papyrus">
                 Welcome back, <span class="font-semibold"><?php echo $userData['username']; ?></span>
             </p>
+
             <div>
                 <label class="block text-papyrus mb-1 font-semibold">Username</label>
                 <input type="text" name="username" id="username" oninput="isValidInput(this)" placeholder="Username"

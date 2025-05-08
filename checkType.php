@@ -18,6 +18,11 @@ function getJwtSecret(): string {
 
 function generateToken($userId, $username, $email): string {
     $secret = getJwtSecret();
+
+    $hash = hash('sha256', strtolower(trim($email)));
+    $intValue = hexdec(substr($hash, 0, 8)); 
+    $avatarId = $intValue % 1000;
+
     $payload = [
         'iss' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
         'aud' => 'https://test.tptimovyprojekt.software/tp_timovy_projekt',
@@ -27,11 +32,13 @@ function generateToken($userId, $username, $email): string {
             'id' => $userId,
             'username' => $username,
             'email' => $email,
+            'avatarId' => $avatarId
         ],
     ];
 
     return JWT::encode($payload, $secret, 'HS256');
 }
+
 
 function validateToken() {
     $token = $_SESSION['token'] ?? null;
