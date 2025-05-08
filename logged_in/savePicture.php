@@ -11,7 +11,7 @@ try {
 } catch (Exception $e) {
     http_response_code(500);
     $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
-    header('Location: login.php');
+    header('Location: ../login.php');
 }
 
 
