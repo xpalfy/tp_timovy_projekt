@@ -244,7 +244,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             <div class="bg-white bg-opacity-50 rounded-xl p-6 shadow-lg w-full">
                 <label for="jsonData" class="block font-semibold mb-2 text-[#3b2f1d]">Cipher JSON</label>
                 <textarea id="jsonData" rows="15"
-                          class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 resize-y mb-4"
+                          class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 mb-4 resize-none"
                           placeholder="{ }"></textarea>
                 <div class="text-right mt-4">
                     <button onclick="saveJson()"

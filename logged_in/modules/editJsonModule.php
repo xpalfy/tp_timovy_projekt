@@ -196,7 +196,7 @@ try {
                     <!-- JSON Textarea Editor -->
                     <div class="mt-4 text-left">
                         <textarea id="jsonEditor" rows="14"
-                            class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800"
+                            class="w-full border border-yellow-300 rounded-lg p-3 font-mono bg-white text-gray-800 resize-none"
                             placeholder="{ ... }">{}</textarea>
                     </div>
                 </div>
