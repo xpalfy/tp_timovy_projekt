@@ -32,8 +32,6 @@ try {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.min.js"></script>
 
     <style>
         .card-pic {
@@ -45,411 +43,442 @@ try {
 </head>
 
 <body class="min-h-screen select-none flex flex-col">
-    <script>
-        function checkToasts() {
-            let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
-            if (toast) {
-                toastr[toast.type](toast.message);
-                <?php unset($_SESSION['toast']); ?>
-            }
+<script>
+    function checkToasts() {
+        let toast = <?php echo json_encode($_SESSION['toast'] ?? null); ?>;
+        if (toast) {
+            toastr[toast.type](toast.message);
+            <?php unset($_SESSION['toast']); ?>
         }
+    }
 
-        checkToasts();
-    </script>
+    checkToasts();
+</script>
 
-    <!-- Navbar -->
-    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
-        id="navbar">
-        <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
-            <a href="main.php"
-                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
-                <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
-                    style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                HandScript
-            </a>
-            <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
-                <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
-                    <li class="flex items-center">
-                        <a href="profile.php" class="nav-link flex items-center hover:underline">
-                            Profile
-                            <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
-                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        </a>
-                    </li>
-                    <li class="flex items-center ml-6">
-                        <div class="relative flex items-center">
-                            <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
+<!-- Navbar -->
+<nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+     id="navbar">
+    <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+        <a href="main.php"
+           class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
+            <img src="../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
+                 style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+            HandScript
+        </a>
+        <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+        <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
+            <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
+                <li class="flex items-center">
+                    <a href="profile.php" class="nav-link flex items-center hover:underline">
+                        Profile
+                        <img src="../img/account.png" alt="profile" class="w-6 h-6 ml-2"
+                             style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                    </a>
+                </li>
+                <li class="flex items-center ml-6">
+                    <div class="relative flex items-center">
+                        <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
                                 class="hover:underline flex items-center">
-                                Documents
-                                <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
-                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                                <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 1l4 4 4-4" />
-                                </svg>
-                            </button>
-                            <div id="dropdownDocuments"
-                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                                <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
-                                    <li>
-                                        <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
-                                            Documents</a>
-                                    </li>
-                                    <li>
-                                        <a href="ownCipherDocuments.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            Documents
+                            <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2"
+                                 style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                 fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="M1 1l4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="dropdownDocuments"
+                             class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                            <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
+                                <li>
+                                    <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
+                                        Documents</a>
+                                </li>
+                                <li>
+                                    <a href="ownCipherDocuments.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
+                                </li>
+                            </ul>
                         </div>
-                    </li>
-                    <li class="flex items-center ml-6">
-                        <div class="relative flex items-center">
-                            <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
+                    </div>
+                </li>
+                <li class="flex items-center ml-6">
+                    <div class="relative flex items-center">
+                        <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
                                 class="hover:underline flex items-center">
-                                Tools
-                                <img src="../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
-                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                                <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 1l4 4 4-4" />
-                                </svg>
-                            </button>
-                            <div id="dropdownTools"
-                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                                <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
-                                    <li>
-                                        <a href="./modules/segmentModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
-                                    </li>
-                                    <li>
-                                        <a href="./modules/analyzeModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
-                                    </li>
-                                    <li>
-                                        <a href="./modules/lettersModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
-                                    </li>
-                                    <li>
-                                        <a href="./modules/editJsonModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            Tools
+                            <img src="../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
+                                 style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                 fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="M1 1l4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="dropdownTools"
+                             class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                            <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
+                                <li>
+                                    <a href="./modules/segmentModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                </li>
+                                <li>
+                                    <a href="./modules/analyzeModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                </li>
+                                <li>
+                                    <a href="./modules/lettersModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                </li>
+                                <li>
+                                    <a href="./modules/editJsonModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
+                                </li>
+                            </ul>
                         </div>
-                    </li>
-                    <li class="flex items-center ml-6">
-                        <a href="../logout.php" class="nav-link flex items-center hover:underline">
-                            Logout
-                            <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
-                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        </a>
-                    </li>
-                </ul>
+                    </div>
+                </li>
+                <li class="flex items-center ml-6">
+                    <a href="../logout.php" class="nav-link flex items-center hover:underline">
+                        Logout
+                        <img src="../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
+                             style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow">
+    <section class="container mx-auto px-6 py-10 min-h-[100vh]">
+        <div class="flex flex-col md:flex-row gap-10 mt-4">
+            <!-- Sidebar Filters -->
+            <aside class="w-full md:w-1/4 h-screen bg-[#f7f1dd] p-6 rounded-xl shadow-md overflow-y-auto md:-ml-10 md:mr-10">
+                <h3 class="text-2xl font-semibold text-[#3b2f1d] mb-8">🧰 Filters</h3>
+                <div class="space-y-6">
+                    <!-- Search -->
+                    <div>
+                        <label for="search-input" class="block mb-2 text-lg font-medium text-[#3b2f1d]">🔎 Search</label>
+                        <input type="text" id="search-input" placeholder="Type to search..."
+                               class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] placeholder-[#6b5b3e] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                    </div>
+
+                    <!-- Page Size -->
+                    <div>
+                        <label for="page-size-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📄 Per
+                            Page</label>
+                        <select id="page-size-select"
+                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                            <option value="6" selected>6</option>
+                            <option value="12">12</option>
+                            <option value="18">18</option>
+                        </select>
+                    </div>
+
+                    <!-- Document Type Filter -->
+                    <div>
+                        <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📂 Type</label>
+                        <select id="filter-select"
+                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                            <option value="OWN">Own Documents</option>
+                            <option value="SHARED">Shared Documents</option>
+                            <option value="GLOBAL">Global Documents</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Documents Grid + Pagination -->
+            <div class="flex-1 flex flex-col justify-between mt-4">
+                <div>
+                    <h2 class="text-4xl font-bold text-center text-papyrus mb-10">🧾 My Cipher Document</h2>
+                    <div id="my-documents-grid"
+                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Document cards will be inserted here -->
+                    </div>
+                </div>
+
+                <div id="pagination" class="flex justify-center mt-8 mb-4 space-x-2">
+                    <!-- Pagination buttons go here -->
+                </div>
             </div>
         </div>
-    </nav>
+    </section>
+</main>
 
-    <main class="flex-grow">
-        <section class="container mx-auto px-6 py-10">
-            <h2 class="text-4xl font-bold text-center text-papyrus mb-8">🧾 My Cipher Document</h2>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-6 mt-4">
-                <div class="w-full max-w-md">
-                    <label for="search-input" class="block mb-2 text-lg font-medium text-[#3b2f1d]">🔎 Search
-                        documents</label>
-                    <input type="text" id="search-input" placeholder="Type to search..."
-                        class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] placeholder-[#6b5b3e] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
-                </div>
-                <div class="w-full max-w-md">
-                    <label for="page-size-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📄 Documents per
-                        page</label>
-                    <select id="page-size-select"
-                        class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
-                        <option value="4" selected>4</option>
-                        <option value="8">8</option>
-                        <option value="12">12</option>
-                        <option value="20">20</option>
-                    </select>
-                </div>
-            </div>
 
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-10">
-                <div class="w-full max-w-md">
-                    <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📂 Filter by
-                        type</label>
-                    <select id="filter-select"
-                        class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
-                        <option value="OWN">Own Documents</option>
-                        <option value="SHARED">Shared Documents</option>
-                        <option value="GLOBAL">Global Documents</option>
-                    </select>
-                </div>
-            </div>
+<footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
+    &copy; 2025 HandScript - <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+</footer>
+<script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+<script>
+    let documentsData = [], imagesData = {};
+    let currentPageSize = 6;
 
-            <div class="flex justify-center">
-                <div id="my-documents-grid" class="flex flex-wrap justify-center gap-6">
-                </div>
-            </div>
+    function renderDocuments(documents, images, pageSize = 6, type = 'OWN', currentPage = 1) {
+        const totalPages = Math.ceil(documents.length / pageSize);
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+        const paginatedDocs = documents.slice(start, end);
 
-            <div id="pagination" class="flex justify-center mt-8"></div> <!-- This one -->
-        </section>
-    </main>
+        const grid = document.getElementById('my-documents-grid');
+        const pagination = document.getElementById('pagination');
+        grid.innerHTML = '';
+        pagination.innerHTML = '';
 
-    <footer class="bg-[#d7c7a5] text-center text-papyrus py-4 mt-10 border-t border-yellow-300">
-        &copy; 2025 HandScript - <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
-    </footer>
-    <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
-    <script>
-        let documentsData = [], imagesData = {};
-        let currentPageSize = 4;
-
-        function renderDocuments(documents, images, pageSize = 5, type = 'OWN') {
-            $('#pagination').pagination({
-                dataSource: documents,
-                pageSize: pageSize,
-                showPrevious: true,
-                showNext: true,
-                callback: function (data, pagination) {
-                    const grid = document.getElementById('my-documents-grid');
-                    grid.innerHTML = '';
-
-                    if (data.length === 0) {
-                        const noDataMessage = document.createElement('div');
-                        noDataMessage.className = 'text-center text-papyrus text-lg';
-                        noDataMessage.innerHTML = '<p>No documents found.</p>';
-                        grid.appendChild(noDataMessage);
-                        return;
-                    }
-
-                    data.forEach(doc => {
-                        const imgPath = images[doc.id] ? '..' + images[doc.id] : '../img/default.png';
-
-                        let cardButtons = '';
-                        let editPage = '';
-
-                        if (type === 'OWN') {
-                            editPage = 'edit_cipher/editOwnCipherDocument.php';
-                            cardButtons = `
-                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>
-                            `;
-                        } else if (type === 'SHARED') {
-                            editPage = 'edit_cipher/editSharedCipherDocument.php';
-                            cardButtons = `
-                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                                <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>
-                            `;
-                        } else if (type === 'PUBLIC') {
-                            editPage = 'edit_cipher/viewPublicCipherDocument.php';
-                            cardButtons = `
-                                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>
-                            `;
-                        }
-
-                        const card = document.createElement('div');
-                        card.className = 'card-pic';
-                        card.innerHTML = `
-                            <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
-                            <div class="card-body">
-                                <h5 class="card-title">${doc.title}</h5>
-                                <div class="card-buttons">
-                                    ${cardButtons}
-                                </div>
-                            </div>`;
-                        grid.appendChild(card);
-                    });
-                }
-            });
+        if (paginatedDocs.length === 0) {
+            grid.innerHTML = `<div class="text-center text-papyrus text-lg mt-10">No documents found.</div>`;
+            return;
         }
 
+        paginatedDocs.forEach(doc => {
+            const imgPath = images[doc.id] ? '..' + images[doc.id] : '../img/default.png';
 
-        function fetchSharedDocumentsAndImages() {
-            Promise.all([
-                fetch('documents/fetchSharedDocuments.php?key=CIPHER').then(res => res.json()),
-                fetch('items/fetchSharedItems.php?key=CIPHER').then(res => res.json())
-            ])
-                .then(([docs, imgs]) => {
-                    documentsData = docs;
-                    imagesData = imgs;
+            let cardButtons = '';
+            let editPage = '';
 
-                    Object.values(imagesData).forEach(imgPath => {
-                        if (imgPath) {
-                            const fullPath = '..' + imgPath;
-                            const preloadImg = new Image();
-                            preloadImg.src = fullPath;
-                        }
-                    });
-
-                    renderDocuments(documentsData, imagesData, currentPageSize, 'SHARED');
-                })
-                .catch(error => {
-                    toastr.error('Failed to load documents.');
-                    console.error(error);
-                });
-        }
-
-        function fetchPublicDocumentsAndImages() {
-            Promise.all([
-                fetch('documents/fetchDocuments.php?key=CIPHER&public=true').then(res => res.json()),
-                fetch('items/fetchItems.php?key=CIPHER&public=true').then(res => res.json())
-            ])
-                .then(([docs, imgs]) => {
-                    documentsData = docs;
-                    imagesData = imgs;
-
-                    Object.values(imagesData).forEach(imgPath => {
-                        if (imgPath) {
-                            const fullPath = '..' + imgPath;
-                            const preloadImg = new Image();
-                            preloadImg.src = fullPath;
-                        }
-                    });
-
-                    renderDocuments(documentsData, imagesData, currentPageSize, 'PUBLIC');
-                })
-                .catch(error => {
-                    toastr.error('Failed to load documents.');
-                    console.error(error);
-                });
-        }
-
-        function fetchDocumentsAndImages() {
-            Promise.all([
-                fetch('documents/fetchDocuments.php?key=CIPHER&public=false').then(res => res.json()),
-                fetch('items/fetchItems.php?key=CIPHER&public=false').then(res => res.json())
-            ])
-                .then(([docs, imgs]) => {
-                    documentsData = docs;
-                    imagesData = imgs;
-
-                    Object.values(imagesData).forEach(imgPath => {
-                        if (imgPath) {
-                            const fullPath = '..' + imgPath;
-                            const preloadImg = new Image();
-                            preloadImg.src = fullPath;
-                        }
-                    });
-
-                    renderDocuments(documentsData, imagesData, currentPageSize, 'OWN');
-                })
-                .catch(error => {
-                    toastr.error('Failed to load documents.');
-                    console.error(error);
-                });
-        }
-
-
-        function deleteDocument(documentId) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch('documents/deleteDocument.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            doc_id: documentId,
-                            id: <?php echo $userData['id']; ?>,
-                            user_name: "<?php echo $userData['username']; ?>"
-                        })
-                    }).then(response => response.json())
-                        .then(data => {
-                            if (data.error) {
-                                toastr.error(data.error);
-                            } else {
-                                toastr.success("Document deleted successfully");
-                                setTimeout(() => location.reload(), 1000);
-                            }
-                        }).catch(error => {
-                            console.error('Error:', error);
-                            toastr.error("An error occurred while deleting the document");
-                        });
-                }
-            });
-        }
-
-        function unshareWithMe(username, documentId) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Are you sure?',
-                text: `You will no longer have access to this document.`,
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, unshare it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const formData = {
-                        document_id: documentId,
-                        username: username,
-                        token: '<?php echo $_SESSION['token']; ?>'
-                    };
-
-                    $.ajax({
-                        url: 'https://python.tptimovyprojekt.software/remove_shared_user',
-                        type: 'POST',
-                        data: JSON.stringify(formData),
-                        contentType: 'application/json',
-                        dataType: 'json',
-                        success: function (res) {
-                            if (res.success) {
-                                toastr.success('Access removed successfully');
-                                fetchSharedDocumentsAndImages();
-                            } else {
-                                toastr.error(res.error || 'Failed to remove access');
-                            }
-                        },
-                        error: function () {
-                            toastr.error('Server error while unsharing');
-                        }
-                    });
-                }
-            });
-        }
-
-
-        $(document).ready(function () {
-            fetchDocumentsAndImages();
-        });
-
-        $('#search-input').on('input', function () {
-            const searchTerm = $(this).val().toLowerCase();
-            const filteredDocs = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
-            renderDocuments(filteredDocs, imagesData, currentPageSize);
-        });
-
-        $('#filter-select').on('change', function () {
-            const selected = $(this).val();
-            if (selected === 'OWN') {
-                fetchDocumentsAndImages();
-            } else if (selected === 'SHARED') {
-                fetchSharedDocumentsAndImages();
+            if (type === 'OWN') {
+                editPage = 'edit_key/editOwnKeyDocument.php';
+                cardButtons = `
+                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>`;
+            } else if (type === 'SHARED') {
+                editPage = 'edit_key/editSharedKeyDocument.php';
+                cardButtons = `
+                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>`;
             } else {
-                fetchPublicDocumentsAndImages();
+                editPage = 'edit_key/viewPublicKeyDocument.php';
+                cardButtons = `<a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>`;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'card-pic';
+            card.innerHTML = `
+            <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
+            <div class="card-body">
+                <h5 class="card-title">${doc.title}</h5>
+                <div class="card-buttons">${cardButtons}</div>
+            </div>`;
+            grid.appendChild(card);
+        });
+
+        if (totalPages > 1) {
+            // Previous
+            const prev = document.createElement('button');
+            prev.textContent = '«';
+            prev.disabled = currentPage === 1;
+            prev.className = `px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-black hover:bg-[#5a452e]'} transition`;
+            prev.onclick = () => renderDocuments(documentsData, imagesData, currentPageSize, type, currentPage - 1);
+            pagination.appendChild(prev);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-[#3b2f1d] text-white' : 'bg-gray-200 text-black'} hover:bg-[#5a452e] transition`;
+                btn.onclick = () => renderDocuments(documentsData, imagesData, currentPageSize, type, i);
+                pagination.appendChild(btn);
+            }
+
+            // Next
+            const next = document.createElement('button');
+            next.textContent = '»';
+            next.disabled = currentPage === totalPages;
+            next.className = `px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-black hover:bg-[#5a452e]'} transition`;
+            next.onclick = () => renderDocuments(documentsData, imagesData, currentPageSize, type, currentPage + 1);
+            pagination.appendChild(next);
+        }
+
+    }
+
+
+    function fetchSharedDocumentsAndImages() {
+        Promise.all([
+            fetch('documents/fetchSharedDocuments.php?key=CIPHER').then(res => res.json()),
+            fetch('items/fetchSharedItems.php?key=CIPHER').then(res => res.json())
+        ])
+            .then(([docs, imgs]) => {
+                documentsData = docs;
+                imagesData = imgs;
+
+                Object.values(imagesData).forEach(imgPath => {
+                    if (imgPath) {
+                        const fullPath = '..' + imgPath;
+                        const preloadImg = new Image();
+                        preloadImg.src = fullPath;
+                    }
+                });
+
+                renderDocuments(documentsData, imagesData, currentPageSize, 'SHARED');
+            })
+            .catch(error => {
+                toastr.error('Failed to load documents.');
+                console.error(error);
+            });
+    }
+
+    function fetchPublicDocumentsAndImages() {
+        Promise.all([
+            fetch('documents/fetchDocuments.php?key=CIPHER&public=true').then(res => res.json()),
+            fetch('items/fetchItems.php?key=CIPHER&public=true').then(res => res.json())
+        ])
+            .then(([docs, imgs]) => {
+                documentsData = docs;
+                imagesData = imgs;
+
+                Object.values(imagesData).forEach(imgPath => {
+                    if (imgPath) {
+                        const fullPath = '..' + imgPath;
+                        const preloadImg = new Image();
+                        preloadImg.src = fullPath;
+                    }
+                });
+
+                renderDocuments(documentsData, imagesData, currentPageSize, 'PUBLIC');
+            })
+            .catch(error => {
+                toastr.error('Failed to load documents.');
+                console.error(error);
+            });
+    }
+
+    function fetchDocumentsAndImages() {
+        Promise.all([
+            fetch('documents/fetchDocuments.php?key=CIPHER&public=false').then(res => res.json()),
+            fetch('items/fetchItems.php?key=CIPHER&public=false').then(res => res.json())
+        ])
+            .then(([docs, imgs]) => {
+                documentsData = docs;
+                imagesData = imgs;
+
+                Object.values(imagesData).forEach(imgPath => {
+                    if (imgPath) {
+                        const fullPath = '..' + imgPath;
+                        const preloadImg = new Image();
+                        preloadImg.src = fullPath;
+                    }
+                });
+
+                renderDocuments(documentsData, imagesData, currentPageSize, 'OWN');
+            })
+            .catch(error => {
+                toastr.error('Failed to load documents.');
+                console.error(error);
+            });
+    }
+
+
+    function deleteDocument(documentId) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('documents/deleteDocument.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        doc_id: documentId,
+                        id: <?php echo $userData['id']; ?>,
+                        user_name: "<?php echo $userData['username']; ?>"
+                    })
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            toastr.error(data.error);
+                        } else {
+                            toastr.success("Document deleted successfully");
+                            setTimeout(() => location.reload(), 1000);
+                        }
+                    }).catch(error => {
+                    console.error('Error:', error);
+                    toastr.error("An error occurred while deleting the document");
+                });
             }
         });
+    }
 
-        $('#page-size-select').on('change', function () {
-            currentPageSize = parseInt($(this).val());
-            renderDocuments(documentsData, imagesData, currentPageSize);
+    function unshareWithMe(username, documentId) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: `You will no longer have access to this document.`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unshare it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const formData = {
+                    document_id: documentId,
+                    username: username,
+                    token: '<?php echo $_SESSION['token']; ?>'
+                };
+
+                $.ajax({
+                    url: 'https://python.tptimovyprojekt.software/remove_shared_user',
+                    type: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.success) {
+                            toastr.success('Access removed successfully');
+                            fetchSharedDocumentsAndImages();
+                        } else {
+                            toastr.error(res.error || 'Failed to remove access');
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Server error while unsharing');
+                    }
+                });
+            }
         });
+    }
 
 
-    </script>
+    $(document).ready(function () {
+        fetchDocumentsAndImages();
+    });
+
+    $('#search-input').on('input', function () {
+        const searchTerm = $(this).val().toLowerCase();
+        const filteredDocs = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
+        renderDocuments(filteredDocs, imagesData, currentPageSize);
+    });
+
+    $('#filter-select').on('change', function () {
+        const selected = $(this).val();
+        if (selected === 'OWN') {
+            fetchDocumentsAndImages();
+        } else if (selected === 'SHARED') {
+            fetchSharedDocumentsAndImages();
+        } else {
+            fetchPublicDocumentsAndImages();
+        }
+    });
+
+    $('#page-size-select').on('change', function () {
+        currentPageSize = parseInt($(this).val());
+        renderDocuments(documentsData, imagesData, currentPageSize);
+    });
+
+
+</script>
 
 </body>
 
