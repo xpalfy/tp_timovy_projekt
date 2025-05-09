@@ -125,8 +125,8 @@ try {
                                             class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
                                     </li>
                                     <li>
-                                        <a href="./editJsonModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
+                                        <a href="./editJsonModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Edit
+                                            Json</a>
                                     </li>
                                 </ul>
                             </div>
@@ -161,6 +161,35 @@ try {
                 autoplay></dotlottie-player>
         </div>
         <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
+            <div
+                style="display: flex; flex-direction: column; justify-content: center; border: #bfa97a4a 1px solid; border-radius: 20px 20px 0 0 ; padding: 10px 10px 5px 10px;">
+                <div class="step-progress-container not-copyable not-draggable">
+                    <div class="step-group">
+                        <div class="step active">1</div>
+                        <h3 class="step-info text-papyrus">Upload</h3>
+                    </div>
+                    <div class="line" style="background-color: #bfa97a;"></div>
+                    <div class="step-group">
+                        <div class="step active">2</div>
+                        <h3 class="step-info text-papyrus">Segment</h3>
+                    </div>
+                    <div class="line" style="background-color: #bfa97a;"></div>
+                    <div class="step-group">
+                        <div class="step active">3</div>
+                        <h3 class="step-info text-papyrus">Analyze</h3>
+                    </div>
+                    <div class="line" style="background-color: #bfa97a;"></div>
+                    <div class="step-group">
+                        <div class="step active">4</div>
+                        <h3 class="step-info text-papyrus">Letters</h3>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step-group">
+                        <div class="step">5</div>
+                        <h3 class="step-info text-papyrus">Save</h3>
+                    </div>
+                </div>
+            </div>
             <!-- Process Info -->
             <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">
                 Segment letters on owned document
@@ -464,7 +493,7 @@ try {
 
         function appendLetterRects(segments) {
             const parent = document.getElementById('previewContainerLetter');
-            
+
             for (const segment of segments) {
                 const polygon = segment.polygon;
                 const type = segment.type;
@@ -517,7 +546,7 @@ try {
                 user_id: userData.id,
                 status: 'PROCESSED',
                 polygons: polygons,
-                token: '<?php echo $_SESSION["token"]; ?>' 
+                token: '<?php echo $_SESSION["token"]; ?>'
             };
 
             console.log('Data to be sent:', data);
