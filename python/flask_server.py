@@ -828,7 +828,85 @@ def delete_user():
         return jsonify({'error': str(e)}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 400
-    
+
+@app.route('/get_keys_for_cipher', methods=['POST'])
+def get_keys_for_cipher():
+    """
+    Get key matches for a document
+    ---
+    tags:
+      - Key Matching
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - token
+            - document_id
+            - user_id
+          properties:
+            token:
+              type: string
+              description: Authentication token
+            document_id:
+              type: integer
+              description: ID of the document to process
+            user_id:
+              type: integer
+              description: ID of the user making the request
+    responses:
+      200:
+        description: Key matches retrieved successfully
+        schema:
+          type: object
+          properties:
+            key_matches:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  match_score:
+                    type: number
+      400:
+        description: Invalid input
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message
+      500:
+        description: Server error
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message
+    """ 
+    db = next(get_db_session())
+    service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        document_id = data.get('document_id')
+        user_id = data.get('user_id')
+        if not document_id:
+            return jsonify({'error': 'Document ID is required'}), 400
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+        result = service.get_keys_for_cipher(document_id, user_id)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 def get_folder_from_referer():
     referer = request.headers.get("X-Caller-Url")
