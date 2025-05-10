@@ -237,9 +237,8 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                           class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 mb-4 resize-none"
                           placeholder="{ }"></textarea>
                 <div class="text-right mt-4">
-                    </button>
-                        <button onclick="continueProcessing()"
-                            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition">
+                    <button onclick="continueProcessing()"
+                        class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition">
                         Continue Processing
                     </button>
                     <button onclick="saveKeyJson()"
@@ -330,6 +329,13 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         modal.classList.remove('flex');
         modal.classList.add('hidden');
         document.body.style.overflow = '';
+    }
+
+    function fetchProcessingStatus() {
+    }
+
+    function continueProcessing() {
+        fetchProcessingStatus();
     }
 
     function fetchKeyJson() {
