@@ -337,6 +337,12 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         document.body.style.overflow = '';
     }
 
+    function fetchProcessingStatus() {
+    }
+
+    function continueProcessing() {
+        fetchProcessingStatus();
+    }
 
     function fetchJson() {
         const formData = {
