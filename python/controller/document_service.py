@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 import os
 import shutil
 import json
@@ -9,6 +9,7 @@ from entities.processing_result import ProcessingResult, ProcessingStatus
 from entities.item import Item
 from entities.users import User
 from controller.db_controller import get_db_session
+from modules.matcher import get_cipher_key_match
 if TYPE_CHECKING:
     from entities.users import User
 
@@ -309,3 +310,49 @@ class DocumentService:
             raise Exception("No documents found for this user")
         for doc in documents:
             self.delete_document(doc.id, user_id, folder)
+            
+    def get_all_keys_for_user(self, user: User) -> List[dict]:
+        documents = self.db.query(Document).filter_by(doc_type=DocumentType.KEY).all()
+        if not documents:
+            raise Exception("No documents found")
+        keys = []
+        for doc in documents:
+            if doc.author_id != user.id and user not in doc.shared_with and not doc.is_public:
+                continue
+            if doc.doc_type == DocumentType.KEY:
+                if not doc.items:
+                    raise Exception("No items found for this document")
+                item: Item = doc.items[-1]
+                if not item.processing_results or item.status != ProcessingStatus.PROCESSED:
+                    raise Exception("No processing results found for this item")
+                keys.append({'document_id': doc.id, 'title': doc.title, 'key': item.processing_results[-1].result, 
+                             'image_path': item.image_path, 'status': item.status.name})
+        
+        
+        
+
+    def get_keys_for_cipher(self, document_id: int, user_id: int) -> dict:
+        doc = self.get_document_by_id(document_id)
+        user = self.db.query(User).filter_by(id=user_id).first()
+        if not doc:
+            raise Exception("Document not found")
+        if not user:
+            raise Exception("User not found")
+        if doc.author_id != user_id and user not in doc.shared_with:
+            raise Exception("User does not have access to this document")
+        if doc.doc_type != DocumentType.CIPHER:
+            raise Exception("Document is not a cipher")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        item: Item = doc.items[-1]
+        if not item.processing_results:
+            raise Exception("No processing results found for this item")
+        
+        keys = self.get_all_keys_for_user(user)
+        if not keys:
+            raise Exception("No keys found for this user")
+        
+        keys = get_cipher_key_match(doc, keys)
+        if not keys:
+            raise Exception("No keys found for this cipher")
+        return keys
