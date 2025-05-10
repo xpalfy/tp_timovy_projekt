@@ -187,9 +187,9 @@ try {
                         <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📂 Type</label>
                         <select id="filter-select"
                                 class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
-                            <option value="OWN">Own Documents</option>
+                            <option value="OWN" selected>Own Documents</option>
                             <option value="SHARED">Shared Documents</option>
-                            <option value="GLOBAL">Global Documents</option>
+                            <option value="PUBLIC">Public Documents</option>
                         </select>
                     </div>
                 </div>
@@ -262,7 +262,7 @@ try {
                 cardButtons = `
                 <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
                 <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>`;
-            } else {
+            } else if (type === 'PUBLIC') {
                 editPage = 'edit_key/viewPublicKeyDocument.php';
                 cardButtons = `<a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>`;
             }
@@ -325,7 +325,7 @@ try {
                     }
                 });
 
-                renderDocuments(documentsData, imagesData, currentPageSize, 'OWN', 1);
+                renderDocuments(documentsData, imagesData, currentPageSize, 'SHARED', 1);
             })
             .catch(error => {
                 toastr.error('Failed to load documents.');
@@ -350,7 +350,7 @@ try {
                     }
                 });
 
-                renderDocuments(documentsData, imagesData, currentPageSize, 'OWN', 1);
+                renderDocuments(documentsData, imagesData, currentPageSize, 'PUBLIC', 1);
             })
             .catch(error => {
                 toastr.error('Failed to load documents.');
@@ -466,7 +466,8 @@ try {
     $('#search-input').on('input', function () {
         const searchTerm = $(this).val().toLowerCase();
         const filteredDocs = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
-        renderDocuments(filteredDocs, imagesData, currentPageSize, 'OWN', 1);
+        const filterValue = $('#filter-select').val();
+        renderDocuments(filteredDocs, imagesData, currentPageSize, filterValue, 1);
     });
 
     $('#filter-select').on('change', function () {
@@ -482,7 +483,8 @@ try {
 
     $('#page-size-select').on('change', function () {
         currentPageSize = parseInt($(this).val());
-        renderDocuments(documentsData, imagesData, currentPageSize, 'OWN', 1);
+        const filterValue = $('#filter-select').val();
+        renderDocuments(documentsData, imagesData, currentPageSize, filterValue, 1);
     });
 
 
