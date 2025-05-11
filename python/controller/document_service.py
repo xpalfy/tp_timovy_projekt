@@ -356,3 +356,20 @@ class DocumentService:
         if not keys:
             raise Exception("No keys found for this cipher")
         return keys
+    
+    def get_processing_result_status(self, document_id, user_id):
+        doc = self.get_document_by_id(document_id)
+        user: User = self.db.query(User).filter_by(id=user_id).first()
+        if not doc:
+            raise Exception("Document not found")
+        if not user:
+            raise Exception("User not found")
+        if doc.author_id != user.id and user not in doc.shared_with:
+            raise Exception("User does not have access to this document")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        item: Item = doc.items[-1]
+        if not item.processing_results:
+            raise Exception("No processing results found for this item")
+        need_continue = item.status != ProcessingStatus.SAVED
+        return {"need_continue": need_continue, "status": item.status.name}

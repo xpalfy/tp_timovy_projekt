@@ -14,6 +14,7 @@ class ProcessingStatus(enum.Enum):
     UPLOADED = 'uploaded'
     SEGMENTED = 'segmented'
     CLASSIFIED = 'classified'
+    EXTRACTED = 'extracted'
     PROCESSED = 'processed'
     SAVED = 'saved'
     ERROR = 'error' 
