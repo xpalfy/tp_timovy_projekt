@@ -319,25 +319,6 @@ try {
             hideLoading();
         }
 
-        function filterDocuments() {
-            const searchTerm = document.getElementById('documentSearch').value.toLowerCase();
-            const filteredDocuments = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
-            return filteredDocuments;
-        }
-
-        function showFilteredDocuments() {
-            const filteredDocuments = filterDocuments();
-            const documentList = document.getElementById('documentList');
-            documentList.innerHTML = '';
-
-            filteredDocuments.forEach(doc => {
-                const option = document.createElement('option');
-                option.value = doc.id;
-                option.textContent = doc.title;
-                documentList.appendChild(option);
-            });
-        }
-
         $(function () {
             fetchDocuments();
             $("#documentSearch").autocomplete({
