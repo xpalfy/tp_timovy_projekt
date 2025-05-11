@@ -626,8 +626,15 @@ try {
                 .then(data => {
                     hideLoading();
                     if (data.success) {
+                        if (documentsData.filter(doc => doc.id == selectedDocumentId).length > 0) {
+                            type = documentsData.filter(doc => doc.id == selectedDocumentId)[0].doc_type;
+                            if (type == 'KEY') {
+                                window.location.href = `../edit_key/editOwnKeyDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
+                            } else if (type == 'CIPHER') {
+                                window.location.href = `./decipherModule.php?cipher_doc_id=${selectedDocumentId}&cipher_item_id=${selectedItemId}`;
+                            }
+                        }
                         toastr.success('Letter segmentation data saved successfully.');
-                        window.location.href = `../edit_key/editOwnKeyDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
                     } else {
                         toastr.error('Failed to save segmentation data.');
                     }
