@@ -1,5 +1,6 @@
 # database.py
 
+from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from entities.base import Base  # assuming your Base is defined in entities/base.py
@@ -24,6 +25,7 @@ def init_db():
     Base.metadata.create_all(bind=engine)
 
 # Dependency to get a database session
+@contextmanager
 def get_db_session():
     """Returns a new SQLAlchemy session."""
     db = SessionLocal()

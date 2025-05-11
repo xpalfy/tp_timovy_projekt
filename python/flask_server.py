@@ -198,52 +198,52 @@ def get_example_json():
 
 @app.route('/get_document', methods=['POST'])
 def get_document():
-    db = next(get_db_session())
-    service = DocumentService(db)
-    
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        user_id = data.get('user_id')
-
-        if not document_id:
-            return jsonify({'error': 'Document ID is required'}), 400
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-
-        document = service.get_document_id_and_user_id(document_id, user_id)
-        if not document:
-            return jsonify({'error': 'Document not found'}), 404
-        # Get image paths related to the document
-        image_paths = service.get_image_paths_by_document_id(document_id)
-
-        # Get shared users for the document
-        shared_users = service.get_shared_users_by_document_id(document_id, user_id)
+    with get_db_session() as db:
+        service = DocumentService(db)
         
-        publish_date = service.get_publish_date_by_document_id(document_id)
-        if not publish_date:
-            return jsonify({'error': 'Publish date not found'}), 404
- 
-        return jsonify({
-            'id': document.id,
-            'title': document.title,
-            'author_id': document.author_id,
-            'author_name': document.author.username,
-            'status': document.status.name,
-            'description': document.description,
-            'ispublic': document.is_public,
-            'imagePaths': image_paths,
-            'sharedUsers': shared_users,
-            'publish_date': publish_date,
-            'itemId': document.items[-1].id
-            
-        }), 200
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('user_id')
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+            if not document_id:
+                return jsonify({'error': 'Document ID is required'}), 400
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+
+            document = service.get_document_id_and_user_id(document_id, user_id)
+            if not document:
+                return jsonify({'error': 'Document not found'}), 404
+            # Get image paths related to the document
+            image_paths = service.get_image_paths_by_document_id(document_id)
+
+            # Get shared users for the document
+            shared_users = service.get_shared_users_by_document_id(document_id, user_id)
+            
+            publish_date = service.get_publish_date_by_document_id(document_id)
+            if not publish_date:
+                return jsonify({'error': 'Publish date not found'}), 404
+    
+            return jsonify({
+                'id': document.id,
+                'title': document.title,
+                'author_id': document.author_id,
+                'author_name': document.author.username,
+                'status': document.status.name,
+                'description': document.description,
+                'ispublic': document.is_public,
+                'imagePaths': image_paths,
+                'sharedUsers': shared_users,
+                'publish_date': publish_date,
+                'itemId': document.items[-1].id
+                
+            }), 200
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
 @app.route('/update_document_title', methods=['POST'])
 def update_document_title():
@@ -287,40 +287,40 @@ def update_document_title():
       500:
         description: Server error
     """
-    db = next(get_db_session())
-    service = DocumentService(db)
-    folder = get_folder_from_referer()
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        author_id = data.get('author_id')
-        document_id = data.get('document_id')
-        document_title = data.get('new_title')
+    with get_db_session() as db:
+        service = DocumentService(db)
+        folder = get_folder_from_referer()
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            author_id = data.get('author_id')
+            document_id = data.get('document_id')
+            document_title = data.get('new_title')
 
-        document = service.get_document_by_id(document_id)
-        if not document:
-            return jsonify({'error': 'Document not found'}), 404
-        if document.author_id != int(author_id):
-            return jsonify({'error': 'Unauthorized'}), 403
+            document = service.get_document_by_id(document_id)
+            if not document:
+                return jsonify({'error': 'Document not found'}), 404
+            if document.author_id != int(author_id):
+                return jsonify({'error': 'Unauthorized'}), 403
 
-        if document_title:
-            if document.title != document_title:
-                if service.document_name_exists(document_title, author_id, exclude_id=document_id):
-                    return jsonify({'error': 'Document name already exists'}), 400
-                service.update_document_title(document, document_title, author_id, folder)
+            if document_title:
+                if document.title != document_title:
+                    if service.document_name_exists(document_title, author_id, exclude_id=document_id):
+                        return jsonify({'error': 'Document name already exists'}), 400
+                    service.update_document_title(document, document_title, author_id, folder)
 
-        service.save_changes()
-        print(f"Document {document_id} updated successfully")
+            service.save_changes()
+            print(f"Document {document_id} updated successfully")
 
-        return jsonify({'success': True}), 200
+            return jsonify({'success': True}), 200
 
-    except SQLAlchemyError as e:
-        db.rollback()
-        return jsonify({'error': str(e)}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        except SQLAlchemyError as e:
+            db.rollback()
+            return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
 @app.route('/update_doc_public', methods=['POST'])
 def update_doc_public():
@@ -361,34 +361,34 @@ def update_doc_public():
       500:
         description: Server error
     """
-    db = next(get_db_session())
-    service = DocumentService(db)
+    with get_db_session() as db:
+        service = DocumentService(db)
 
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        author_id = data.get('author_id')
-        document_id = data.get('document_id')
-        is_public = data.get('is_public')
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            author_id = data.get('author_id')
+            document_id = data.get('document_id')
+            is_public = data.get('is_public')
 
-        document = service.get_document_by_id(document_id)
-        if not document:
-            return jsonify({'error': 'Document not found'}), 404
-        if document.author_id != int(author_id):
-            return jsonify({'error': 'Unauthorized'}), 403
-        if is_public != document.is_public:
-            service.edit_public(document, is_public)
-            service.save_changes()
+            document = service.get_document_by_id(document_id)
+            if not document:
+                return jsonify({'error': 'Document not found'}), 404
+            if document.author_id != int(author_id):
+                return jsonify({'error': 'Unauthorized'}), 403
+            if is_public != document.is_public:
+                service.edit_public(document, is_public)
+                service.save_changes()
 
-        return jsonify({'success': True}), 200
+            return jsonify({'success': True}), 200
 
-    except SQLAlchemyError as e:
-        db.rollback()
-        return jsonify({'error': str(e)}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        except SQLAlchemyError as e:
+            db.rollback()
+            return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
 @app.route('/delete_document', methods=['DELETE'])
 def delete_document():
@@ -429,30 +429,30 @@ def delete_document():
       500:
         description: Server error
     """
-    db = next(get_db_session())
-    service = DocumentService(db)
-    folder = get_folder_from_referer()
+    with get_db_session() as db:
+        service = DocumentService(db)
+        folder = get_folder_from_referer()
 
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        user_id = data.get('id')
-        document_id = data.get('doc_id')
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            user_id = data.get('id')
+            document_id = data.get('doc_id')
 
-        if not user_id or not document_id:
-            return jsonify({'error': 'Missing required fields'}), 400
+            if not user_id or not document_id:
+                return jsonify({'error': 'Missing required fields'}), 400
 
-        service.delete_document(int(document_id), int(user_id), folder)
+            service.delete_document(int(document_id), int(user_id), folder)
 
-        return jsonify({'success': True, 'message': 'Document deleted successfully'}), 200
+            return jsonify({'success': True, 'message': 'Document deleted successfully'}), 200
 
-    except SQLAlchemyError as e:
-        db.rollback()
-        return jsonify({'error': str(e)}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        except SQLAlchemyError as e:
+            db.rollback()
+            return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
 @app.route('/add_shared_user', methods=['POST'])
 def add_shared_users():
@@ -493,24 +493,24 @@ def add_shared_users():
       500:
         description: Server error
     """
-    db = next(get_db_session())
-    service = DocumentService(db)
+    with get_db_session() as db:
+        service = DocumentService(db)
 
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        username = data.get('username')
-        
-        service.add_shared_user(document_id, username)
-        return jsonify({'success': True, 'message': 'Shared users added successfully'}), 200
-    except SQLAlchemyError as e:
-        db.rollback()
-        return jsonify({'error': str(e)}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            username = data.get('username')
+            
+            service.add_shared_user(document_id, username)
+            return jsonify({'success': True, 'message': 'Shared users added successfully'}), 200
+        except SQLAlchemyError as e:
+            db.rollback()
+            return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
 @app.route('/remove_shared_user', methods=['POST'])
 def remove_shared_users():
@@ -551,23 +551,23 @@ def remove_shared_users():
       500:
         description: Server error
     """
-    db = next(get_db_session())
-    service = DocumentService(db)
+    with get_db_session() as db:
+        service = DocumentService(db)
 
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400.
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        user_id = data.get('username')
-        service.remove_shared_user(document_id, user_id)
-        return jsonify({'success': True, 'message': 'Shared users removed successfully'}), 200
-    except SQLAlchemyError as e:
-        db.rollback()
-        return jsonify({'error': str(e)}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400.
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('username')
+            service.remove_shared_user(document_id, user_id)
+            return jsonify({'success': True, 'message': 'Shared users removed successfully'}), 200
+        except SQLAlchemyError as e:
+            db.rollback()
+            return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
 @app.route('/get_json', methods=['POST'])
 def get_json_from_db():
@@ -622,24 +622,24 @@ def get_json_from_db():
               type: string
               description: Error message
     """
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        user_id = data.get('user_id')
-        if not document_id:
-            return jsonify({'error': 'Document ID is required'}), 400
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-        result = service.get_json_from_db(document_id, user_id)
-        return jsonify(result), 200
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('user_id')
+            if not document_id:
+                return jsonify({'error': 'Document ID is required'}), 400
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            result = service.get_json_from_db(document_id, user_id)
+            return jsonify(result), 200
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 @app.route('/save_json', methods=['POST'])
 def save_json_to_db():
@@ -698,157 +698,157 @@ def save_json_to_db():
               type: string
               example: "Error message describing the issue"
     """
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        user_id = data.get('user_id')
-        json_data = data.get('json_data')
-        if not document_id:
-            return jsonify({'error': 'Document ID is required'}), 400
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-        if not json_data:
-            return jsonify({'error': 'JSON data is required'}), 400
-        service.save_json_to_db(document_id, user_id, json_data)
-        service.save_changes()
-        print(f"Document {document_id} updated successfully")
-        return jsonify({'success': True}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('user_id')
+            json_data = data.get('json_data')
+            if not document_id:
+                return jsonify({'error': 'Document ID is required'}), 400
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            if not json_data:
+                return jsonify({'error': 'JSON data is required'}), 400
+            service.save_json_to_db(document_id, user_id, json_data)
+            service.save_changes()
+            print(f"Document {document_id} updated successfully")
+            return jsonify({'success': True}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 @app.route('/save_processing_result', methods=['POST'])
 def save_processing_result():
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        required_fields = ['document_id', 'item_id', 'user_id', 'status']
-        if not all(field in data for field in required_fields):
-            raise ValueError("Invalid input data")
-        service.save_processing_result(data)
-    except SQLAlchemyError as e:
-        db.rollback()
-        return jsonify({'error': str(e)}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
-    return jsonify({'success': True}), 200
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            required_fields = ['document_id', 'item_id', 'user_id', 'status']
+            if not all(field in data for field in required_fields):
+                raise ValueError("Invalid input data")
+            service.save_processing_result(data)
+        except SQLAlchemyError as e:
+            db.rollback()
+            return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+        return jsonify({'success': True}), 200
 
 @app.route('/get_documents_by_user_and_status', methods=['POST'])
 def get_documents_by_user_and_status():
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        user_id = data.get('user_id')
-        status = data.get('status')
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-        if not status:
-            return jsonify({'error': 'Status is required'}), 400
-        documents = service.get_documents_by_user_id_and_status(user_id, status)
-        result = [
-            {
-                'id': doc.id,
-                'title': doc.title,
-                'doc_type': doc.doc_type.name
-            }
-            for doc in documents
-        ]
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            user_id = data.get('user_id')
+            status = data.get('status')
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            if not status:
+                return jsonify({'error': 'Status is required'}), 400
+            documents = service.get_documents_by_user_id_and_status(user_id, status)
+            result = [
+                {
+                    'id': doc.id,
+                    'title': doc.title,
+                    'doc_type': doc.doc_type.name
+                }
+                for doc in documents
+            ]
+            return jsonify(result), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 @app.route('/get_items_by_doc_and_status', methods=['POST'])
 def get_items_by_doc_and_status():
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        user_id = data.get('user_id')
-        status = data.get('status')
-        if not document_id:
-            return jsonify({'error': 'Document ID is required'}), 400
-        if not status:
-            return jsonify({'error': 'Status is required'}), 400
-          
-        items = service.get_items_by_document_id_and_status(document_id, status, user_id)
-        if not items:
-            return jsonify([]), 200  # match PHP: return empty array if no results
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('user_id')
+            status = data.get('status')
+            if not document_id:
+                return jsonify({'error': 'Document ID is required'}), 400
+            if not status:
+                return jsonify({'error': 'Status is required'}), 400
+            
+            items = service.get_items_by_document_id_and_status(document_id, status, user_id)
+            if not items:
+                return jsonify([]), 200  # match PHP: return empty array if no results
 
-        # Get doc_type from document to inject into each item
-        document = service.get_document_by_id(document_id)
-        doc_type = document.doc_type
-        result = [
-            {
-                'id': item.id,
-                'title': item.title,
-                'image_path': item.image_path,
-                'type': doc_type.name
-            }
-            for item in items
-        ]
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+            # Get doc_type from document to inject into each item
+            document = service.get_document_by_id(document_id)
+            doc_type = document.doc_type
+            result = [
+                {
+                    'id': item.id,
+                    'title': item.title,
+                    'image_path': item.image_path,
+                    'type': doc_type.name
+                }
+                for item in items
+            ]
+            return jsonify(result), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 @app.route('/delete_user', methods=['DELETE'])
 def delete_user():
-    db = next(get_db_session())
-    u_service = UserService(db)
-    db_service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        user_id = data.get('user_id')
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-        folder = get_folder_from_referer()
-        db_service.delete_user_documents(user_id, folder)
-        u_service.delete_user(user_id)
-        db.commit()
-        return jsonify({'success': True}), 200
-    except SQLAlchemyError as e:
-        db.rollback()
-        return jsonify({'error': str(e)}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+    with get_db_session() as db:
+        u_service = UserService(db)
+        db_service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            user_id = data.get('user_id')
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            folder = get_folder_from_referer()
+            db_service.delete_user_documents(user_id, folder)
+            u_service.delete_user(user_id)
+            db.commit()
+            return jsonify({'success': True}), 200
+        except SQLAlchemyError as e:
+            db.rollback()
+            return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
 @app.route('/get_processing_result_status', methods=['POST'])
 def get_processing_result_status():
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        user_id = data.get('user_id')
-        if not document_id:
-            return jsonify({'error': 'Document ID is required'}), 400
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-        result = service.get_processing_result_status(document_id, user_id)
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('user_id')
+            if not document_id:
+                return jsonify({'error': 'Document ID is required'}), 400
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            result = service.get_processing_result_status(document_id, user_id)
+            return jsonify(result), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 @app.route('/get_keys_for_cipher', methods=['POST'])
 def get_keys_for_cipher():
@@ -911,46 +911,46 @@ def get_keys_for_cipher():
               type: string
               description: Error message
     """ 
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        document_id = data.get('document_id')
-        user_id = data.get('user_id')
-        if not document_id:
-            return jsonify({'error': 'Document ID is required'}), 400
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-        result = service.get_keys_for_cipher(document_id, user_id)
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('user_id')
+            if not document_id:
+                return jsonify({'error': 'Document ID is required'}), 400
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            result = service.get_keys_for_cipher(document_id, user_id)
+            return jsonify(result), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 @app.route('/decrypt_cipher_with_key', methods=['POST'])
 def decrypt_cipher_With_key():
-    db = next(get_db_session())
-    service = DocumentService(db)
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Invalid input data'}), 400
-        validate_token(data.get('token'))
-        cipher_document_id = data.get('cipher_document_id')
-        key_document_id = data.get('key_document_id')
-        user_id = data.get('user_id')
-        if not cipher_document_id:
-            return jsonify({'error': 'Cipher Document ID is required'}), 400
-        if not key_document_id:
-            return jsonify({'error': 'Key Document ID is required'}), 400
-        if not user_id:
-            return jsonify({'error': 'User ID is required'}), 400
-        result = service.decrypt_cipher_with_key(cipher_document_id, key_document_id, user_id)
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            cipher_document_id = data.get('cipher_document_id')
+            key_document_id = data.get('key_document_id')
+            user_id = data.get('user_id')
+            if not cipher_document_id:
+                return jsonify({'error': 'Cipher Document ID is required'}), 400
+            if not key_document_id:
+                return jsonify({'error': 'Key Document ID is required'}), 400
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            result = service.decrypt_cipher_with_key(cipher_document_id, key_document_id, user_id)
+            return jsonify(result), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 def get_folder_from_referer():
     referer = request.headers.get("X-Caller-Url")
