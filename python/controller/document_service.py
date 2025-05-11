@@ -20,10 +20,13 @@ status_messages = {'uploaded': 'File uploaded successfully',
                    'saved': 'File saved successfully'}
 
 class DocumentService:
-    def __init__(self, db: Session=None):
+    def __init__(self, db: Session = None):
         if db is None:
-            self.db = next(get_db_session())
-        self.db = db
+            # Use the context manager to get a session
+            with get_db_session() as session:
+                self.db = session
+        else:
+            self.db = db
 
     def get_document_by_id_and_author(self, document_id: int, author_id: int) -> Document | None:
         return self.db.query(Document).filter_by(id=document_id, author_id=author_id).first()
