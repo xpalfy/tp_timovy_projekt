@@ -396,7 +396,7 @@ try {
         }).then((result) => {
             if (result.isConfirmed) {
                 fetch('documents/deleteDocument.php', {
-                    method: 'POST',
+                    method: 'DELETE',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         doc_id: documentId,
