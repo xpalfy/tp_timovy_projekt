@@ -928,6 +928,29 @@ def get_keys_for_cipher():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/decrypt_cipher_with_key', methods=['POST'])
+def decrypt_cipher_With_key():
+    db = next(get_db_session())
+    service = DocumentService(db)
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid input data'}), 400
+        validate_token(data.get('token'))
+        cipher_document_id = data.get('cipher_document_id')
+        key_document_id = data.get('key_document_id')
+        user_id = data.get('user_id')
+        if not cipher_document_id:
+            return jsonify({'error': 'Cipher Document ID is required'}), 400
+        if not key_document_id:
+            return jsonify({'error': 'Key Document ID is required'}), 400
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+        result = service.decrypt_cipher_with_key(cipher_document_id, key_document_id, user_id)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 def get_folder_from_referer():
     referer = request.headers.get("X-Caller-Url")
     if referer:

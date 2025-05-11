@@ -375,3 +375,31 @@ class DocumentService:
             raise Exception("No processing results found for this item")
         need_continue = item.status != ProcessingStatus.SAVED
         return {"need_continue": need_continue, "status": item.status.name}
+
+    def decrypt_cipher_with_key(self, cipher_doc_id, key_doc_id, user_id) -> dict:
+        cipher_doc = self.get_document_by_id(cipher_doc_id)
+        key_doc = self.get_document_by_id(key_doc_id)
+        user: User = self.db.query(User).filter_by(id=user_id).first()
+        if not cipher_doc:
+            raise Exception("Cipher document not found")
+        if not key_doc:
+            raise Exception("Key document not found")
+        if not user:
+            raise Exception("User not found")
+        if cipher_doc.author_id != user.id and user not in cipher_doc.shared_with:
+            raise Exception("User does not have access to this document")
+        if key_doc.author_id != user.id and user not in key_doc.shared_with:
+            raise Exception("User does not have access to this document")
+        
+        if cipher_doc.doc_type != DocumentType.CIPHER or key_doc.doc_type != DocumentType.KEY:
+            raise Exception("Invalid document types")
+        
+        # Check if the documents are processed
+        if cipher_doc.items[-1].status != ProcessingStatus.PROCESSED or key_doc.items[-1].status != ProcessingStatus.PROCESSED:
+            raise Exception("Documents are not processed")
+        
+        # Decrypt the cipher with the key
+        decrypted_data = {"decrypted":"valamaima faszAGA SZovegg",
+                            "used_key_title":key_doc.titl}
+        
+        return decrypted_data
