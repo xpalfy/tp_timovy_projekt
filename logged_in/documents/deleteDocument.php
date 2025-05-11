@@ -19,31 +19,32 @@ try {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $post = json_decode(file_get_contents('php://input'), true);
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    if (empty($post['user_name']) || empty($post['id']) || empty($post['doc_id'])) {
+    if (empty($input['user_name']) || empty($input['id']) || empty($input['doc_id'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid input data']);
         exit;
     }
 
-    if ($post['user_name'] !== $userData['username'] || $post['id'] !== $userData['id']) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid user']);
+    if ($input['user_name'] !== $userData['username'] || $input['id'] !== $userData['id']) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Unauthorized user']);
         exit;
     }
+
     $flask_url = "https://python.tptimovyprojekt.software/delete_document";
     $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") .
-                 "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                     "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
     $ch = curl_init($flask_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
         'token' => $_SESSION['token'],
-        'doc_id' => $post['doc_id'],
-        'id' => $post['id'],
+        'doc_id' => $input['doc_id'],
+        'id' => $input['id'],
     ]));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
@@ -64,10 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     http_response_code($httpcode);
     echo $response;
-    $_SESSION['toast'] = ['type' => 'success', 'message' => 'Document deleted successfully'];
+
+    if ($httpcode === 200) {
+        $_SESSION['toast'] = ['type' => 'success', 'message' => 'Document deleted successfully'];
+    } else {
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Failed to delete document'];
+    }
 } else {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
 }
-
 ?>
