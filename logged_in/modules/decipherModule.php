@@ -297,7 +297,7 @@ try {
             let data = {
                 token: '<?php echo $_SESSION["token"]; ?>',
                 user_id: userData.id,
-                status: 'SAVED'
+                status: 'PROCESSED'
             };
 
             showLoading();
@@ -597,10 +597,45 @@ try {
                     document.getElementById('startDecipherBtn').style.display = 'none';
                     document.getElementById('resultArea').style.display = 'block';
                     setDecryptResult(item.decrypted);
+                    saveResult(item);
                 })
                 .catch(error => {
                     hideLoading();
                     toastr.error('Failed to load items.');
+                    console.error('Error fetching items:', error);
+                });
+        }
+
+        function saveResult(decryptResult) {
+            let data = {
+                token: '<?php echo $_SESSION["token"]; ?>',
+                user_id: userData.id,
+                document_id: selectedCipherDocumentId,
+                item_id: selectedCipherItemId,
+                status: 'SAVED',
+                json_data: decryptResult
+            };
+
+            console.log('Requesting items with:', data);
+            showLoading();
+
+            fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(item => {
+                    hideLoading();
+                    console.log('Fetched items:', item);
+                    toastr.success('Decrypted text saved successfully.');
+                    window.location.href = `../editOwnCipherDocument.php?id=${selectedCipherDocumentId}&user=${userData.id}`;
+                })
+                .catch(error => {
+                    hideLoading();
+                    toastr.error('Failed to save decrypted text.');
                     console.error('Error fetching items:', error);
                 });
         }
