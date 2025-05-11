@@ -237,8 +237,8 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                           class="w-full border border-yellow-400 rounded px-4 py-2 text-sm font-mono bg-white bg-opacity-70 mb-4 resize-none"
                           placeholder="{ }"></textarea>
                 <div class="text-right mt-4">
-                    <button onclick="continueProcessing()"
-                        class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition">
+                    <button onclick="continueProcessing()" id="continueProcessing"
+                        class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow transition hidden">
                         Continue Processing
                     </button>
                     <button onclick="saveKeyJson()"
@@ -313,6 +313,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 <script>
     let sharedTable;
     let documentId = null;
+    let continueLink = null;
 
     function openImageModal() {
         const image = document.getElementById('docImage');
@@ -332,10 +333,58 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     }
 
     function fetchProcessingStatus() {
+        const formData = {
+            document_id: documentId,
+            user_id: $('#userId').val(),
+            token: '<?php echo htmlspecialchars($_SESSION['token']); ?>'
+        };
+
+        $.ajax({
+            url: 'https://python.tptimovyprojekt.software/get_processing_result_status',
+            type: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (res) {
+                if (res.error) {
+                    toastr.error(res.error || 'Failed to load processing status');
+                } else {
+                    if (res.need_continue) {
+                        $('#continueProcessing').show();
+                        switch (res.status) {
+                            case 'UPLOADED':
+                                continueLink = res.continue_link;
+                                break;
+                            case 'SEGMENTED':
+                                continueLink = res.continue_link;
+                                break;
+                            case 'CLASSIFIED':
+                                continueLink = res.continue_link;
+                                break;
+                            case 'PROCESSED':
+                                continueLink = res.continue_link;
+                                break;
+                            default:
+                                toastr.error('Unknown processing status');
+                                break;
+                        }
+                    } else {
+                        $('#continueProcessing').hide();
+                    }
+                }
+            },
+            error: function () {
+                toastr.error('Server error while fetching processing status');
+            }
+        });
     }
 
     function continueProcessing() {
-        fetchProcessingStatus();
+        if (continueLink) {
+            window.location.href = continueLink;
+        } else {
+            toastr.error('No processing link available');
+        }
     }
 
     function fetchKeyJson() {
@@ -579,7 +628,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 toastr.error(data.error);
             } else {
                 $('#docId').val(data.document.id);
-                $('#userId').val(data.document.author_id);
+                $('#userId').val(userId);
                 $('#name').val(data.document.title);
                 $('#date').val(data.publishDate);
                 $('#isPublic').prop('checked', data.document.is_public);
@@ -593,6 +642,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 
                 fetchSharedUsers();
                 fetchKeyJson();
+                fetchProcessingStatus();
             }
         });
 
