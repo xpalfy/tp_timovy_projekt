@@ -233,8 +233,19 @@ try {
                         class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2 mt-2 transition duration-300 hover:bg-yellow-300 hover:text-[#d7c7a5]"
                         style="display: none;" onclick="startDecipher()">Start Dechiper</button>
                 </div>
+
+                <!-- Result Area -->
+                <div id="resultArea" class="flex justify-center items-center mb-5 mt-5 w-full relative" style="display: none;">
+                    <h3 class="text-2xl font-bold text-center text-papyrus mb-6">Decrypted Result</h3>
+                    <div class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-4 mr-5 ml-5">
+                        <textarea id="resultText" class="w-full h-auto"
+                            style="padding: 5px; padding-right: 25px; min-height: 60px;">Decrypted text will be shown here.</textarea>
+                        <button id="copyToClipboardBtn"
+                            class="rounded-lg p-1 transition duration-300 hover:bg-gray-100 absolute" style="top: 78px; right: 40px;"
+                            onclick="copyToClipboard()"><img src="../../img/copy.png" width="20px" height="20px"></button>
+                    </div>
+                </div>
             </div>
-        </div>
     </main>
 
     <footer
@@ -580,40 +591,30 @@ try {
                 body: JSON.stringify(data)
             })
                 .then(response => response.json())
-                .then(items => {
+                .then(item => {
                     hideLoading();
-                    console.log('Fetched items:', items);
-
-                    $("#itemSelectorKey").empty();
-                    $("#itemSelectorKey").append('<option value="" disabled selected>Select an item</option>');
-
-                    items.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.id;
-                        option.textContent = item.title;
-                        if (item.type == type) {
-                            if (type == 'KEY') {
-                                document.getElementById('itemSelectorKey').appendChild(option);
-                            } else {
-                                document.getElementById('itemSelectorCipher').appendChild(option);
-                            }
-                        }
-                    });
-
-                    itemsData = items;
-
-                    if (preselectItemId) {
-                        if (type == 'KEY') {
-                            $("#itemSelectorKey").val(preselectItemId).trigger('change');
-                        } else {
-                            $("#itemSelectorCipher").val(preselectItemId).trigger('change');
-                        }
-                    }
+                    console.log('Fetched items:', item);
+                    document.getElementById('startDecipherBtn').style.display = 'none';
+                    document.getElementById('resultArea').style.display = 'block';
+                    setDecryptResult(item.decrypted);
                 })
                 .catch(error => {
+                    hideLoading();
                     toastr.error('Failed to load items.');
                     console.error('Error fetching items:', error);
                 });
+        }
+
+        function setDecryptResult(decryptResult) {
+            const resultText = document.getElementById('resultText');
+            resultText.innerHTML = decryptResult;
+        }
+
+        function copyToClipboard() {
+            const resultText = document.getElementById('resultText');
+            resultText.select();
+            document.execCommand("copy");
+            toastr.success('Copied to clipboard!');
         }
 
     </script>

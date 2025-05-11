@@ -126,6 +126,10 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                                     <a href="../modules/editJsonModule.php"
                                        class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
                                 </li>
+                                <li>
+                                    <a href="../modules/decipherModule.php"
+                                        class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
