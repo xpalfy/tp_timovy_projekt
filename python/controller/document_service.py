@@ -323,22 +323,24 @@ class DocumentService:
                 if not doc.items:
                     raise Exception("No items found for this document")
                 item: Item = doc.items[-1]
-                if not item.processing_results or item.status != ProcessingStatus.PROCESSED:
+                if not item.processing_results or item.status != ProcessingStatus.SAVED:
                     raise Exception("No processing results found for this item")
                 keys.append({'document_id': doc.id, 'title': doc.title, 'key': item.processing_results[-1].result, 
                              'image_path': item.image_path, 'status': item.status.name})
+        
+        return keys
         
         
         
 
     def get_keys_for_cipher(self, document_id: int, user_id: int) -> dict:
         doc = self.get_document_by_id(document_id)
-        user = self.db.query(User).filter_by(id=user_id).first()
+        user: User = self.db.query(User).filter_by(id=user_id).first()
         if not doc:
             raise Exception("Document not found")
         if not user:
             raise Exception("User not found")
-        if doc.author_id != user_id and user not in doc.shared_with:
+        if doc.author_id != user.id and user not in doc.shared_with:
             raise Exception("User does not have access to this document")
         if doc.doc_type != DocumentType.CIPHER:
             raise Exception("Document is not a cipher")
