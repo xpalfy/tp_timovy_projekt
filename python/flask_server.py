@@ -237,7 +237,8 @@ def get_document():
             'ispublic': document.is_public,
             'imagePaths': image_paths,
             'sharedUsers': shared_users,
-            'publish_date': publish_date
+            'publish_date': publish_date,
+            'itemId': document.items[-1].id
             
         }), 200
 
