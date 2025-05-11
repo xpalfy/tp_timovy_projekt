@@ -175,8 +175,8 @@ def crop_polygon():
     print(path)
     return jsonify({"cropped_image": segmentator.crop_polygon(path, polygon)})
 
-@app.route('/get_example_json', methods=['GET'])
-def get_example_json():
+@app.route('/get_cipher_json', methods=['POST'])
+def get_cipher_json():
     """
     Get example JSON structure from Encoder
     ---

@@ -403,6 +403,6 @@ class DocumentService:
         
         # Decrypt the cipher with the key
         decrypted_data = {"decrypted":"valamaima faszAGA SZovegg",
-                            "used_key_title":key_doc.titl}
+                            "used_key_title":key_doc.title}
         
         return decrypted_data
