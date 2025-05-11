@@ -375,7 +375,7 @@ try {
                 token: '<?php echo $_SESSION["token"]; ?>',
                 user_id: userData.id,
                 document_id: documentId,
-                status: 'PROCESSED'
+                status: 'EXTRACTED'
             };
 
             console.log('Requesting items with:', data);
@@ -608,7 +608,7 @@ try {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
-                status: 'SAVED',
+                status: 'PROCESSED',
                 json_data: fixedJson,
                 token: '<?php echo $_SESSION["token"]; ?>'
             };
