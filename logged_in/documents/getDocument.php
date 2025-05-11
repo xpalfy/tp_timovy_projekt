@@ -55,7 +55,7 @@ $author = $result->fetch_assoc();
 $document['author_name'] = $author['username'];
 
 // Step 2: Get items related to the document and collect image paths
-$sql = "SELECT image_path, publish_date FROM items WHERE document_id = ?";
+$sql = "SELECT image_path, publish_date, id FROM items WHERE document_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $documentId);
 $stmt->execute();
@@ -68,6 +68,11 @@ while ($row = $result->fetch_assoc()) {
         $publishDate = null; 
     } else {
         $publishDate = $row['publish_date'];
+    }
+    if (empty($row['id'])) {
+        $itemId = null; 
+    } else {
+        $itemId = $row['id'];
     }
 }
 
@@ -92,5 +97,6 @@ echo json_encode([
     'document' => $document,
     'imagePaths' => $imagePaths,
     'publishDate' => $publishDate,
-    'sharedUsers' => $sharedUsers
+    'sharedUsers' => $sharedUsers,
+    'itemId' => $itemId,
 ]);
