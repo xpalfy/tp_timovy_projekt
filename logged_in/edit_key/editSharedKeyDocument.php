@@ -158,6 +158,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         <div class="w-full lg:w-1/2 flex">
             <div class="w-full bg-white bg-opacity-50 rounded-xl p-6 shadow-lg min-h-[580px] flex flex-col">
                 <input type="hidden" name="id" id="docId">
+                <input type="hidden" name="item_id" id="itemId">
                 <input type="hidden" name="user" id="userId">
 
                 <div class="flex gap-4">
@@ -348,26 +349,27 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     toastr.error(res.error || 'Failed to load processing status');
                 } else {
                     if (res.need_continue) {
-                        $('#continueProcessing').show();
+                        $('#continueProcessing').removeClass('hidden');
+                        const itemId = $('#itemId').val();
                         switch (res.status) {
                             case 'UPLOADED':
-                                continueLink = res.continue_link;
+                                continueLink = '../modules/segmentModule.php?document_id=' + documentId + '&item_id=' + itemId;
                                 break;
                             case 'SEGMENTED':
-                                continueLink = res.continue_link;
+                                continueLink =  '../modules/analyzeModule.php?document_id=' + documentId + '&item_id=' + itemId;
                                 break;
                             case 'CLASSIFIED':
-                                continueLink = res.continue_link;
+                                continueLink = '../modules/lettersModule.php?document_id=' + documentId + '&item_id=' + itemId;
                                 break;
                             case 'PROCESSED':
-                                continueLink = res.continue_link;
+                                continueLink =  '../modules/editJsonModule.php?document_id=' + documentId + '&item_id=' + itemId;
                                 break;
                             default:
                                 toastr.error('Unknown processing status');
                                 break;
                         }
                     } else {
-                        $('#continueProcessing').hide();
+                        $('#continueProcessing').addClass('hidden');
                     }
                 }
             },
@@ -626,6 +628,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     toastr.error(data.error);
                 } else {
                     $('#docId').val(data.id);
+                    $('#itemId').val(data.itemId);
                     $('#userId').val(userId);
                     $('#owner').val(data.author_name);
                     $('#name').val(data.title);
