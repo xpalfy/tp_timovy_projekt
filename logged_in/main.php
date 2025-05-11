@@ -150,94 +150,109 @@ try {
 </section>
 
 <!-- Tutorial Section -->
-<div id="tutorial-carousel" class="relative w-full max-w-4xl mx-auto mt-10 animate-top-fade mb-20"
-     data-carousel="static">
-    <!-- Carousel wrapper -->
-    <div class="relative h-auto overflow-hidden rounded-xl bg-[#f1e4c5] border border-yellow-300 shadow-lg p-6 text-papyrus"
-         style="height: 350px;">
+<div id="tutorial-carousel" class="relative w-full max-w-4xl mx-auto mt-16 mb-24 animate-top-fade" data-carousel="static">
+    <!-- Carousel Wrapper -->
+    <div class="relative h-auto min-h-[600px] overflow-hidden rounded-2xl bg-[#e5d9b6] border border-yellow-300 shadow-xl p-8 text-papyrus">
+
         <!-- Slide 1 -->
         <div class="hidden duration-700 ease-in-out slide-custom" data-carousel-item>
-            <h3 class="text-xl font-bold mb-2">🔍 Welcome to HandScript</h3>
-            <p class="mb-2">We are a modern web platform designed to help you decrypt handwritten coded texts using
-                the power of AI and pattern recognition.</p>
-            <div style="display: flex; justify-content: center;">
-                <img class="mb-2" src="../img/info1.png?" alt="">
+            <h3 class="text-3xl font-bold mb-4 text-center">🔍 Welcome to HandScript</h3>
+            <p class="text-lg text-center text-gray-800 mb-6">
+                HandScript is your intelligent companion for decoding complex handwritten documents.
+                Whether you're working with cryptic journals, old letters, or encoded texts, our AI-powered platform is here to help.
+            </p>
+            <div class="flex justify-center overflow-hidden max-h-[400px]">
+                <img src="../img/main_1.png" alt="Handwriting decryption preview" class="rounded-xl shadow-lg max-h-[400px] object-contain mb-10">
             </div>
-
-            <p>Whether it's a personal cipher or historical encryption, we provide tools to reveal what's behind the
-                ink.</p>
         </div>
+
         <!-- Slide 2 -->
         <div class="hidden duration-700 ease-in-out slide-custom" data-carousel-item>
-            <h3 class="text-xl font-bold mb-2">📂 Upload & Classify Your Documents</h3>
-            <p class="mb-2">Users can upload scanned or photographed documents, and assign them as either:</p>
-            <ul class="mb-2">
-                <li> &emsp;&emsp; 🔑 Keys – used to decode patterns</li>
-                <li> &emsp;&emsp; 🔐 Ciphers – encrypted text images ready for analysis</li>
+            <h3 class="text-2xl font-bold mb-4 text-center mb-6">📂 Upload & Classify Your Documents</h3>
+            <p class="text-center mb-4 text-gray-800">
+                Upload scanned pages, handwritten notes, or photographs of documents into your secure workspace.
+                From here, classify them according to their function in the decoding workflow:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 text-base mb-4 pl-6">
+                <li><strong>🔑 Keys:</strong> Reference material like known words, letters, or symbols.</li>
+                <li><strong>🔐 Ciphers:</strong> Mysterious or encrypted writings for decoding.</li>
             </ul>
-            <p>This step is the entry point to our decoding pipeline.</p>
-            <img src="../img/info2.png??" alt="" width="250px"
-                 style="position: absolute; right: 110px; bottom: 90px;">
+            <p class="text-center text-gray-800 mb-6">
+                Classifying helps our system understand the role of each document and build better AI recognition models.
+            </p>
+            <div class="flex justify-center mt-10">
+                <img src="../img/info2.png" alt="Upload interface" class="rounded-xl shadow-lg w-[400px]">
+            </div>
         </div>
+
         <!-- Slide 3 -->
         <div class="hidden duration-700 ease-in-out slide-custom" data-carousel-item>
-            <h3 class="text-xl font-bold mb-2">🧠 AI Analysis & Editable Segmentation</h3>
-            <p>Our system first analyzes the uploaded image, detects text areas, and segments each character
-                individually.</p>
-            <div style="display: flex; justify-content: center;" class="mb-2">
-                <img src="../img/info3.png" alt="">
+            <h3 class="text-2xl font-bold mb-4 text-center mb-6">🧠 AI Analysis & Character Segmentation</h3>
+            <p class="text-center text-gray-800 mb-4">
+                Once uploaded and classified, our intelligent backend scans the document and begins the decoding process. It performs:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 text-base mb-4 pl-6">
+                <li>Automatic text region detection</li>
+                <li>Character-by-character segmentation</li>
+                <li>Pattern recognition based on your key documents</li>
+            </ul>
+            <p class="text-center text-gray-800 mb-6">
+                You can interact with the segmentation results, adjusting bounding boxes, correcting misread letters,
+                and guiding the AI for better performance. This is ideal for dealing with historic documents or erratic handwriting.
+            </p>
+            <div class="flex justify-center mt-10">
+                <img src="../img/info3.png" alt="AI analysis preview" class="rounded-xl shadow-lg w-[500px]">
             </div>
-            <p class="mb-2">You can review and manually adjust the results, making the recognition process more
-                accurate and interactive.</p>
         </div>
+
         <!-- Slide 4 -->
         <div class="hidden duration-700 ease-in-out slide-custom" data-carousel-item>
-            <h3 class="text-xl font-bold mb-2">💾 Store, Edit & Share</h3>
-            <p class="mb-2">Your uploaded documents are securely stored in your personal workspace.</p>
-            <p class="mb-2">You can return later to edit results, continue processing, or share documents with other
-                users for collaboration.</p>
-            <div style="display: flex; justify-content: center;">
-                <img src="../img/info4.png" alt="" width="350px">
+            <h3 class="text-2xl font-bold mb-4 text-center mb-6">💾 Store, Edit & Collaborate</h3>
+            <p class="text-center text-gray-800 mb-4">
+                HandScript saves your documents in a secure personal workspace. All decoding steps, edits, and segmentations are saved,
+                allowing you to pick up exactly where you left off.
+            </p>
+            <p class="text-center text-gray-800 mb-4">
+                Collaborate with peers by sharing access, leave annotations, or export partial results for external review.
+                Whether you're a linguist, a student, or a puzzle-solving enthusiast — teamwork has never been easier.
+            </p>
+            <p class="text-center text-gray-800 mb-6">
+                Our platform grows with your input — improving its learning with each correction and suggestion you provide.
+            </p>
+            <div class="flex justify-center mt-6">
+                <img src="../img/info4.png" alt="Document sharing interface" class="rounded-xl shadow-lg w-[400px]">
             </div>
         </div>
     </div>
 
     <!-- Indicators -->
-    <div class="absolute z-30 flex -translate-x-1/2 bottom-4 left-1/2 space-x-3 rtl:space-x-reverse">
-        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-current="true" aria-label="Slide 1"
-                data-carousel-slide-to="0"></button>
-        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-label="Slide 2"
-                data-carousel-slide-to="1"></button>
-        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-label="Slide 3"
-                data-carousel-slide-to="2"></button>
-        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-label="Slide 4"
-                data-carousel-slide-to="3"></button>
+    <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3">
+        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+        <button type="button" class="w-3 h-3 rounded-full bg-yellow-800" aria-label="Slide 4" data-carousel-slide-to="3"></button>
     </div>
 
-    <!-- Navigation buttons -->
-    <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4"
-            data-carousel-prev>
-            <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 hover:bg-yellow-200 duration-200">
-                <svg class="w-4 h-4 text-brown-900" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M5 1 1 5l4 4"/>
-                </svg>
-                <span class="sr-only">Previous</span>
-            </span>
+    <!-- Navigation Buttons -->
+    <button type="button" class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4" data-carousel-prev>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 hover:bg-yellow-200 duration-200">
+            <svg class="w-4 h-4 text-brown-900" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+            </svg>
+            <span class="sr-only">Previous</span>
+        </span>
     </button>
-    <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4"
-            data-carousel-next>
-            <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 hover:bg-yellow-200 duration-200">
-                <svg class="w-4 h-4 text-brown-900" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="m1 9 4-4-4-4"/>
-                </svg>
-                <span class="sr-only">Next</span>
-            </span>
+    <button type="button" class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4" data-carousel-next>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 hover:bg-yellow-200 duration-200">
+            <svg class="w-4 h-4 text-brown-900" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+            </svg>
+            <span class="sr-only">Next</span>
+        </span>
     </button>
 </div>
+
+
 
 <hr style="border: 1px solid #bfa97a;">
 <a onclick="scrollToBookmark('bookmark')"
@@ -251,8 +266,8 @@ try {
 
 
 <!-- Process Area -->
-<div id="bookmark" class="mb-10"></div>
-<main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-10">
+<div id="bookmark"></div>
+<main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-5 mb-10">
     <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
         <!-- Progress Steps -->
         <div
