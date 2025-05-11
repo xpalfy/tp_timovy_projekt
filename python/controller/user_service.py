@@ -13,10 +13,13 @@ if TYPE_CHECKING:
 
 
 class UserService:
-    def __init__(self, db: Session=None):
+    def __init__(self, db: Session = None):
         if db is None:
-            self.db = next(get_db_session())
-        self.db = db
+            # Use the context manager to get a session
+            with get_db_session() as session:
+                self.db = session
+        else:
+            self.db = db
     def get_user_name_by_id(self, user_id: int) -> str:
         user = self.db.query(User).filter_by(id=user_id).first()
         if user:
