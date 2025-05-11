@@ -395,7 +395,7 @@ class DocumentService:
             raise Exception("Invalid document types")
         
         # Check if the documents are processed
-        if cipher_doc.items[-1].status != ProcessingStatus.PROCESSED or key_doc.items[-1].status != ProcessingStatus.PROCESSED:
+        if cipher_doc.items[-1].status != ProcessingStatus.SAVED or key_doc.items[-1].status != ProcessingStatus.SAVED:
             raise Exception("Documents are not processed")
         
         # Decrypt the cipher with the key
