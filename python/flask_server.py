@@ -389,7 +389,7 @@ def update_doc_public():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@app.route('/delete_document', methods=['POST'])
+@app.route('/delete_document', methods=['DELETE'])
 def delete_document():
     """
     Delete a document by ID
