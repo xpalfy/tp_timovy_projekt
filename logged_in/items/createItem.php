@@ -40,49 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    /*if ($post['type'] == 'KEY' && empty($post['json_text'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid JSON text']);
-        exit;
-    }
-
-    if ($post['type'] == 'KEY') {
-        $json_text = $post['json_text'];
-    
-        // Validate JSON
-        if (isJson($json_text) === null) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid JSON text']);
-            exit;
-        }
-    
-        // Decode and re-encode to pretty JSON (optional)
-        $json_array = json_decode($json_text, true);
-    
-        // Save it properly formatted
-        $json_text = json_encode($json_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    
-    }
-
-    if ($post['type'] == 'CIPHER' && empty($post['decoded_text'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid decoded text']);
-        exit;
-    }
-    
-    if ($post['type'] == 'CIPHER') {
-        $decoded_text = $post['decoded_text'];
-    
-        // Create JSON with "result": decoded_text
-        $cipher_json = [
-            "result" => $decoded_text
-        ];
-    
-        // Encode it as pretty JSON
-        $json_text = json_encode($cipher_json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    
-    }*/
-
     $doc_id = $post['doc_id'];
     $type = $post['type'];
     $doc_name = $post['doc_name'];

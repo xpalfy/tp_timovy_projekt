@@ -194,6 +194,7 @@ function saveData(type) {
                                 currentImageId = null; // Image is saved, no need to delete it
                                 item_id = data.item_id;
                                 console.log("Item created successfully. ID:", item_id);
+                                saveClassification(doc_id, item_id);
                             } else {
                                 handleError(data.error);
                             }
@@ -202,29 +203,59 @@ function saveData(type) {
                 toastr.success('Document created successfully.');
                 uiAnimationHandlers.hideCreateBtns();
                 uiAnimationHandlers.showSegmentBtns();
-                // reset window
-                /*currentImageId = [];
-                previewImages = [];
-                classificationScores = [];
-                currentPreviewIndex = 0;
-                updatePreview();
-                uiAnimationHandlers.hideCreateBtns();
-                uiAnimationHandlers.hideSegmentBtns();
-                uiAnimationHandlers.hideAnalyzeKeyBtn();
-                uiAnimationHandlers.hideAnalyzeCipherBtn();
-                uiAnimationHandlers.hideLettersKeyBtn();
-                uiAnimationHandlers.hideLettersCipherBtn();
-                uiAnimationHandlers.hideEditJSONKeyBtn();
-                uiAnimationHandlers.hideEditJSONCipherBtn();
-                uiAnimationHandlers.hideDownloadJSONBtn();
-                hideLoading();
-                uiAnimationHandlers.hideSystemMessage();
-                setStep(0);*/
             } else {
                 handleWarning(data.error);
                 return;
             }
         });
+}
+function saveClassification(doc_id,item_id) {
+
+    Promise.all(classificationScores)
+        .then(resolvedScores => {
+            // Create the data object with resolved classification scores
+            let data = {
+                document_id: doc_id,
+                item_id: item_id,
+                user_id: window.userData.id,
+                status: 'UPLOADED',
+                json_data: {
+                    "classification": resolvedScores
+                },
+                token: window.phpToken,
+            };
+            console.log("classificationScores before saveClassification:", classificationScores);
+
+            console.log('Data to be sent:', data);
+
+            fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        toastr.success('Analysis data saved successfully.');
+                        goToLetterSegmentation(selectedDocumentId, selectedItemId);
+                    } else {
+                        toastr.error('Failed to save segmentation data.');
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    toastr.error('Error saving segmentation data.');
+                    console.error('Error:', error);
+                });
+        })
+        .catch(error => {
+            // Handle any errors from the promises
+            console.error('Error processing classification scores:', error);
+        });
+    
 }
 
 export function saveKey() {

@@ -32,6 +32,9 @@ try {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <script>
+        window.phpToken = '<?php echo $_SESSION["token"]; ?>';
+    </script>
     <script src="../js/segment-rect.js?v=<?php echo time() ?>" type="module"></script>
     <script src="../js/letter-rect.js?v=<?php echo time() ?>" type="module"></script>
     <link rel="stylesheet" href="../css/main.css?v=<?php echo time() ?>">
