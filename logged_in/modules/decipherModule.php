@@ -14,8 +14,6 @@ try {
     exit();
 }
 
-// TODO: Check if the page is redirected with GET parameters, if so, validate
-
 ?>
 
 <!DOCTYPE html>
@@ -129,6 +127,10 @@ try {
                                         <a href="./editJsonModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Edit
                                             Json</a>
                                     </li>
+                                    <li>
+                                        <a href="./decipherModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -155,7 +157,7 @@ try {
     <!-- Process Area -->
     <main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-10">
 
-        <div class="glass max-w-8xl mx-auto animate-fade-in-slow border-yellow-300 border">
+        <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
             <!-- Loading Overlay -->
             <div class="loading-cont not-copyable not-draggable"
                 style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
@@ -165,11 +167,11 @@ try {
             </div>
             <!-- Process Info -->
             <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">
-                Dechiper your Cipher Documents
+                Decrypt your Cipher Documents
             </h3>
             <div class="flex flex-col items-center justify-center gap-4">
                 <div id="leftSide" class="flex flex-col items-center justify-center p-6 max-w-4xl mx-auto">
-                    <p>Please choose the Document you want to dechiper</p>
+                    <p>Please choose the Document you want to decrypt</p>
                     <!-- Document Selector -->
                     <div class="flex justify-center items-center mt-5">
                         <input type="text" placeholder="Search for a document"
@@ -188,8 +190,9 @@ try {
                     </div>
 
                     <!-- Image Preview -->
-                    <div class="flex justify-center items-center mt-5" style="display: flex;">
-                        <img id="imagePreviewCipher" class="imagePreview w-1/2 h-auto rounded-lg shadow-lg" src=""
+                    <div class="flex justify-center items-center mt-5">
+                        <img id="imagePreviewCipher"
+                            class="imagePreview w-[30rem] h-auto object-cover rounded-lg shadow-lg" src=""
                             alt="Image Preview" style="display: none;">
                     </div>
                 </div>
@@ -201,8 +204,6 @@ try {
                         <input type="text" placeholder="Search for a document"
                             class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2 w-1/2"
                             id="documentSearchKey">
-
-
                     </div>
                     <!-- Item selector -->
                     <div class="flex justify-center items-center mt-5">
@@ -214,15 +215,20 @@ try {
                     </div>
 
                     <!-- Image Preview -->
-                    <div class="flex justify-center items-center mt-5" style="display: flex;">
-                        <img id="imagePreviewKey" class="imagePreview w-1/2 h-auto rounded-lg shadow-lg" src=""
+                    <div class="flex justify-center items-center mt-5">
+                        <img id="imagePreviewKey"
+                            class="imagePreview w-[30rem] h-auto object-cover rounded-lg shadow-lg" src=""
                             alt="Image Preview" style="display: none;">
                     </div>
+
+                    <h1 id="recommendMessage" style="font-size: x-large;">Our AI is recommending the following keys for
+                        your cipher document:</h1>
+
                     <div id="KeySelector" class="flex justify-center items-center mt-5">
                         <!-- Here comes the Keys from the fetch -->
                     </div>
                 </div>
-                <div class="flex justify-center items-center mt-5">
+                <div class="flex justify-center items-center mt-5 mb-5">
                     <button id="startDecipherBtn"
                         class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2 mt-2 transition duration-300 hover:bg-yellow-300 hover:text-[#d7c7a5]"
                         style="display: none;" onclick="startDecipher()">Start Dechiper</button>
@@ -297,20 +303,9 @@ try {
                     hideLoading();
                     DocumentsData = docs;
                     const params = getUrlParams();
-                    if (params.key_doc_id) {
-                        const selectedKeyDoc = documentsData.find(doc => doc.id == params.key_doc_id);
-                        if (selectedKeyDoc) {
-                            selectedKeyDocumentId = selectedDoc.id;
-                            $("#documentSearchKey").val(selectedDoc.title);
-                            $("#itemSelectorKey").prop("disabled", false);
-                            $("#itemSelectorKey").empty();
-                            $("#itemSelectorKey").append('<option value="" disabled selected>Select an item</option>');
-                            fetchItems(selectedKeyDocumentId, params.key_item_id, "KEY");
-                        }
-                    }
                     if (params.cipher_doc_id) {
-                        const selectedCipherDoc = documentsData.find(doc => doc.id == params.cipher_doc_id);
-                        if (selectedCipherDoc) {
+                        const selectedDoc = DocumentsData.find(doc => doc.id == params.cipher_doc_id);
+                        if (selectedDoc) {
                             selectedCipherDocumentId = selectedDoc.id;
                             $("#documentSearchCipher").val(selectedDoc.title);
                             $("#itemSelectorCipher").prop("disabled", false);
@@ -321,6 +316,7 @@ try {
                     }
                 })
                 .catch(error => {
+                    hideLoading();
                     toastr.error('Failed to load documents.');
                     console.error('Error fetching documents:', error);
                 });
@@ -449,6 +445,9 @@ try {
                 showLoading();
                 selectedKeyItemId = $(this).val();
                 showSelectedItem("KEY");
+                document.getElementById('KeySelector').style.display = 'none';
+                document.getElementById('recommendMessage').style.display = 'none';
+                document.getElementById('startDecipherBtn').style.display = 'block';
                 hideLoading();
             });
         });
@@ -488,15 +487,18 @@ try {
                     items.forEach(item => {
                         const card = document.createElement('div');
                         card.className = 'bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-4 m-2 flex flex-col items-center w-48 h-64';
+
                         card.innerHTML = `
-        <div class="w-full h-36 flex justify-center items-center overflow-hidden bg-white rounded-lg">
+        <div class="w-full h-36 flex justify-center items-center overflow-hidden bg-[#f0e7d5] rounded-lg">
             <img src="../..${item.image_path}" alt="${item.title}" class="w-full h-full object-cover">
         </div>
         <p class="mt-2 text-center font-semibold">${item.title}</p>
-        <button class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2 mt-2 transition duration-300 hover:bg-yellow-300 hover:text-[#d7c7a5]" onclick="selectKey(${item.document_id})">Select</button>
+        <button class="bg-[#d7c7a5] text-[#4b4b4b] border border-[#4b4b4b] rounded-lg p-2 mt-2 transition duration-300 hover:bg-[#c4b59d] hover:text-[#2d2d2d]" onclick="selectKey(${item.document_id})">Select</button>
     `;
+
                         keySelector.appendChild(card);
                     });
+
 
                     if (items.length > maxSelectItemSize) {
                         keySelector.style.overflowY = 'scroll';
@@ -519,9 +521,13 @@ try {
                 if (type === "KEY") {
                     document.getElementById('imagePreviewKey').src = selectedItemImagePath;
                     document.getElementById('imagePreviewKey').style.display = 'block';
+                    document.getElementById('documentSearchKey').style.display = 'none';
+                    document.getElementById('itemSelectorKey').style.display = 'none';
                 } else {
                     document.getElementById('imagePreviewCipher').src = selectedItemImagePath;
                     document.getElementById('imagePreviewCipher').style.display = 'block';
+                    document.getElementById('documentSearchCipher').style.display = 'none';
+                    document.getElementById('itemSelectorCipher').style.display = 'none';
                 }
             }
         }
@@ -547,7 +553,10 @@ try {
                 selectedItemImagePath = '../..' + selectedKey.image_path;
                 document.getElementById('imagePreviewKey').src = selectedItemImagePath;
                 document.getElementById('imagePreviewKey').style.display = 'block';
+                document.getElementById('documentSearchKey').style.display = 'none';
+                document.getElementById('itemSelectorKey').style.display = 'none';
                 document.getElementById('KeySelector').style.display = 'none';
+                document.getElementById('recommendMessage').style.display = 'none';
                 document.getElementById('startDecipherBtn').style.display = 'block';
             }
         }

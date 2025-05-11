@@ -14,8 +14,6 @@ try {
     exit();
 }
 
-// TODO: Check if the page is redirected with GET parameters, if so, validate
-
 ?>
 
 <!DOCTYPE html>
@@ -131,6 +129,10 @@ try {
                                         <a href="./editJsonModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Edit
                                             Json</a>
                                     </li>
+                                    <li>
+                                        <a href="./decipherModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -156,14 +158,14 @@ try {
 
     <!-- Process Area -->
     <main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-10">
-        <!-- Loading Overlay -->
-        <div class="loading-cont not-copyable not-draggable"
-            style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
-            <dotlottie-player src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
-                background="transparent" speed="1" style="width: 150px; height: 150px;" loop
-                autoplay></dotlottie-player>
-        </div>
         <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
+            <!-- Loading Overlay -->
+            <div class="loading-cont not-copyable not-draggable"
+                style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
+                <dotlottie-player src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
+                    background="transparent" speed="1" style="width: 150px; height: 150px;" loop
+                    autoplay></dotlottie-player>
+            </div>
             <div
                 style="display: flex; flex-direction: column; justify-content: center; border: #bfa97a4a 1px solid; border-radius: 20px 20px 0 0 ; padding: 10px 10px 5px 10px;">
                 <div class="step-progress-container not-copyable not-draggable">
@@ -313,10 +315,10 @@ try {
                     }
                 })
                 .catch(error => {
+                    hideLoading();
                     toastr.error('Failed to load documents.');
                     console.error('Error fetching documents:', error);
                 });
-            hideLoading();
         }
 
         $(function () {
@@ -332,7 +334,6 @@ try {
                     })));
                 },
                 select: function (event, ui) {
-                    showLoading();
                     selectedDocumentId = ui.item.id;
                     $("#itemSelector").prop("disabled", false);
                     $("#itemSelector").empty();
@@ -356,6 +357,8 @@ try {
 
             console.log('Requesting items with:', data);
 
+            showLoading();
+
             fetch('https://python.tptimovyprojekt.software/get_items_by_doc_and_status', {
                 method: 'POST',
                 headers: {
@@ -365,6 +368,7 @@ try {
             })
                 .then(response => response.json())
                 .then(items => {
+                    hideLoading();
                     console.log('Fetched items:', items);
 
                     $("#itemSelector").empty();
@@ -384,6 +388,7 @@ try {
                     }
                 })
                 .catch(error => {
+                    hideLoading();
                     toastr.error('Failed to load items.');
                     console.error('Error fetching items:', error);
                 });
@@ -396,7 +401,6 @@ try {
 
         function showItemSelector() {
             document.getElementById('itemSelector').style.display = 'block';
-            hideLoading();
         }
 
         $(function () {
@@ -557,7 +561,6 @@ try {
                     toastr.error('Error saving segmentation data.');
                     console.error('Error:', error);
                 });
-            hideLoading();
         }
 
         function addNewRect() {
