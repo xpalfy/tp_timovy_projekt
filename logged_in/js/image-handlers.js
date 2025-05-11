@@ -236,18 +236,9 @@ function saveClassification(doc_id,item_id) {
                 body: JSON.stringify(data)
             })
                 .then(response => response.json())
-                .then(data => {
-                    hideLoading();
-                    if (data.success) {
-                        toastr.success('Analysis data saved successfully.');
-                        goToLetterSegmentation(selectedDocumentId, selectedItemId);
-                    } else {
-                        toastr.error('Failed to save segmentation data.');
-                    }
-                })
                 .catch(error => {
                     hideLoading();
-                    toastr.error('Error saving segmentation data.');
+                    toastr.error('Error saving classification data.');
                     console.error('Error:', error);
                 });
         })
