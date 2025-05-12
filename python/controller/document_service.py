@@ -10,6 +10,7 @@ from entities.item import Item
 from entities.users import User
 from controller.db_controller import get_db_session
 from modules.matcher import get_cipher_key_match
+from modules.encoder import Encoder
 if TYPE_CHECKING:
     from entities.users import User
 
@@ -405,5 +406,30 @@ class DocumentService:
         # Decrypt the cipher with the key
         decrypted_data = {"decrypted":"valamaima faszAGA SZovegg",
                             "used_key_title":key_doc.title}
-        
         return decrypted_data
+
+    def encode_letters(self, document_id: int, user_id: int) -> dict:
+        doc = self.get_document_by_id(document_id)
+        user: User = self.db.query(User).filter_by(id=user_id).first()
+        if not doc:
+            raise Exception("Document not found")
+        if not user:
+            raise Exception("User not found")
+        if doc.author_id != user.id and user not in doc.shared_with:
+            raise Exception("User does not have access to this document")
+        if not doc.items:
+            raise Exception("No items found for this document")
+        doc_type = doc.doc_type
+        if doc_type == DocumentType.CIPHER:
+            json = Encoder.get_cipher_json(doc)
+        else:
+            json = Encoder.get_key_json(doc)
+        self.save_processing_result({
+            'document_id': document_id,
+            'item_id': doc.items[-1].id,
+            'status': ProcessingStatus.EXTRACTED,
+            'user_id': user_id,
+            'json_data': json
+        })
+            
+
