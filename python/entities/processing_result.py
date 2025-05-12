@@ -11,13 +11,13 @@ if TYPE_CHECKING:
     
 
 class ProcessingStatus(enum.Enum):
+    ERROR = 'error'
     UPLOADED = 'uploaded'
     SEGMENTED = 'segmented'
     CLASSIFIED = 'classified'
-    EXTRACTED = 'extracted'
     PROCESSED = 'processed'
+    EXTRACTED = 'extracted'
     SAVED = 'saved'
-    ERROR = 'error' 
     def __gt__(self, other):
         if self.__class__ is other.__class__:
             # Compare based on the order of definition
