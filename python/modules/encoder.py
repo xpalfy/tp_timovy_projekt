@@ -4,17 +4,17 @@ class Encoder:
     @staticmethod
     def get_key_json():
         # Define the path to the JSON file
-        file_path = os.path.join(os.path.dirname(__file__), "example_json.json")
+        file_path = os.path.join(os.path.dirname(__file__), "example_key_json.json")
         
         # Open and read the JSON file
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
         
         return data
-    
-    def get_cipher_json(self):
+    @staticmethod
+    def get_cipher_json():
         # Define the path to the JSON file
-        file_path = os.path.join(os.path.dirname(__file__), "example_json.json")
+        file_path = os.path.join(os.path.dirname(__file__), "example_cipher_json.json")
         
         # Open and read the JSON file
         with open(file_path, "r", encoding="utf-8") as file:

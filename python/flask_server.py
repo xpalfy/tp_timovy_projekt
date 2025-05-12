@@ -830,6 +830,26 @@ def delete_user():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
+@app.route('/encode_letters', methods=['POST'])
+def encode_letters():
+    with get_db_session() as db:
+        service = DocumentService(db)
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({'error': 'Invalid input data'}), 400
+            validate_token(data.get('token'))
+            document_id = data.get('document_id')
+            user_id = data.get('user_id')
+            if not document_id:
+                return jsonify({'error': 'Document ID is required'}), 400
+            if not user_id:
+                return jsonify({'error': 'User ID is required'}), 400
+            result = service.encode_letters(document_id, user_id)
+            return jsonify(result), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
 @app.route('/get_processing_result_status', methods=['POST'])
 def get_processing_result_status():
     with get_db_session() as db:
