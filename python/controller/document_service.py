@@ -17,7 +17,8 @@ status_messages = {'uploaded': 'File uploaded successfully',
                    'segmented': 'File segmented successfully',
                    'classified': 'File analyzed successfully',
                    'processed': 'Letters segmented successfully',
-                   'saved': 'File saved successfully'}
+                   'saved': 'File saved successfully',
+                   'extracted': 'File extracted successfully'}
 
 class DocumentService:
     def __init__(self, db: Session = None):
