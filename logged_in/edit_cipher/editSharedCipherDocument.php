@@ -419,7 +419,12 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 if (res.error) {
                     toastr.error(res.error || 'Failed to load JSON');
                 } else {
-                    $('#jsonData').val(JSON.stringify(res, null, 2));
+                    if (res.decrypted && res.used_key_title) {
+                        $('#jsonData').val(res.decrypted);
+                        $('#applied_key').val(res.used_key_title).prop('disabled', true);
+                    } else {
+                        $('#jsonData').val(JSON.stringify(res, null, 2));
+                    }
                 }
             },
             error: function () {
@@ -429,12 +434,27 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     }
 
     function saveJson() {
+        let appliedKey = $('#applied_key').val();
         let parsedJson;
-        try {
-            parsedJson = JSON.parse($('#jsonData').val());
-        } catch (e) {
-            toastr.error('Invalid JSON format');
-            return;
+
+        if (appliedKey.trim() === '') {
+            try {
+                parsedJson = JSON.parse($('#jsonData').val());
+            } catch (e) {
+                toastr.error('Invalid JSON format');
+                return;
+            }
+        }
+        else{
+            let decryptedText = $('#jsonData').val();
+            if (!decryptedText.trim()) {
+                toastr.error('Decrypted content cannot be empty');
+                return;
+            }
+            parsedJson = {
+                decrypted: decryptedText,
+                used_key_title: appliedKey
+            };
         }
 
         const formData = {
