@@ -380,6 +380,9 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                             case 'PROCESSED':
                                 continueLink =  '../modules/editJsonModule.php?document_id=' + documentId + '&item_id=' + itemId;
                                 break;
+                            case 'EXTRACTED':
+                                continueLink = '../modules/decipherModule.php?document_id=' + documentId + '&item_id=' + itemId;
+                                break;
                             default:
                                 toastr.error('Unknown processing status');
                                 break;
