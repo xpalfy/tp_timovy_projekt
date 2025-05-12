@@ -236,7 +236,7 @@ try {
             </div>
 
             <!-- Save Btns -->
-            <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-6" style="display: none;">
+            <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-8 mb-6" style="display: none;">
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveJson()">Save Work</button>
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
             </div>
