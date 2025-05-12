@@ -177,7 +177,7 @@ class DocumentService:
         item: Item = doc.items[0]
         if not item.processing_results:
             raise Exception("No processing results found for this item")
-        processing_result: ProcessingResult = item.processing_results[0]
+        processing_result: ProcessingResult = item.processing_results[-1]
         if not processing_result:
             raise Exception("Processing result not found")
         processing_result.result = json_data
@@ -325,7 +325,7 @@ class DocumentService:
                 continue
             if doc.doc_type == DocumentType.KEY:
                 if not doc.items:
-                    raise Exception("No items found for this document")
+                    continue
                 item: Item = doc.items[-1]
                 if not item.processing_results or item.status != ProcessingStatus.SAVED:
                     raise Exception("No processing results found for this item")
@@ -399,7 +399,7 @@ class DocumentService:
             raise Exception("Invalid document types")
         
         # Check if the documents are processed
-        if cipher_doc.items[-1].status != ProcessingStatus.SAVED or key_doc.items[-1].status != ProcessingStatus.SAVED:
+        if cipher_doc.items[-1].status != ProcessingStatus.EXTRACTED or key_doc.items[-1].status != ProcessingStatus.SAVED:
             raise Exception("Documents are not processed")
         
         # Decrypt the cipher with the key
