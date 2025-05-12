@@ -19,62 +19,84 @@
 
 <!-- Navbar -->
 <nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
-        <div class="hidden md:flex space-x-6 text-lg items-center">
-            <a href="./index.html" class="hover:underline">Home</a>
-            <a href="https://tptimovyprojekt.ddns.net/" class="hover:underline">Minutes</a>
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+    <div class="hidden md:flex space-x-6 text-lg items-center">
+      <a href="./index.html" class="hover:underline">Home</a>
 
-            <!-- Project Dropdown -->
-            <div class="relative">
-                <button id="projectDropdownButton" data-dropdown-toggle="projectDropdown"
-                        class="hover:underline flex items-center">
-                    Project
-                    <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M1 1l4 4 4-4"/>
-                    </svg>
-                </button>
-                <div id="projectDropdown"
-                     class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
-                    <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="projectDropdownButton">
-                        <li>
-                            <a href="./task.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
-                        </li>
-                        <li>
-                            <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
-                        </li>
-                        <li>
-                            <a href="./faq.html" class="block px-4 py-2 hover:bg-[#cbbd99]">FAQ</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Account Dropdown -->
-            <div class="relative">
-                <button id="accountDropdownButton" data-dropdown-toggle="accountDropdown"
-                        class="hover:underline flex items-center">
-                    Account
-                    <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M1 1l4 4 4-4"/>
-                    </svg>
-                </button>
-                <div id="accountDropdown"
-                     class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
-                    <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="accountDropdownButton">
-                        <li>
-                            <a href="./login.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Login</a>
-                        </li>
-                        <li>
-                            <a href="./register.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Register</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      <!-- Docs Dropdown -->
+      <div class="relative">
+        <button id="docsDropdownButton" data-dropdown-toggle="docsDropdown"
+          class="hover:underline flex items-center">
+          Resources
+          <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+        <div id="docsDropdown"
+          class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
+          <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="docsDropdownButton">
+            <li>
+              <a href="https://tptimovyprojekt.ddns.net/" class="block px-4 py-2 hover:bg-[#cbbd99]">Minutes</a>
+            </li>
+            <li>
+              <a href="https://python.tptimovyprojekt.software/apidocs/" class="block px-4 py-2 hover:bg-[#cbbd99]">Swagger</a>
+            </li>
+          </ul>
         </div>
+      </div>
+
+      <!-- Project Dropdown -->
+      <div class="relative">
+        <button id="projectDropdownButton" data-dropdown-toggle="projectDropdown"
+          class="hover:underline flex items-center">
+          Project
+          <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+        <div id="projectDropdown"
+          class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
+          <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="projectDropdownButton">
+            <li>
+              <a href="./task.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
+            </li>
+            <li>
+              <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
+            </li>
+            <li>
+              <a href="./faq.html" class="block px-4 py-2 hover:bg-[#cbbd99]">FAQ</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Account Dropdown -->
+      <div class="relative">
+        <button id="accountDropdownButton" data-dropdown-toggle="accountDropdown"
+          class="hover:underline flex items-center">
+          Account
+          <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+        <div id="accountDropdown"
+          class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
+          <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="accountDropdownButton">
+            <li>
+              <a href="./login.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Login</a>
+            </li>
+            <li>
+              <a href="./register.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Register</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 </nav>
 
 
