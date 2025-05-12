@@ -551,7 +551,7 @@ try {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
-                status: 'EXTRACTED',
+                status: 'PROCESSED',
                 polygons: polygons,
                 token: '<?php echo $_SESSION["token"]; ?>'
             };

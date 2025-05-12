@@ -375,7 +375,7 @@ try {
                 token: '<?php echo $_SESSION["token"]; ?>',
                 user_id: userData.id,
                 document_id: documentId,
-                status: 'EXTRACTED'
+                status: 'PROCESSED'
             };
 
             console.log('Requesting items with:', data);
@@ -604,11 +604,28 @@ try {
                 }
             };
 
+            let type = null;
+            let status = null;
+
+            if (documentsData.filter(doc => doc.id == selectedDocumentId).length > 0) {
+                type = documentsData.filter(doc => doc.id == selectedDocumentId)[0].doc_type;
+
+                if (type === 'KEY') {
+                    status = 'SAVED';
+                } else if (type === 'CIPHER') {
+                    status = 'EXTRACTED';
+                } else {
+                    toastr.error('Invalid document type');
+                    return;
+                }
+            }
+
+
             let data = {
                 document_id: selectedDocumentId,
                 item_id: selectedItemId,
                 user_id: userData.id,
-                status: 'PROCESSED',
+                status: status,
                 json_data: fixedJson,
                 token: '<?php echo $_SESSION["token"]; ?>'
             };
@@ -626,13 +643,10 @@ try {
                 .then(data => {
                     hideLoading();
                     if (data.success) {
-                        if (documentsData.filter(doc => doc.id == selectedDocumentId).length > 0) {
-                            type = documentsData.filter(doc => doc.id == selectedDocumentId)[0].doc_type;
-                            if (type == 'KEY') {
-                                window.location.href = `../edit_key/editOwnKeyDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
-                            } else if (type == 'CIPHER') {
-                                window.location.href = `./decipherModule.php?cipher_doc_id=${selectedDocumentId}&cipher_item_id=${selectedItemId}`;
-                            }
+                        if (type == 'KEY') {
+                            window.location.href = `../edit_key/editOwnKeyDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
+                        } else if (type == 'CIPHER') {
+                            window.location.href = `./decipherModule.php?cipher_doc_id=${selectedDocumentId}&cipher_item_id=${selectedItemId}`;
                         }
                         toastr.success('Letter segmentation data saved successfully.');
                     } else {

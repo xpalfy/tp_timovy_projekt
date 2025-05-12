@@ -297,7 +297,7 @@ try {
             let data = {
                 token: '<?php echo $_SESSION["token"]; ?>',
                 user_id: userData.id,
-                status: 'PROCESSED'
+                status: 'EXTRACTED'
             };
 
             showLoading();
@@ -383,7 +383,7 @@ try {
                 token: '<?php echo $_SESSION["token"]; ?>',
                 user_id: userData.id,
                 document_id: documentId,
-                status: 'SAVED'
+                status: 'EXTRACTED'
             };
 
             console.log('Requesting items with:', data);
@@ -631,7 +631,7 @@ try {
                     hideLoading();
                     console.log('Fetched items:', item);
                     toastr.success('Decrypted text saved successfully.');
-                    window.location.href = `../editOwnCipherDocument.php?id=${selectedCipherDocumentId}&user=${userData.id}`;
+                    window.location.href = `../edit_cipher/editOwnCipherDocument.php?id=${selectedCipherDocumentId}&user=${userData.id}`;
                 })
                 .catch(error => {
                     hideLoading();
