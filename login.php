@@ -1,3 +1,23 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require './checkType.php';
+
+try {
+    $userData = validateToken();
+    if ($userData) {
+        header("Location: ./logged_in/main.php");
+        exit();
+    }
+} catch (Exception $e) {
+    $userData = null;
+    session_unset();
+    session_destroy();
+}
+?>
+
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,9 +56,9 @@
 <!-- Navbar -->
 <nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+    <a href="./index.php" class="text-2xl font-bold hover:underline">HandScript</a>
     <div class="hidden md:flex space-x-6 text-lg items-center">
-      <a href="./index.html" class="hover:underline">Home</a>
+      <a href="./index.php" class="hover:underline">Home</a>
 
       <!-- Docs Dropdown -->
       <div class="relative">
@@ -77,13 +97,13 @@
           class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
           <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="projectDropdownButton">
             <li>
-              <a href="./task.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
+              <a href="./task.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
             </li>
             <li>
-              <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
+              <a href="./team.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
             </li>
             <li>
-              <a href="./faq.html" class="block px-4 py-2 hover:bg-[#cbbd99]">FAQ</a>
+              <a href="./faq.php" class="block px-4 py-2 hover:bg-[#cbbd99]">FAQ</a>
             </li>
           </ul>
         </div>
@@ -170,7 +190,7 @@
         <div class="flex space-x-4 text-sm">
             <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
                 Page</a>
-            <a href="./faq.html" class="underline hover:text-[#5a452e] transition">FAQ</a>
+            <a href="./faq.php" class="underline hover:text-[#5a452e] transition">FAQ</a>
         </div>
     </div>
 </footer>
