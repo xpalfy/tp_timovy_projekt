@@ -35,8 +35,6 @@ try {
     <script>
         window.phpToken = '<?php echo $_SESSION["token"]; ?>';
     </script>
-    <script src="../js/segment-rect.js?v=<?php echo time() ?>" type="module"></script>
-    <script src="../js/letter-rect.js?v=<?php echo time() ?>" type="module"></script>
     <link rel="stylesheet" href="../css/main.css?v=<?php echo time() ?>">
 </head>
 
