@@ -1,5 +1,9 @@
 <?php
-require_once '../config.php'; 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once '../vendor/autoload.php'; // PHPMailer
+require_once '../config.php';         // Your app config
 
 header('Content-Type: application/json');
 
@@ -19,18 +23,29 @@ if (!isset($input['question']) || trim($input['question']) === '') {
 
 $question = trim($input['question']);
 
-$conn = getDatabaseConnection();
+// Set up PHPMailer
+$mail = new PHPMailer(true);
 
-$sql = "INSERT INTO questions (question) VALUES (?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $question);
+try {
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'ptimovy@gmail.com';
+    $mail->Password = 'cfxc llnb lspi sevg'; 
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587;
 
-if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Question submitted successfully.']);
-} else {
+    $mail->setFrom('ptimovy@gmail.com', 'HandScript');
+    $mail->addAddress('ptimovy@gmail.com');
+
+    $mail->isHTML(false);
+    $mail->Subject = 'New FAQ Question Submitted';
+    $mail->Body    = "A new question has been submitted via the FAQ form:\n\n" . $question;
+
+    $mail->send();
+    echo json_encode(['success' => true, 'message' => 'Question emailed successfully.']);
+} catch (Exception $e) {
+    error_log("PHPMailer Error: {$mail->ErrorInfo}");
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Database error.']);
+    echo json_encode(['success' => false, 'error' => 'Failed to send email.']);
 }
-
-$stmt->close();
-$conn->close();

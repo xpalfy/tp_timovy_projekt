@@ -151,8 +151,18 @@ try {
 <!-- FAQ Accordion -->
 <section class="max-w-4xl mx-auto px-6 mb-16" data-aos="fade-up" id="faq-section">
     <h2 class="text-3xl font-bold mb-6 text-center">Questions</h2>
-    <!-- Ask Question Form -->
-    <section class="max-w-4xl mx-auto px-6 mb-24" data-aos="fade-up">
+
+    <div id="faqAccordion" data-accordion="collapse">
+        <!-- Dynamically inserted FAQs -->
+    </div>
+
+    <!-- Pagination Placeholder -->
+    <div class="flex justify-center mt-6">
+        <nav id="faqPagination" class="inline-flex space-x-2"></nav>
+    </div>
+
+        <!-- Ask Question Form -->
+    <section class="max-w-4xl mx-auto px-6 mt-16" data-aos="fade-up">
         <div class="bg-white p-6 rounded-xl shadow-md">
             <h3 class="text-2xl font-semibold mb-4">Ask a Question</h3>
             <form id="askQuestionForm">
@@ -165,15 +175,6 @@ try {
             </form>
         </div>
     </section>
-
-    <div id="faqAccordion" data-accordion="collapse">
-        <!-- Dynamically inserted FAQs -->
-    </div>
-
-    <!-- Pagination Placeholder -->
-    <div class="flex justify-center mt-6">
-        <nav id="faqPagination" class="inline-flex space-x-2"></nav>
-    </div>
 </section>
 
 
@@ -198,6 +199,7 @@ try {
 </script>
 
 <script>
+    // Fetch and render FAQs with pagination
     function fetchFAQs(page = 1) {
         fetch(`faq_api/getFaqs.php?page=${page}`)
             .then(res => res.json())
@@ -209,12 +211,13 @@ try {
                 faqContainer.innerHTML = '';
                 paginationContainer.innerHTML = '';
 
+                // Render FAQ items
                 data.faqs.forEach(faq => {
                     const id = `faq-${faq.id}`;
                     faqContainer.innerHTML += `
                         <div class="accordion-item mb-4 bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow-md transition">
                             <button type="button"
-                                class="accordion-btn w-full px-6 py-4 flex justify-between items-center text-left font-semibold text-lg focus:outline-none rounded-t-xl"
+                                class="accordion-btn w-full px-6 py-4 flex justify-between items-center text-left font-semibold text-lg focus:outline-none"
                                 data-target="#${id}">
                                 <span>${faq.question}</span>
                                 <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,31 +226,24 @@ try {
                             </button>
                             <div id="${id}" class="hidden border-t border-gray-200">
                                 <div class="px-6 py-4 space-y-4">
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-500">Asked:</p>
-                                        <p class="text-base">${faq.question}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-500">Answer:</p>
-                                        <p class="text-base ${faq.answer ? 'text-green-800' : 'italic text-gray-400'}">
-                                            ${faq.answer ? faq.answer : 'No answer yet.'}
-                                        </p>
-                                    </div>
+                                    <p class="text-sm font-medium text-gray-500">Asked:</p>
+                                    <p class="text-base">${faq.question}</p>
+                                    <p class="text-sm font-medium text-gray-500 mt-4">Answer:</p>
+                                    <p class="text-base ${faq.answer ? 'text-green-800' : 'italic text-gray-400'}">
+                                        ${faq.answer ? faq.answer : 'No answer yet.'}
+                                    </p>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
 
-                attachAccordionLogic();
-
+                // Render pagination buttons
                 for (let i = 1; i <= data.total_pages; i++) {
                     paginationContainer.innerHTML += `
                         <button onclick="fetchFAQs(${i})"
                             class="px-3 py-1 rounded ${i === page ? 'bg-[#3b2f1d] text-white' : 'bg-gray-200 text-black'} hover:bg-[#5a452e] transition">
                             ${i}
-                        </button>
-                    `;
+                        </button>`;
                 }
             })
             .catch(err => {
@@ -258,58 +254,23 @@ try {
             });
     }
 
-    function attachAccordionLogic() {
-        document.querySelectorAll('.accordion-btn').forEach(button => {
-            const targetId = button.getAttribute('data-target');
-            const content = document.querySelector(targetId);
-            const icon = button.querySelector('svg');
-            const wrapper = button.closest('.accordion-item');
-
-            button.addEventListener('click', () => {
-                const isOpen = !content.classList.contains('hidden');
-
-                document.querySelectorAll('.accordion-btn').forEach(otherBtn => {
-                    const otherContent = document.querySelector(otherBtn.getAttribute('data-target'));
-                    const otherIcon = otherBtn.querySelector('svg');
-                    const otherWrapper = otherBtn.closest('.accordion-item');
-
-                    otherContent.classList.add('hidden');
-                    otherBtn.classList.remove('bg-blue-50');
-                    if (otherIcon) otherIcon.classList.remove('rotate-180');
-                    if (otherWrapper) otherWrapper.classList.remove('border-blue-700');
-                });
-
-                if (!isOpen) {
-                    content.classList.remove('hidden');
-                    button.classList.add('bg-blue-50');
-                    if (icon) icon.classList.add('rotate-180');
-                    if (wrapper) wrapper.classList.add('border-blue-700');
-                } else {
-                    content.classList.add('hidden');
-                    button.classList.remove('bg-blue-50');
-                    if (icon) icon.classList.remove('rotate-180');
-                    if (wrapper) wrapper.classList.remove('border-blue-700');
-                }
-            });
-        });
-    }
-
-    // Handle form submission
+    // Submit new question
     document.getElementById('askQuestionForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        const question = document.getElementById('questionInput').value;
+        const question = document.getElementById('questionInput').value.trim();
+
+        if (!question) return;
 
         fetch('faq_api/postFaq.php', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({question})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question })
         })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
                     toastr.success('Question submitted!');
                     document.getElementById('askQuestionForm').reset();
-                    fetchFAQs(); // Reload with new question
                 } else {
                     toastr.error(data.error || 'Something went wrong.');
                 }
@@ -320,10 +281,36 @@ try {
             });
     });
 
+    // Accordion toggle logic
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.accordion-btn');
+        if (!btn) return;
+
+        const target = document.querySelector(btn.dataset.target);
+        const icon = btn.querySelector('svg');
+
+        const isOpen = !target.classList.contains('hidden');
+
+        // Close all
+        document.querySelectorAll('.accordion-btn').forEach(b => {
+            const c = document.querySelector(b.dataset.target);
+            const i = b.querySelector('svg');
+            c.classList.add('hidden');
+            b.classList.remove('bg-blue-50');
+            if (i) i.classList.remove('rotate-180');
+        });
+
+        // Open clicked
+        if (!isOpen) {
+            target.classList.remove('hidden');
+            btn.classList.add('bg-blue-50');
+            if (icon) icon.classList.add('rotate-180');
+        }
+    });
+
     // Initial load
     fetchFAQs();
 </script>
-
 
 </body>
 
