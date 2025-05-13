@@ -176,7 +176,7 @@ try {
 
                     <!-- Document Type Filter -->
                     <div>
-                        <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">🗂️ Document
+                        <label for="filter-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">🗂️ Document
                             Access Type</label>
                         <select id="filter-select"
                                 class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
