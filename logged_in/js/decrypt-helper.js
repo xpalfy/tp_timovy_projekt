@@ -32,6 +32,9 @@ export function fetchDocuments(type = 'CIPHER') {
     })
         .then(response => response.json())
         .then(docs => {
+            if (docs.error) {
+                throw new Error(docs.error);
+            }
 
             if (type === 'KEY') {
                 keyDocumentsData = docs;
@@ -56,7 +59,7 @@ export function fetchDocuments(type = 'CIPHER') {
         })
         .catch(error => {
             hideLoading();
-            toastr.error('Failed to load documents.');
+            toastr.error(error || 'Failed to load documents.');
             console.error('Error fetching documents:', error);
         });
 }
@@ -86,6 +89,9 @@ export function fetchItems(documentId, preselectItemId = null, type) {
     })
         .then(response => response.json())
         .then(items => {
+            if (items.error) {
+                throw new Error(items.error);
+            }
             hideLoading();
             console.log('Fetched items:', items);
 
@@ -116,7 +122,8 @@ export function fetchItems(documentId, preselectItemId = null, type) {
             }
         })
         .catch(error => {
-            toastr.error('Failed to load items.');
+            hideLoading();
+            toastr.error(error || 'Failed to load items.');
             console.error('Error fetching items:', error);
         });
 }
@@ -156,6 +163,9 @@ export function fetchKeys() {
     })
         .then(response => response.json())
         .then(items => {
+            if (items.error) {
+                throw new Error(items.error);
+            }
             hideLoading();
             const keySelector = document.getElementById('KeySelector');
             keySelector.innerHTML = ''; // Clear previous options
@@ -184,7 +194,8 @@ export function fetchKeys() {
             }
         })
         .catch(error => {
-            toastr.error('Failed to load keys.');
+            hideLoading();
+            toastr.error(error || 'Failed to load keys.');
             console.error('Error fetching keys:', error);
         });
 }
@@ -247,6 +258,9 @@ export function startDecipher() {
     })
         .then(response => response.json())
         .then(item => {
+            if (item.error) {
+                throw new Error(item.error);
+            }
             hideLoading();
             console.log('Fetched items:', item);
             document.getElementById('startDecipherBtn').style.display = 'none';
@@ -256,7 +270,7 @@ export function startDecipher() {
         })
         .catch(error => {
             hideLoading();
-            toastr.error('Failed to load items.');
+            toastr.error('Failed to decrypt items.');
             console.error('Error fetching items:', error);
         });
 }
@@ -283,6 +297,9 @@ function saveResult(decryptResult) {
     })
         .then(response => response.json())
         .then(item => {
+            if (item.error) {
+                throw new Error(item.error);
+            }
             hideLoading();
             console.log('Fetched items:', item);
             toastr.success('Decrypted text saved successfully.');
@@ -290,7 +307,7 @@ function saveResult(decryptResult) {
         })
         .catch(error => {
             hideLoading();
-            toastr.error('Failed to save decrypted text.');
+            toastr.error(error || 'Failed to save decrypted text.');
             console.error('Error fetching items:', error);
         });
 }

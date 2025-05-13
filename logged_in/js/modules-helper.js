@@ -84,6 +84,9 @@ export function saveSegmentionData() {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
             hideLoading();
             if (data.success) {
                 toastr.success('Segmentation data saved successfully.');
@@ -136,6 +139,9 @@ export function saveAnalysisData() {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
             hideLoading();
             if (data.success) {
                 toastr.success('Analysis data saved successfully.');
@@ -188,6 +194,9 @@ export function saveLetterData() {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
             if (data.success) {
                 hideLoading();
                 toastr.success('Letter segmentation data saved successfully.');
@@ -335,6 +344,9 @@ export function saveJson() {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
             hideLoading();
             if (data.success) {
                 if (type == 'KEY') {
@@ -386,7 +398,9 @@ export function fetchDocuments(status) {
         .then(response => response.json())
         .then(docs => {
             hideLoading();
-
+            if (docs.error) {
+                throw new Error(docs.error);
+            }
             documentsData = docs;
 
             const params = getUrlParams();
@@ -404,8 +418,7 @@ export function fetchDocuments(status) {
         })
         .catch(error => {
             hideLoading();
-            toastr.error('Failed to load documents.');
-            console.error('Error fetching documents:', error);
+            toastr.error(error || 'Failed to load documents.');
         });
 }
 
@@ -433,6 +446,9 @@ export function fetchItems(documentId, preselectItemId = null, status) {
     })
         .then(response => response.json())
         .then(items => {
+            if (items.error) {
+                throw new Error(items.error);
+            }
             hideLoading();
 
             $("#itemSelector").empty();
@@ -453,8 +469,7 @@ export function fetchItems(documentId, preselectItemId = null, status) {
         })
         .catch(error => {
             hideLoading();
-            toastr.error('Failed to load items.');
-            console.error('Error fetching items:', error);
+            toastr.error(error || 'Failed to load items.');
         });
 }
 
@@ -562,6 +577,9 @@ export function CalculateSegmentation(imagePath) {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
             hideLoading();
 
             if (Array.isArray(data)) {
@@ -578,7 +596,7 @@ export function CalculateSegmentation(imagePath) {
         })
         .catch(error => {
             hideLoading();
-            console.error('Error detecting page edges:', error);
+            toastr.error(error || 'Error detecting edges.');
         });
 }
 
@@ -594,6 +612,9 @@ export function CalculateAnalysis(imagePath) {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
             hideLoading();
 
             if (data && Array.isArray(data.polygons)) {
@@ -604,7 +625,7 @@ export function CalculateAnalysis(imagePath) {
         })
         .catch(error => {
             hideLoading();
-            console.error('Error detecting page edges:', error);
+            toastr.error(error || 'Error detecting edges.');
         });
 }
 
@@ -643,6 +664,9 @@ export function CalculateLetters(imagePath) {
     })
         .then(response => response.json())
         .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
             hideLoading();
 
             if (data && Array.isArray(data.polygons)) {
@@ -653,7 +677,7 @@ export function CalculateLetters(imagePath) {
         })
         .catch(error => {
             hideLoading();
-            console.error('Error detecting letters:', error);
+            toastr.error(error || 'Error detecting letters.');
         });
 }
 
