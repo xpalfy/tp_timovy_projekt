@@ -354,7 +354,7 @@ export function saveJson() {
         });
 }
 
-function getUrlParams() {
+export function getUrlParams() {
     const params = {};
     const queryString = window.location.search.substring(1);
     const vars = queryString.split("&");
