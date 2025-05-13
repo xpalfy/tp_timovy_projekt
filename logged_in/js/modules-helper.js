@@ -31,9 +31,9 @@ export function goToJsonEdit(doc_id, item_id) {
     window.location.href = 'editJsonModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
 
-export function addNewRect(parentName) {
+export function addNewRect(parentName, rect_type = 'segment-rect') {
     const parent = document.getElementById(parentName);
-    const newRect = document.createElement('segment-rect');
+    const newRect = document.createElement(rect_type);
     newRect.setAttribute('x1', 100);
     newRect.setAttribute('y1', 100);
     newRect.setAttribute('x2', 200);
@@ -140,6 +140,84 @@ export function saveAnalysisData() {
             if (data.success) {
                 toastr.success('Analysis data saved successfully.');
                 goToLetterSegmentation(selectedDocumentId, selectedItemId);
+            } else {
+                toastr.error('Failed to save segmentation data.');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            toastr.error('Error saving segmentation data.');
+            console.error('Error:', error);
+        });
+}
+
+export function saveLetterData() {
+    showLoading();
+
+    let rects = document.querySelectorAll('letter-rect');
+    let polygons = [];
+
+    rects.forEach(rect => {
+        let polygon = [
+            { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
+            { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
+            { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
+            { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') },
+            { type: rect.getAttribute('type') }
+        ];
+        polygons.push(polygon);
+    });
+
+    let data = {
+        document_id: selectedDocumentId,
+        item_id: selectedItemId,
+        user_id: userData.id,
+        status: 'PROCESSED',
+        polygons: polygons,
+        token: window.phpToken
+    };
+
+    console.log('Data to be sent:', data);
+
+    fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                hideLoading();
+                toastr.success('Letter segmentation data saved successfully.');
+                // call /encode_letters ?? Ez elmenti mint EXTRACTED ami nekunk meg nem kell
+                /*
+                fetch('https://python.tptimovyprojekt.software/encode_letters', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ document_id: selectedDocumentId, user_id: userData.id, token: '<?php echo $_SESSION["token"]; ?>' })
+
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        hideLoading();
+                        if (data.success) {
+                            toastr.success('Letter encoding completed successfully.');
+                            goToJsonEdit(selectedDocumentId, selectedItemId);
+                        } else {
+                            toastr.error('Failed to encode letters.');
+                        }
+                    })
+                    .catch(error => {
+                        hideLoading();
+                        toastr.error('Error encoding letters.');
+                        console.error('Error:', error);
+                    });
+                    */
+                goToJsonEdit(selectedDocumentId, selectedItemId);
             } else {
                 toastr.error('Failed to save segmentation data.');
             }
@@ -304,14 +382,8 @@ export function deletePolygons(parentName) {
     });
 }
 
-export function showSegmentor() {
-    document.getElementById('imageSegmentor').style.display = 'block';
-    document.getElementById('loadItemButton').style.display = 'block';
-    document.getElementById('addRectButton').style.display = 'block';
-}
-
-export function showAnalyzer() {
-    document.getElementById('imageAnalyzer').style.display = 'block';
+export function showProcessingZone(elementId) {
+    document.getElementById(elementId).style.display = 'block';
     document.getElementById('loadItemButton').style.display = 'block';
     document.getElementById('addRectButton').style.display = 'block';
 }
@@ -339,7 +411,7 @@ export function CalculateSegmentation(imagePath) {
             if (Array.isArray(data)) {
                 data.forEach(segment => {
                     if (segment.polygon && Array.isArray(segment.polygon)) {
-                        appendRects('previewContainerSegment',[segment]);
+                        appendRects('previewContainerSegment', [segment]);
                     } else {
                         console.warn('Skipping invalid segment:', segment);
                     }
@@ -380,7 +452,33 @@ export function CalculateAnalysis(imagePath) {
         });
 }
 
-function appendRects(parentName, segments) {
+export function CalculateLetters(imagePath) {
+    showLoading();
+
+    fetch('https://python.tptimovyprojekt.software/segmentate_text', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ path: imagePath })
+    })
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+
+            if (data && Array.isArray(data.polygons)) {
+                appendRects('previewContainerLetter', data.polygons, 'letter-rect'); // Process the polygons array
+            } else {
+                console.error('Invalid response from server:', data);
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            console.error('Error detecting letters:', error);
+        });
+}
+
+function appendRects(parentName, segments, rect_type = 'segment-rect') {
     const parent = document.getElementById(parentName);
 
     if (!parent) {
@@ -402,7 +500,7 @@ function appendRects(parentName, segments) {
         const x2 = x1, y2 = y3;
         const x4 = x3, y4 = y1;
 
-        let newRect = document.createElement('segment-rect');
+        let newRect = document.createElement(rect_type);
         newRect.setAttribute('x1', x1);
         newRect.setAttribute('y1', y1);
         newRect.setAttribute('x2', x2);
