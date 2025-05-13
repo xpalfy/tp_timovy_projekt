@@ -6,7 +6,7 @@ Promise.all([
 ]).then(([uiAnimationHandlers, decryptHelper]) => {
     const {
         fetchItems, fetchKeys, setSelectedCipherItemId, setSelectedKeyItemId,
-        setSelectedKeyDocumentId, showSelectedItem, getDocumentsData, startDecipher,
+        setSelectedKeyDocumentId, showSelectedItem, getCipherDocumentsData, getKeyDocumentsData, startDecipher,
         setSelectedCipherDocumentId, getSelectedKeyDocumentId, getSelectedCipherDocumentId,
         fetchDocuments, selectKey, copyToClipboard
     } = decryptHelper;
@@ -34,7 +34,7 @@ Promise.all([
         $("#documentSearchKey").autocomplete({
             source: function (request, response) {
                 const term = request.term.toLowerCase();
-                const filtered = getDocumentsData().filter(doc => doc.title.toLowerCase().includes(term) && doc.doc_type === 'KEY');
+                const filtered = getKeyDocumentsData().filter(doc => doc.title.toLowerCase().includes(term) && doc.doc_type === 'KEY');
                 response(filtered.map(doc => ({
                     label: doc.title,
                     value: doc.title,
@@ -53,7 +53,7 @@ Promise.all([
         $("#documentSearchCipher").autocomplete({
             source: function (request, response) {
                 const term = request.term.toLowerCase();
-                const filtered = getDocumentsData().filter(doc => doc.title.toLowerCase().includes(term) && doc.doc_type === 'CIPHER');
+                const filtered = getCipherDocumentsData().filter(doc => doc.title.toLowerCase().includes(term) && doc.doc_type === 'CIPHER');
                 response(filtered.map(doc => ({
                     label: doc.title,
                     value: doc.title,
@@ -83,6 +83,7 @@ Promise.all([
         $("#itemSelectorCipher").change(function () {
             showLoading();
             document.getElementById('rightSide').style.display = 'flex';
+            fetchDocuments('KEY');
             fetchKeys();
             setSelectedCipherItemId($(this).val());
             showSelectedItem("CIPHER");
