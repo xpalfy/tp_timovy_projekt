@@ -142,7 +142,7 @@ try {
                                 </li>
                                 <li>
                                     <a href="./modules/decipherModule.php"
-                                        class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
                                 </li>
                             </ul>
                         </div>
@@ -174,21 +174,10 @@ try {
                                class="w-full p-3 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] placeholder-[#6b5b3e] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
                     </div>
 
-                    <!-- Page Size -->
-                    <div>
-                        <label for="page-size-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📄 Per
-                            Page</label>
-                        <select id="page-size-select"
-                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
-                            <option value="6" selected>6</option>
-                            <option value="12">12</option>
-                            <option value="18">18</option>
-                        </select>
-                    </div>
-
                     <!-- Document Type Filter -->
                     <div>
-                        <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">📂 Type</label>
+                        <label for="filter-select" class="block mb-2 text-lg font-medium text-[#3b2f1d]">🗂️ Document
+                            Access Type</label>
                         <select id="filter-select"
                                 class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
                             <option value="OWN" selected>Own Documents</option>
@@ -209,8 +198,23 @@ try {
                     </div>
                 </div>
 
-                <div id="pagination" class="flex justify-center mt-8 mb-4 space-x-2">
-                    <!-- Pagination buttons go here -->
+                <div class="flex flex-col md:flex-row items-center justify-between mt-8 mb-4 gap-4">
+                    <!-- Pagination Buttons Centered Under Grid -->
+                    <div id="pagination" class="flex flex-wrap justify-center w-full md:justify-center gap-2">
+                        <!-- Pagination buttons will be injected here -->
+                    </div>
+
+                    <!-- Per Page Selector Aligned Right -->
+                    <div class="flex items-center space-x-2 md:justify-end w-full md:w-auto">
+                        <label for="page-size-select" class="text-sm font-medium text-[#3b2f1d]">Results per
+                            page:</label>
+                        <select id="page-size-select"
+                                class="px-3 py-2 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                            <option value="6" selected>6</option>
+                            <option value="12">12</option>
+                            <option value="18">18</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -225,7 +229,8 @@ try {
         <div class="flex space-x-4 text-sm">
             <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
                 Page</a>
-            <a href="../faq.html" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#5a452e] transition">FAQ</a>
+            <a href="../faq.html" target="_blank" rel="noopener noreferrer"
+               class="underline hover:text-[#5a452e] transition">FAQ</a>
         </div>
     </div>
 </footer>
@@ -235,7 +240,7 @@ try {
     let currentPageSize = 6;
 
     function renderDocuments(documents, images, pageSize = 6, type = 'OWN', currentPage = 1) {
-        const totalPages = Math.ceil(documents.length / pageSize);
+        const totalPages = Math.max(1, Math.ceil(documents.length / pageSize));
         const start = (currentPage - 1) * pageSize;
         const end = start + pageSize;
         const paginatedDocs = documents.slice(start, end);
@@ -247,68 +252,65 @@ try {
 
         if (paginatedDocs.length === 0) {
             grid.innerHTML = `<div class="text-center text-papyrus text-lg mt-10">No documents found.</div>`;
-            return;
+        } else {
+            paginatedDocs.forEach(doc => {
+                const imgPath = images[doc.id] ? '..' + images[doc.id] : '../img/default.png';
+
+                let cardButtons = '';
+                let editPage = '';
+
+                if (type === 'OWN') {
+                    editPage = 'edit_key/editOwnKeyDocument.php';
+                    cardButtons = `
+                    <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                    <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>`;
+                } else if (type === 'SHARED') {
+                    editPage = 'edit_key/editSharedKeyDocument.php';
+                    cardButtons = `
+                    <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
+                    <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>`;
+                } else if (type === 'PUBLIC') {
+                    editPage = 'edit_key/viewPublicKeyDocument.php';
+                    cardButtons = `<a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'card-pic';
+                card.innerHTML = `
+                <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
+                <div class="card-body">
+                    <h5 class="card-title">${doc.title}</h5>
+                    <div class="card-buttons">${cardButtons}</div>
+                </div>`;
+                grid.appendChild(card);
+            });
         }
 
-        paginatedDocs.forEach(doc => {
-            const imgPath = images[doc.id] ? '..' + images[doc.id] : '../img/default.png';
+        // Always render pagination (even if there's only 1 page or no docs)
+        // Previous Button
+        const prev = document.createElement('button');
+        prev.textContent = '«';
+        prev.disabled = currentPage === 1;
+        prev.className = `px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-black hover:bg-[#5a452e]'} transition`;
+        prev.onclick = () => renderDocuments(documents, images, pageSize, type, currentPage - 1);
+        pagination.appendChild(prev);
 
-            let cardButtons = '';
-            let editPage = '';
-
-            if (type === 'OWN') {
-                editPage = 'edit_key/editOwnKeyDocument.php';
-                cardButtons = `
-                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                <button onclick="deleteDocument(${doc.id})" class="btn btn-danger">Delete</button>`;
-            } else if (type === 'SHARED') {
-                editPage = 'edit_key/editSharedKeyDocument.php';
-                cardButtons = `
-                <a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Edit</a>
-                <button onclick="unshareWithMe('<?php echo $userData['username']; ?>', ${doc.id})" class="btn btn-danger">Unshare</button>`;
-            } else if (type === 'PUBLIC') {
-                editPage = 'edit_key/viewPublicKeyDocument.php';
-                cardButtons = `<a href="${editPage}?id=${doc.id}&user=<?php echo $userData['id']; ?>" class="btn btn-primary">Show</a>`;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'card-pic';
-            card.innerHTML = `
-            <img src="${imgPath}" class="card-img" alt="..." loading="lazy">
-            <div class="card-body">
-                <h5 class="card-title">${doc.title}</h5>
-                <div class="card-buttons">${cardButtons}</div>
-            </div>`;
-            grid.appendChild(card);
-        });
-
-        if (totalPages > 1) {
-            // Previous
-            const prev = document.createElement('button');
-            prev.textContent = '«';
-            prev.disabled = currentPage === 1;
-            prev.className = `px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-black hover:bg-[#5a452e]'} transition`;
-            prev.onclick = () => renderDocuments(documentsData, imagesData, currentPageSize, type, currentPage - 1);
-            pagination.appendChild(prev);
-
-            // Page numbers
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-[#3b2f1d] text-white' : 'bg-gray-200 text-black'} hover:bg-[#5a452e] transition`;
-                btn.onclick = () => renderDocuments(documentsData, imagesData, currentPageSize, type, i);
-                pagination.appendChild(btn);
-            }
-
-            // Next
-            const next = document.createElement('button');
-            next.textContent = '»';
-            next.disabled = currentPage === totalPages;
-            next.className = `px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-black hover:bg-[#5a452e]'} transition`;
-            next.onclick = () => renderDocuments(documentsData, imagesData, currentPageSize, type, currentPage + 1);
-            pagination.appendChild(next);
+        // Page Numbers
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-[#3b2f1d] text-white' : 'bg-gray-200 text-black'} hover:bg-[#5a452e] transition`;
+            btn.onclick = () => renderDocuments(documents, images, pageSize, type, i);
+            pagination.appendChild(btn);
         }
 
+        // Next Button
+        const next = document.createElement('button');
+        next.textContent = '»';
+        next.disabled = currentPage === totalPages;
+        next.className = `px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-black hover:bg-[#5a452e]'} transition`;
+        next.onclick = () => renderDocuments(documents, images, pageSize, type, currentPage + 1);
+        pagination.appendChild(next);
     }
 
 
