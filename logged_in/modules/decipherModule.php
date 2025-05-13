@@ -235,17 +235,26 @@ try {
                 </div>
 
                 <!-- Result Area -->
-                <div id="resultArea" class="flex justify-center items-center mb-5 mt-5 w-full relative" style="display: none;">
+                <div id="resultArea" class="flex justify-center items-center mb-5 mt-5 w-full relative"
+                    style="display: none;">
                     <h3 class="text-2xl font-bold text-center text-papyrus mb-6">Decrypted Result</h3>
                     <div class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-4 mr-5 ml-5">
                         <textarea id="resultText" class="w-full h-auto"
                             style="padding: 5px; padding-right: 25px; min-height: 60px;">Decrypted text will be shown here.</textarea>
                         <button id="copyToClipboardBtn"
-                            class="rounded-lg p-1 transition duration-300 hover:bg-gray-100 absolute" style="top: 78px; right: 40px;"
-                            onclick="copyToClipboard()"><img src="../../img/copy.png" width="20px" height="20px"></button>
+                            class="rounded-lg p-1 transition duration-300 hover:bg-gray-100 absolute"
+                            style="top: 78px; right: 40px;" onclick="copyToClipboard()"><img src="../../img/copy.png"
+                                width="20px" height="20px"></button>
                     </div>
                 </div>
+
+                <div id="navigationBtn" class="flex justify-center items-center mt-5 mb-5" style="display: none;">
+                    <a href="../ownCipherDocuments.php"
+                        class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2 mt-2 transition duration-300 hover:bg-yellow-300 hover:text-[#d7c7a5]">Go
+                        to your Documents</a>
+                </div>
             </div>
+        </div>
     </main>
 
     <footer
@@ -631,13 +640,18 @@ try {
                     hideLoading();
                     console.log('Fetched items:', item);
                     toastr.success('Decrypted text saved successfully.');
-                    window.location.href = `../edit_cipher/editOwnCipherDocument.php?id=${selectedCipherDocumentId}&user=${userData.id}`;
+                    showNavigationBtn();
                 })
                 .catch(error => {
                     hideLoading();
                     toastr.error('Failed to save decrypted text.');
                     console.error('Error fetching items:', error);
                 });
+        }
+
+        function showNavigationBtn() {
+            const navigationBtn = document.getElementById('navigationBtn');
+            navigationBtn.style.display = 'block';
         }
 
         function setDecryptResult(decryptResult) {

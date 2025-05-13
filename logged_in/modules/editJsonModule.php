@@ -236,9 +236,9 @@ try {
             </div>
 
             <!-- Save Btns -->
-            <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-8 mb-6" style="display: none;">
-                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveJson()">Save Work</button>
+            <div id="DownloadJSONBtn" class="flex justify-center space-x-4 mt-8 mb-6" style="display: none;">   
                 <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="downloadJSON()">Download JSON</button>
+                <button class="btn-papyrus px-4 py-2 rounded-lg shadow" onclick="saveJson()">Save Work</button>
             </div>
         </div>
     </main>
@@ -435,7 +435,7 @@ try {
                 console.log(itemsData);
                 selectedItemImagePath = itemsData.find(item => item.id == selectedItemId).image_path;
                 showJsonEditor();
-                fetchJson(itemsData.find(item => item.id == selectedItemId).type);
+                fetchJson();
                 hideLoading();
             });
         });
@@ -473,17 +473,7 @@ try {
             }
         }*/
 
-        function fetchJson(type) {
-            if (type === 'KEY') {
-                fetchKeyJson();
-            } else if (type === 'CIPHER') {
-                fetchCipherJson();
-            } else {
-                toastr.error('Invalid document type');
-            }
-        }
-
-        function fetchKeyJson() {
+        function fetchJson() {
             const formData = {
                 document_id: selectedDocumentId,
                 user_id: userData.id,
@@ -505,32 +495,6 @@ try {
                 },
                 error: function () {
                     toastr.error('Server error while fetching key JSON');
-                }
-            });
-        }
-
-        function fetchCipherJson() {
-            const formData = {
-                document_id: selectedDocumentId,
-                user_id: userData.id,
-                token: '<?php echo $_SESSION['token']; ?>'
-            };
-
-            $.ajax({
-                url: 'https://python.tptimovyprojekt.software/get_cipher_json',
-                type: 'POST',
-                data: JSON.stringify(formData),
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function (res) {
-                    if (res.error) {
-                        toastr.error(res.error || 'Failed to load cipher JSON');
-                    } else {
-                        $('#jsonEditor').val(JSON.stringify(res, null, 2));
-                    }
-                },
-                error: function () {
-                    toastr.error('Server error while fetching cipher JSON');
                 }
             });
         }

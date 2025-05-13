@@ -567,9 +567,35 @@ try {
             })
                 .then(response => response.json())
                 .then(data => {
-                    hideLoading();
                     if (data.success) {
+                        hideLoading();
                         toastr.success('Letter segmentation data saved successfully.');
+                        // call /encode_letters ?? Ez elmenti mint EXTRACTED ami nekunk meg nem kell
+                        /*
+                        fetch('https://python.tptimovyprojekt.software/encode_letters', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ document_id: selectedDocumentId, user_id: userData.id, token: '<?php echo $_SESSION["token"]; ?>' })
+
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                hideLoading();
+                                if (data.success) {
+                                    toastr.success('Letter encoding completed successfully.');
+                                    goToJsonEdit(selectedDocumentId, selectedItemId);
+                                } else {
+                                    toastr.error('Failed to encode letters.');
+                                }
+                            })
+                            .catch(error => {
+                                hideLoading();
+                                toastr.error('Error encoding letters.');
+                                console.error('Error:', error);
+                            });
+                            */
                         goToJsonEdit(selectedDocumentId, selectedItemId);
                     } else {
                         toastr.error('Failed to save segmentation data.');
