@@ -31,11 +31,11 @@ Promise.all([
 
     function initializePage() {
         const helpContent = document.getElementById("helpContent");
-        const imageSegmentor = document.getElementById("imageSegmentor");
+        const imageZone = document.getElementById("imageSegmentor");
         const bnts = document.getElementById("btns");
         const glass = document.querySelector(".glass");
 
-        imageSegmentor.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+        imageZone.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
         bnts.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
 
         fetchDocuments('UPLOADED');
@@ -82,13 +82,13 @@ Promise.all([
             if (helpContent.style.visibility === "hidden" || helpContent.style.visibility === "") {
                 helpContent.style.visibility = "visible";
                 helpContent.style.animation = "slide-in 0.5s forwards";
-                imageSegmentor.style.transform = "translateY(0)";
+                imageZone.style.transform = "translateY(0)";
                 bnts.style.transform = "translateY(0)";
                 glass.style.height = fixedHeight + helpContent.scrollHeight + 8 + "px";
                 this.textContent = "Hide Polygon Help";
             } else {
                 helpContent.style.animation = "slide-out 0.5s forwards";
-                imageSegmentor.style.transform = "translateY(-"+ helpContent.scrollHeight +"px)";
+                imageZone.style.transform = "translateY(-"+ helpContent.scrollHeight +"px)";
                 bnts.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
                 glass.style.height = fixedHeight - helpContent.scrollHeight + "px";
                 setTimeout(() => {
