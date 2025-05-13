@@ -6,14 +6,15 @@ Promise.all([
 ]).then(([imageHandlers, uiAnimationHandlers]) => {
     const {
         handleDrop, uploadImageButton, handleDragOver, handleDragLeave, downloadJSON,
-        hideLoading, checkToasts, setStep, setupPreviewNavigation, goToSegmentation,
+        setupPreviewNavigation, goToSegmentation,
         deleteUnsavedImage, goToAnalyzation, goToLetterSegmentation,
         goToJsonEdit, saveProcessing, deleteImage, getImage, getImageKey, saveKey, saveCipher,
         currentImageId
     } = imageHandlers;
 
     const {
-        scrollEvent, scrollToBookmark, setupNavbarToggle, setupGSAPAnimations
+        scrollEvent, scrollToBookmark, setupNavbarToggle, setupGSAPAnimations, setStep,
+        checkToasts, hideLoading
     } = uiAnimationHandlers;
 
     // Expose functions to the global scope
@@ -49,14 +50,20 @@ Promise.all([
         // Optionally call deleteUnsavedImage if needed
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        initializePage();
+    } else {
+        document.addEventListener('DOMContentLoaded', initializePage);
+    }
+
+    function initializePage() {
         setupNavbarToggle();
         setupGSAPAnimations();
         setupPreviewNavigation();
         hideLoading();
         setStep(0);
         checkToasts();
-    });
+    }
 }).catch(error => {
     console.error("Error loading modules:", error);
 });

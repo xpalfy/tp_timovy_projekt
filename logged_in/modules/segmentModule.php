@@ -231,7 +231,7 @@ try {
             <!-- Save Button -->
             <div class="flex justify-center items-center mt-5 mb-5 gap-2">
                 <button id="addRectButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
-                    style="display: none;" onclick="addNewRect()">Add Segmentation Zone</button>
+                    style="display: none;" onclick="addNewRect('previewContainerSegment')">Add Segmentation Zone</button>
                 <button id="loadItemButton" class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
                     style="display: none;" onclick="saveSegmentionData()">Save Segmentation</button>
             </div>

@@ -1,10 +1,22 @@
 import { version } from './version.js';
 
-let uiAnimationHandlers;
+// Import the ui-animation-handler module dynamically if it's not already loaded 
 import(`./ui-animation-handler.js${version}`)
     .then(module => {
-        uiAnimationHandlers = module; // Assign the imported module
-        console.log("ui-animation-handler module loaded successfully.");
+        const { hideLoading, showLoading, handleError, handleWarning,
+            hideCreateBtns, showSegmentBtns, showCreateBtns, showSystemMessage, hideSystemMessage
+        } = module;
+
+        // Expose functions to the global scope
+        window.hideLoading = hideLoading;
+        window.showLoading = showLoading;
+        window.handleError = handleError;
+        window.handleWarning = handleWarning;
+        window.hideCreateBtns = hideCreateBtns;
+        window.showSegmentBtns = showSegmentBtns;
+        window.showCreateBtns = showCreateBtns;
+        window.showSystemMessage = showSystemMessage;
+        window.hideSystemMessage = hideSystemMessage;
     })
     .catch(error => {
         console.error("Error loading ui-animation-handler module:", error);
@@ -121,7 +133,7 @@ export function hideScrollBtns() {
 function saveData(type) {
     console.log(previewImages);
     if (previewImages.length === 0) {
-        uiAnimationHandlers.handleError('Please upload an image first.');
+        handleError('Please upload an image first.');
         return;
     }
     let doc_name = document.getElementById('documentName').value;
@@ -146,7 +158,7 @@ function saveData(type) {
     }*/
 
     if (doc_name === '') {
-        uiAnimationHandlers.handleError('Please enter a name for the document.');
+        handleError('Please enter a name for the document.');
         return;
     }
 
@@ -201,8 +213,8 @@ function saveData(type) {
                         });
                 }
                 toastr.success('Document created successfully.');
-                uiAnimationHandlers.hideCreateBtns();
-                uiAnimationHandlers.showSegmentBtns();
+                hideCreateBtns();
+                showSegmentBtns();
             } else {
                 handleWarning(data.error);
                 return;
@@ -281,7 +293,7 @@ export function saveImage(data, image_name) {
                 console.log("Image uploaded successfully. ID:", currentImageId);
                 classificationScores.push(classifyPicture(data.path));
                 if (classificationScores.length === numOfFiles && classificationScores.length > 0) {
-                    uiAnimationHandlers.showCreateBtns();
+                    showCreateBtns();
                     applyClassificationStyle(classificationScores);
                 }
             } else {
@@ -321,17 +333,9 @@ export function deleteUnsavedImage(imageId) {
     classificationScores = [];
     currentPreviewIndex = 0;
     updatePreview();
-    uiAnimationHandlers.hideCreateBtns();
-    uiAnimationHandlers.hideSegmentBtns();
-    uiAnimationHandlers.hideAnalyzeKeyBtn();
-    uiAnimationHandlers.hideAnalyzeCipherBtn();
-    uiAnimationHandlers.hideLettersKeyBtn();
-    uiAnimationHandlers.hideLettersCipherBtn();
-    uiAnimationHandlers.hideEditJSONKeyBtn();
-    uiAnimationHandlers.hideEditJSONCipherBtn();
-    uiAnimationHandlers.hideDownloadJSONBtn();
+    hideCreateBtns();
     hideLoading();
-    uiAnimationHandlers.hideSystemMessage();
+    hideSystemMessage();
 }
 
 export async function classifyPicture(path) {
@@ -349,7 +353,7 @@ export async function classifyPicture(path) {
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
-            uiAnimationHandlers.handleError();
+            handleError();
         }
 
         const data = await response.json();
@@ -360,11 +364,11 @@ export async function classifyPicture(path) {
             return data.classification;
         } else {
             console.error("Error in classification response.");
-            uiAnimationHandlers.handleError();
+            handleError();
         }
     } catch (error) {
         console.error("Error sending request to Flask server:", error.message);
-        uiAnimationHandlers.handleError();
+        handleError();
     }
 }
 
@@ -399,7 +403,7 @@ export function applyClassificationStyle(classification_score) {
             messageContainer.innerHTML = `The classifier thinks the images are ${100 - classification_score}% keys.`;
         }
         hideLoading();
-        uiAnimationHandlers.showSystemMessage();
+        showSystemMessage();
     })
 }
 function resetClassificationStyle() {
@@ -713,44 +717,6 @@ export function setupPreviewNavigation() {
             currentPreviewIndex = (currentPreviewIndex - 1 + previewImages.length) % previewImages.length;
             updatePreview();
         });
-    }
-}
-export function hideLoading() {
-    loadings = document.getElementsByClassName('loading-cont');
-    for (let loading of loadings) {
-        loading.style.display = 'none';
-    }
-}
-export function checkToasts() {
-    if (window.toastData) {
-        toastr[window.toastData.type](window.toastData.message);
-    }
-}
-export function setStep(index) {
-    const steps = document.querySelectorAll('.step');
-    const lines = document.querySelectorAll('.line');
-
-    steps.forEach((step, i) => {
-        if (i <= index) {
-            step.classList.add('active');
-        } else {
-            step.classList.remove('active');
-        }
-    });
-
-    lines.forEach((line, i) => {
-        if (i < index) {
-            line.style.backgroundColor = '#bfa97a';
-        } else {
-            line.style.backgroundColor = '#cdbf9b';
-        }
-    });
-}
-
-function showLoading() {
-    loadings = document.getElementsByClassName('loading-cont');
-    for (let loading of loadings) {
-        loading.style.display = 'flex';
     }
 }
 
