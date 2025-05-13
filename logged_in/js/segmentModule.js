@@ -30,6 +30,14 @@ Promise.all([
     }
 
     function initializePage() {
+        const helpContent = document.getElementById("helpContent");
+        const imageSegmentor = document.getElementById("imageSegmentor");
+        const bnts = document.getElementById("btns");
+        const glass = document.querySelector(".glass");
+
+        imageSegmentor.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+        bnts.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+
         fetchDocuments('UPLOADED');
         $("#documentSearch").autocomplete({
             source: function (request, response) {
@@ -59,7 +67,35 @@ Promise.all([
             updateImagePreview();
             deletePolygons('previewContainerSegment');
             CalculateSegmentation(getSelectedItemImagePath());
+            setTimeout(() => {
+                glass.style.height = glass.scrollHeight - helpContent.scrollHeight + "px"; 
+            }, 100);
             hideLoading();
+            
+        });
+        document.getElementById("helpToggleButton").addEventListener("click", function () {
+            this.disabled = true;
+            setTimeout(() => {
+                this.disabled = false;
+            }, 600);
+            let fixedHeight = glass.scrollHeight;
+            if (helpContent.style.visibility === "hidden" || helpContent.style.visibility === "") {
+                helpContent.style.visibility = "visible";
+                helpContent.style.animation = "slide-in 0.5s forwards";
+                imageSegmentor.style.transform = "translateY(0)";
+                bnts.style.transform = "translateY(0)";
+                glass.style.height = fixedHeight + helpContent.scrollHeight + 8 + "px";
+                this.textContent = "Hide Polygon Help";
+            } else {
+                helpContent.style.animation = "slide-out 0.5s forwards";
+                imageSegmentor.style.transform = "translateY(-"+ helpContent.scrollHeight +"px)";
+                bnts.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+                glass.style.height = fixedHeight - helpContent.scrollHeight + "px";
+                setTimeout(() => {
+                    helpContent.style.visibility = "hidden";
+                }, 500); 
+                this.textContent = "Show Polygon Help";
+            }
         });
         setupNavbarToggle();
         setupGSAPAnimations();
