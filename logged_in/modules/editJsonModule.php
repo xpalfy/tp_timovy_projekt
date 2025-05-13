@@ -41,110 +41,110 @@ try {
 </head>
 
 <body class="min-h-screen flex flex-col not-copyable not-draggable text-papyrus">
-    <!-- Navbar -->
-    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
-        id="navbar">
-        <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
-            <a href="../main.php"
-                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
-                <img src="../../img/logo.png" alt="Logo" class="w-10 h-10 mr-3"
-                    style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                HandScript
-            </a>
-            <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-            <div class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0" id="navbarNav">
-                <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
-                    <li class="flex items-center">
-                        <a href="../profile.php" class="nav-link flex items-center hover:underline">
-                            Profile
-                            <img src="../../img/account.png" alt="profile" class="w-6 h-6 ml-2"
-                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        </a>
-                    </li>
-                    <li class="flex items-center ml-6">
-                        <div class="relative flex items-center">
-                            <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
+<!-- Navbar -->
+<nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+     id="navbar">
+    <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+        <a href="../main.php"
+           class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
+            <img src="../../img/logo.png" alt="Logo" class="w-10 h-10 mr-3 mb-1"
+                 style="filter: filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+            HandScript
+        </a>
+        <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+        <div class="w-full lg:flex lg:items-center lg:w-auto hidden lg:mt-1" id="navbarNav">
+            <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right">
+                <li class="flex items-center">
+                    <a href="../profile.php" class="nav-link flex items-center hover:underline">
+                        Profile
+                        <img src="../../img/avatars/avatar_<?php echo $userData['avatarId']; ?>.png"
+                        alt="profile" class="w-8 h-8 ml-2 mb-2 rounded-full">
+                    </a>
+                </li>
+                <li class="flex items-center ml-6">
+                    <div class="relative flex items-center">
+                        <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
                                 class="hover:underline flex items-center">
-                                Documents
-                                <img src="../../img/document.png" alt="document" class="w-6 h-6 ml-2"
-                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                                <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 1l4 4 4-4" />
-                                </svg>
-                            </button>
-                            <div id="dropdownDocuments"
-                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                                <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
-                                    <li>
-                                        <a href="../ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
-                                            Documents</a>
-                                    </li>
-                                    <li>
-                                        <a href="../ownCipherDocuments.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            Documents
+                            <img src="../../img/document.png" alt="document" class="w-6 h-6 ml-2 mb-1"
+                                 style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                 fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="M1 1l4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="dropdownDocuments"
+                             class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                            <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
+                                <li>
+                                    <a href="../ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
+                                        Documents</a>
+                                </li>
+                                <li>
+                                    <a href="../ownCipherDocuments.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
+                                </li>
+                            </ul>
                         </div>
-                    </li>
-                    <li class="flex items-center ml-6">
-                        <div class="relative flex items-center">
-                            <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
+                    </div>
+                </li>
+                <li class="flex items-center ml-6">
+                    <div class="relative flex items-center">
+                        <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
                                 class="hover:underline flex items-center">
-                                Tools
-                                <img src="../../img/tools.png" alt="tools" class="w-6 h-6 ml-2"
-                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                                <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 1l4 4 4-4" />
-                                </svg>
-                            </button>
-                            <div id="dropdownTools"
-                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                                <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
-                                    <li>
-                                        <a href="./segmentModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
-                                    </li>
-                                    <li>
-                                        <a href="./analyzeModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
-                                    </li>
-                                    <li>
-                                        <a href="./lettersModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
-                                    </li>
-                                    <li>
-                                        <a href="./editJsonModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Edit
-                                            Json</a>
-                                    </li>
-                                    <li>
-                                        <a href="./decipherModule.php"
-                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            Tools
+                            <img src="../../img/tools.png" alt="tools" class="w-6 h-6 ml-2 mb-1"
+                                 style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                 fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="M1 1l4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="dropdownTools"
+                             class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                            <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownToolsButton">
+                                <li>
+                                    <a href="./segmentModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                </li>
+                                <li>
+                                    <a href="./analyzeModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                </li>
+                                <li>
+                                    <a href="./lettersModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                </li>
+                                <li>
+                                    <a href="./editJsonModule.php"
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Edit Json</a>
+                                </li>
+                                <li>
+                                    <a href="./decipherModule.php"
+                                        class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
+                                </li>
+                            </ul>
                         </div>
-                    </li>
-                    <li class="flex items-center ml-6">
-                        <a href="../../logout.php" class="nav-link flex items-center hover:underline">
-                            Logout
-                            <img src="../../img/logout.png" alt="logout" class="w-6 h-6 ml-2"
-                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                    </div>
+                </li>
+                <li class="flex items-center ml-6">
+                    <a href="../../logout.php" class="nav-link flex items-center hover:underline">
+                        Logout
+                        <img src="../../img/logout.png" alt="logout" class="w-6 h-6 ml-2 mb-1"
+                             style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                    </a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div id="polygonModal" class="modal" style="display:none;">
         <div class="modal-content">
