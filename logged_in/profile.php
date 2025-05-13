@@ -225,12 +225,6 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 
                     <p class="font-semibold mt-2">Email:</p>
                     <p id="currentEmail"><?php echo $userData['email']; ?></p>
-
-                    <p class="font-semibold mt-2">Avatar ID:</p>
-                    <p id="currentAvatarId"><?php echo $userData['avatarId']; ?></p>
-
-                    <p class="font-semibold mt-2">User ID:</p>
-                    <p id="currentUserId"><?php echo $userData['id']; ?></p>
                 </div>
             </div>
 
