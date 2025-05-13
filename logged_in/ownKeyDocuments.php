@@ -228,7 +228,7 @@ try {
         <div class="flex space-x-4 text-sm">
             <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
                 Page</a>
-            <a href="../faq.html" target="_blank" rel="noopener noreferrer"
+            <a href="../faq.php"
                class="underline hover:text-[#5a452e] transition">FAQ</a>
         </div>
     </div>

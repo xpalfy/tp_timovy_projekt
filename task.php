@@ -1,3 +1,19 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require './checkType.php';
+
+try {
+    $userData = validateToken();
+} catch (Exception $e) {
+    $userData = null;
+    session_unset();
+    session_destroy();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,9 +35,9 @@
 <!-- Navbar -->
 <nav class="bg-[#d7c7a5] shadow sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <a href="./index.html" class="text-2xl font-bold hover:underline">HandScript</a>
+    <a href="./index.php" class="text-2xl font-bold hover:underline">HandScript</a>
     <div class="hidden md:flex space-x-6 text-lg items-center">
-      <a href="./index.html" class="hover:underline">Home</a>
+      <a href="./index.php" class="hover:underline">Home</a>
 
       <!-- Docs Dropdown -->
       <div class="relative">
@@ -60,40 +76,47 @@
           class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
           <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="projectDropdownButton">
             <li>
-              <a href="./task.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
+              <a href="./task.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Description</a>
             </li>
             <li>
-              <a href="./team.html" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
+              <a href="./team.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Team Members</a>
             </li>
             <li>
-              <a href="./faq.html" class="block px-4 py-2 hover:bg-[#cbbd99]">FAQ</a>
+              <a href="./faq.php" class="block px-4 py-2 hover:bg-[#cbbd99]">FAQ</a>
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- Account Dropdown -->
-      <div class="relative">
-        <button id="accountDropdownButton" data-dropdown-toggle="accountDropdown"
-          class="hover:underline flex items-center">
-          Account
-          <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M1 1l4 4 4-4" />
-          </svg>
-        </button>
-        <div id="accountDropdown"
-          class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
-          <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="accountDropdownButton">
-            <li>
-              <a href="./login.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Login</a>
-            </li>
-            <li>
-              <a href="./register.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Register</a>
-            </li>
-          </ul>
+      <!-- Account or Dashboard -->
+      <?php if ($userData === null): ?>
+        <!-- Account Dropdown -->
+        <div class="relative">
+          <button id="accountDropdownButton" data-dropdown-toggle="accountDropdown"
+            class="hover:underline flex items-center">
+            Account
+            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M1 1l4 4 4-4" />
+            </svg>
+          </button>
+          <div id="accountDropdown"
+            class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="accountDropdownButton">
+              <li>
+                <a href="./login.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Login</a>
+              </li>
+              <li>
+                <a href="./register.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Register</a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      <?php else: ?>
+        <!-- Dashboard Link -->
+        <a href="./logged_in/main.php" class="hover:underline">Dashboard</a>
+      <?php endif; ?>
+
     </div>
   </div>
 </nav>
@@ -206,7 +229,7 @@
       <div class="flex space-x-4 text-sm">
           <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
               Page</a>
-          <a href="./faq.html" class="underline hover:text-[#5a452e] transition">FAQ</a>
+          <a href="./faq.php" class="underline hover:text-[#5a452e] transition">FAQ</a>
       </div>
   </div>
 </footer>
