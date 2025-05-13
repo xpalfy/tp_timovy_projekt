@@ -215,14 +215,6 @@ try {
             <!-- Image JSON STEP 4 -->
             <div class="col-md mt-5 animate-fade-in-slow" id="imageJson" style="display: none;">
                 <div class="glass p-6 text-center relative border border-yellow-200 rounded-2xl shadow-lg">
-                    <!-- Loading Overlay -->
-                    <div class="loading-cont not-copyable not-draggable"
-                        style="overflow: hidden; position: absolute; left: 0; right: 0; bottom: 0; top: 0; display: none; justify-content: center; align-items: center; border-radius: 20px; background-color:rgba(115, 124, 133, 0.52); z-index: 3;">
-                        <dotlottie-player
-                            src="https://lottie.host/4f6b3ace-c7fc-45e9-85a2-c1fe04047ae3/QLPJzOha5m.lottie"
-                            background="transparent" speed="1" style="width: 150px; height: 150px;" loop
-                            autoplay></dotlottie-player>
-                    </div>
 
                     <!-- JSON Textarea Editor -->
                     <div class="mt-4 text-left">
