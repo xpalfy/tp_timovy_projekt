@@ -7,22 +7,42 @@ class PolygonElement extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.draggingPoint = null;
+        this.draggingPolygon = false;
+        this.dragStartX = 0;
+        this.dragStartY = 0;
+        this.initialPoints = [];
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
     }
 
     connectedCallback() {
         this.render();
-        this.shadowRoot.addEventListener('mousedown', this.onMouseDown.bind(this));
-        document.addEventListener('mousemove', this.onMouseMove.bind(this));
-        document.addEventListener('mouseup', this.onMouseUp.bind(this));
-        this.shadowRoot.addEventListener('mouseover', this.onHover.bind(this));
-        this.shadowRoot.addEventListener('mouseleave', this.onLeave.bind(this));
+        this.mouseDownListener = this.onMouseDown.bind(this);
+        this.mouseOverListener = this.onHover.bind(this);
+        this.mouseLeaveListener = this.onLeave.bind(this);
+
+        this.shadowRoot.addEventListener('mousedown', this.mouseDownListener);
+        this.shadowRoot.addEventListener('mouseover', this.mouseOverListener);
+        this.shadowRoot.addEventListener('mouseleave', this.mouseLeaveListener);
+
+        // Store bound functions so we can remove them later
+        this.boundMouseMove = this.onMouseMove.bind(this);
+        this.boundMouseUp = this.onMouseUp.bind(this);
+        document.addEventListener('mousemove', this.boundMouseMove);
+        document.addEventListener('mouseup', this.boundMouseUp);
     }
 
     disconnectedCallback() {
-        document.removeEventListener('mousemove', this.onMouseMove);
-        document.removeEventListener('mouseup', this.onMouseUp);
+        // Clean up all event listeners
+        this.shadowRoot.removeEventListener('mousedown', this.mouseDownListener);
+        this.shadowRoot.removeEventListener('mouseover', this.mouseOverListener);
+        this.shadowRoot.removeEventListener('mouseleave', this.mouseLeaveListener);
+        document.removeEventListener('mousemove', this.boundMouseMove);
+        document.removeEventListener('mouseup', this.boundMouseUp);
+
+        // Clear any dragging state
+        this.draggingPoint = null;
+        this.draggingPolygon = false;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -31,12 +51,137 @@ class PolygonElement extends HTMLElement {
 
     onMouseDown(event) {
         const point = event.target;
+
         if (point.tagName === 'circle') {
             this.draggingPoint = point;
+            return;
         }
+
         if (point.tagName === 'polygon') {
-            this.showDetails();
+            // Store initial positions and mouse position
+            this.draggingPolygon = true;
+            this.dragStartX = event.clientX;
+            this.dragStartY = event.clientY;
+            this.initialPoints = Array.from(this.shadowRoot.querySelectorAll('circle')).map(circle => ({
+                x: parseFloat(circle.getAttribute('cx')),
+                y: parseFloat(circle.getAttribute('cy'))
+            }));
+
+            // Store the time when mouse down occurred
+            this.mouseDownTime = Date.now();
+            event.preventDefault();
         }
+    }
+
+    onHover(event) {
+        if (event.target.tagName === 'polygon') {
+            event.target.style.cursor = 'pointer';
+        }
+        if (event.target.tagName === 'circle') {
+            event.target.style.cursor = 'move';
+        }
+    }
+
+    onLeave(event) {
+        if (event.target.tagName === 'polygon' || event.target.tagName === 'circle') {
+            event.target.style.cursor = 'default';
+        }
+    }
+
+    onMouseMove(event) {
+        // Check if element is still connected to DOM
+        if (!this.isConnected) {
+            this.disconnectedCallback();
+            return;
+        }
+
+        // Check if parent element exists
+        if (!this.parentElement) {
+            return;
+        }
+
+        try {
+            const parentRect = this.parentElement.getBoundingClientRect();
+            const x = event.clientX - parentRect.left;
+            const y = event.clientY - parentRect.top;
+
+            if (this.draggingPoint) {
+                const clampedX = Math.min(Math.max(x, 7), parentRect.width - 7);
+                const clampedY = Math.min(Math.max(y, 7), parentRect.height - 7);
+
+                this.draggingPoint.setAttribute('cx', clampedX);
+                this.draggingPoint.setAttribute('cy', clampedY);
+                this.updatePolygonPoints();
+            } else if (this.draggingPolygon) {
+                // Calculate how far we've moved
+                const dx = Math.abs(event.clientX - this.dragStartX);
+                const dy = Math.abs(event.clientY - this.dragStartY);
+
+                // Only consider it a drag if we've moved more than 5 pixels
+                if (dx > 5 || dy > 5) {
+                    // This is definitely a drag, not a click
+                    const newX = event.clientX - parentRect.left;
+                    const newY = event.clientY - parentRect.top;
+
+                    const offsetX = newX - (this.dragStartX - parentRect.left);
+                    const offsetY = newY - (this.dragStartY - parentRect.top);
+
+                    const circles = Array.from(this.shadowRoot.querySelectorAll('circle'));
+                    circles.forEach((circle, index) => {
+                        const newCX = Math.min(Math.max(this.initialPoints[index].x + offsetX, 7), parentRect.width - 7);
+                        const newCY = Math.min(Math.max(this.initialPoints[index].y + offsetY, 7), parentRect.height - 7);
+
+                        circle.setAttribute('cx', newCX);
+                        circle.setAttribute('cy', newCY);
+                    });
+
+                    this.updatePolygonPoints();
+                    this.dragStartX = event.clientX;
+                    this.dragStartY = event.clientY;
+                    this.initialPoints = circles.map(circle => ({
+                        x: parseFloat(circle.getAttribute('cx')),
+                        y: parseFloat(circle.getAttribute('cy'))
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error('Error in onMouseMove:', error);
+            this.disconnectedCallback();
+        }
+    }
+
+    onMouseUp(event) {
+        if (this.draggingPoint || this.draggingPolygon) {
+            // Check if this was a click (minimal movement) and not a drag
+            const isClick = this.draggingPolygon &&
+                Math.abs(event.clientX - this.dragStartX) <= 5 &&
+                Math.abs(event.clientY - this.dragStartY) <= 5 &&
+                (Date.now() - this.mouseDownTime) < 100; // Less than 200ms
+
+            if (isClick) {
+                // It was a click, show the modal
+                this.showDetails();
+            } else {
+                // It was a drag, update attributes
+                const circles = Array.from(this.shadowRoot.querySelectorAll('circle'));
+                circles.forEach((circle, index) => {
+                    this.setAttribute(`x${index + 1}`, circle.getAttribute('cx'));
+                    this.setAttribute(`y${index + 1}`, circle.getAttribute('cy'));
+                });
+
+                this.checkAndFixCrossing();
+            }
+
+            this.draggingPoint = null;
+            this.draggingPolygon = false;
+        }
+    }
+
+    updatePolygonPoints() {
+        const points = Array.from(this.shadowRoot.querySelectorAll('circle')).map(circle => {
+            return `${circle.getAttribute('cx')},${circle.getAttribute('cy')}`;
+        }).join(' ');
+        this.shadowRoot.querySelector('polygon').setAttribute('points', points);
     }
 
     showDetails() {
@@ -49,83 +194,44 @@ class PolygonElement extends HTMLElement {
         const y3 = this.getAttribute('y3');
         const x4 = this.getAttribute('x4');
         const y4 = this.getAttribute('y4');
-    
+
         const typeOptions = ['default', 'page', 'word', 'alphabet', 'null', 'double'];
-    
+
         const content = `
             <h3>Rectangle Details</h3>
             <p><strong>Type:</strong>
                 <select id="typeSelect">
-                    ${typeOptions.map(opt => 
-                        `<option value="${opt}" ${opt === type ? 'selected' : ''}>${opt}</option>`).join('')}
+                    ${typeOptions.map(opt =>
+            `<option value="${opt}" ${opt === type ? 'selected' : ''}>${opt}</option>`).join('')}
                 </select>
             </p>
             <p><strong>Coordinates:</strong></p>
             <ul>
-              <li>P1: (${x1}, ${y1})</li>
-              <li>P2: (${x2}, ${y2})</li>
-              <li>P3: (${x3}, ${y3})</li>
-              <li>P4: (${x4}, ${y4})</li>
+                <li>P1: (${x1}, ${y1})</li>
+                <li>P2: (${x2}, ${y2})</li>
+                <li>P3: (${x3}, ${y3})</li>
+                <li>P4: (${x4}, ${y4})</li>
             </ul>
             <button id="deleteButton" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow transition ml-2" style="position: absolute; right:-18px; bottom:-9px">Delete</button>
         `;
-    
+
         const modal = document.getElementById('polygonModal');
         const modalContent = document.getElementById('polygonModalContent');
         modalContent.style.position = 'relative';
         modalContent.innerHTML = content;
         modal.style.display = 'flex';
-    
+
         const deleteButton = modalContent.querySelector('#deleteButton');
         deleteButton.addEventListener('click', () => {
             this.parentElement.removeChild(this);
             modal.style.display = 'none';
         });
-    
+
         const typeSelect = modalContent.querySelector('#typeSelect');
         typeSelect.addEventListener('change', (e) => {
             this.setAttribute('type', e.target.value);
             modal.style.display = 'none';
         });
-    }
-    
-
-    onHover(event) {
-        if (event.target.tagName === 'polygon') {
-            event.target.style.cursor = 'pointer';
-        }
-        if (event.target.tagName === 'circle') {
-            event.target.style.cursor = 'move';
-        }
-    }
-    onLeave(event) {
-        if (event.target.tagName === 'polygon' || event.target.tagName === 'circle') {
-            event.target.style.cursor = 'default';
-        }
-    }
-
-    onMouseMove(event) {
-        if (this.draggingPoint) {
-            const parentRect = this.parentElement.getBoundingClientRect();
-            const x = Math.min(Math.max(event.clientX - parentRect.left, 7), parentRect.width - 7);
-            const y = Math.min(Math.max(event.clientY - parentRect.top, 7), parentRect.height - 7);
-
-            this.draggingPoint.setAttribute('cx', x);
-            this.draggingPoint.setAttribute('cy', y);
-            this.updatePolygonPoints();
-        }
-    }
-
-    onMouseUp() {
-        this.draggingPoint = null;
-        this.checkAndFixCrossing();
-    }
-
-    updatePolygonPoints() {
-        const points = Array.from(this.shadowRoot.querySelectorAll('circle')).map(circle => {
-            return `${circle.getAttribute('cx')},${circle.getAttribute('cy')}`;
-        }).join(' ');
-        this.shadowRoot.querySelector('polygon').setAttribute('points', points);
     }
 
     checkAndFixCrossing() {
