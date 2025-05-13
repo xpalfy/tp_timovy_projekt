@@ -209,7 +209,7 @@ function saveData(type) {
             }
         });
 }
-function saveClassification(doc_id,item_id) {
+function saveClassification(doc_id, item_id) {
 
     Promise.all(classificationScores)
         .then(resolvedScores => {
@@ -246,7 +246,7 @@ function saveClassification(doc_id,item_id) {
             // Handle any errors from the promises
             console.error('Error processing classification scores:', error);
         });
-    
+
 }
 
 export function saveKey() {
@@ -420,19 +420,6 @@ function resetClassificationStyle() {
 export function goToSegmentation() {
     window.location.href = 'modules/segmentModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
-
-export function goToAnalyzation(doc_id, item_id) {
-    window.location.href = 'analyzeModule.php?document_id=' + doc_id + '&item_id=' + item_id;
-}
-
-export function goToLetterSegmentation(doc_id, item_id) {
-    window.location.href = 'lettersModule.php?document_id=' + doc_id + '&item_id=' + item_id;
-}
-
-export function goToJsonEdit(doc_id, item_id) {
-        window.location.href = 'editJsonModule.php?document_id=' + doc_id + '&item_id=' + item_id;
-}
-// etc, keep exporting each function
 
 export function saveProcessing() {
     const jsonText = document.getElementById("jsonEditor").value;
