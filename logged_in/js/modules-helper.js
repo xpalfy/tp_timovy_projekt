@@ -229,6 +229,131 @@ export function saveLetterData() {
         });
 }
 
+export function saveJson() {
+    showLoading();
+
+    let fixedJson = {
+        "alphabet": {
+            "a": { "codes": [0, 1, 2] },
+            "b": { "codes": [3, 4] },
+            "c": { "codes": [5, 6] },
+            "d": { "codes": [7, 8] },
+            "e": { "codes": [9, 10, 11] },
+            "f": { "codes": [12, 13] },
+            "g": { "codes": [14, 15] },
+            "h": { "codes": [16, 17] },
+            "i": { "codes": [18, 19, 20] },
+            "k": { "codes": [21, 22] },
+            "l": { "codes": [23, 24] },
+            "m": { "codes": [25, 26] },
+            "n": { "codes": [27, 28] },
+            "o": { "codes": [29, 30, 31] },
+            "p": { "codes": [32, 33] },
+            "q": { "codes": [34, 35] },
+            "r": { "codes": [36, 37] },
+            "s": { "codes": [38, 39] },
+            "t": { "codes": [40, 41] },
+            "u": { "codes": [42, 43, 44] },
+            "x": { "codes": [45, 46] },
+            "y": { "codes": [47, 48] },
+            "zeros": { "codes": [49, 50, 51, 52] }
+        },
+        "doubles": {
+            "bb": { "code": 53 },
+            "ff": { "code": 54 },
+            "ll": { "code": 55 },
+            "pp": { "code": 56 },
+            "mm": { "code": 57 },
+            "nn": { "code": 58 },
+            "rr": { "code": 59 },
+            "ss": { "code": 60 },
+            "tt": { "code": 61 }
+        },
+        "words": {
+            "Papa": { "code": 62 },
+            "Rex Ferdinandus": { "code": 63 },
+            "Veneti": { "code": 64 },
+            "Florentini": { "code": 65 },
+            "Dux uh": { "code": 66 },
+            "Dux ferrarie": { "code": 67 },
+            "Dux urbini": { "code": 68 },
+            "Comes bier": { "code": 69 },
+            "Cardinales": { "code": 70 },
+            "Concilium": { "code": 71 },
+            "Genuinfes": { "code": 72 },
+            "Maschio mantue": { "code": 73 },
+            "Impator": { "code": 74 },
+            "Rex hungarie": { "code": 75 },
+            "Rex boemie": { "code": 76 },
+            "Rex Pollane": { "code": 77 },
+            "Dux Saxonie": { "code": 78 },
+            "Maschio brandinburgi": { "code": 79 },
+            "Dux Sygimundus": { "code": 80 },
+            "Dux Burgundie": { "code": 81 },
+            "Comes pallatimus": { "code": 82 },
+            "Dux baurtie": { "code": 83 },
+            "Suyati": { "code": 84 },
+            "Soldai": { "code": 85 },
+            "La. Na. Os.": { "code": 86 }
+        }
+    };
+
+    let type = null;
+    let status = null;
+
+    if (documentsData.filter(doc => doc.id == selectedDocumentId).length > 0) {
+        type = documentsData.filter(doc => doc.id == selectedDocumentId)[0].doc_type;
+
+        if (type === 'KEY') {
+            status = 'SAVED';
+        } else if (type === 'CIPHER') {
+            status = 'EXTRACTED';
+        } else {
+            toastr.error('Invalid document type');
+            return;
+        }
+    }
+
+
+    let data = {
+        document_id: selectedDocumentId,
+        item_id: selectedItemId,
+        user_id: userData.id,
+        status: status,
+        json_data: fixedJson,
+        token: window.phpToken
+    };
+
+    console.log('Data to be sent:', data);
+
+    fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.success) {
+                if (type == 'KEY') {
+                    window.location.href = `../edit_key/editOwnKeyDocument.php?id=${selectedDocumentId}&user=${userData.id}`;
+                } else if (type == 'CIPHER') {
+                    window.location.href = `./decipherModule.php?cipher_doc_id=${selectedDocumentId}&cipher_item_id=${selectedItemId}`;
+                }
+                toastr.success('Letter segmentation data saved successfully.');
+            } else {
+                toastr.error('Failed to save segmentation data.');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            toastr.error('Error saving segmentation data.');
+            console.error('Error:', error);
+        });
+}
+
 function getUrlParams() {
     const params = {};
     const queryString = window.location.search.substring(1);
@@ -388,10 +513,41 @@ export function showProcessingZone(elementId) {
     document.getElementById('addRectButton').style.display = 'block';
 }
 
+export function showJsonEditor() {
+    document.getElementById('imageJson').style.display = 'block';
+    document.getElementById('DownloadJSONBtn').style.display = 'flex';
+}
+
 export function updateImagePreview() {
     const previewImage = document.querySelector('.imagePreview');
     previewImage.src = '../..' + selectedItemImagePath;
     previewImage.style.display = 'block';
+}
+
+export function fetchJson() {
+    const formData = {
+        document_id: selectedDocumentId,
+        user_id: userData.id,
+        token: window.phpToken
+            };
+
+    $.ajax({
+        url: 'https://python.tptimovyprojekt.software/get_json',
+        type: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (res) {
+            if (res.error) {
+                toastr.error(res.error || 'Failed to load key JSON');
+            } else {
+                $('#jsonEditor').val(JSON.stringify(res, null, 2));
+            }
+        },
+        error: function () {
+            toastr.error('Server error while fetching key JSON');
+        }
+    });
 }
 
 export function CalculateSegmentation(imagePath) {
@@ -450,6 +606,29 @@ export function CalculateAnalysis(imagePath) {
             hideLoading();
             console.error('Error detecting page edges:', error);
         });
+}
+
+export function downloadJSON() {
+    try {
+        const jsonText = document.getElementById("jsonEditor").value;
+        const jsonData = JSON.stringify(JSON.parse(jsonText), null, 2);
+
+        const blob = new Blob([jsonData], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        const filename = documentsData.find(doc => doc.id == selectedDocumentId).title || "document.json";
+
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        alert("Invalid JSON format. Please check your input.");
+        console.error("JSON Download Error:", e);
+    }
 }
 
 export function CalculateLetters(imagePath) {

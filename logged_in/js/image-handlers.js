@@ -451,29 +451,6 @@ export function saveProcessing() {
             }
         });
 }
-
-export function downloadJSON() {
-    try {
-        const jsonText = document.getElementById("jsonEditor").value;
-        const jsonData = JSON.stringify(JSON.parse(jsonText), null, 2);
-
-        const blob = new Blob([jsonData], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-
-        const filename = document.getElementById("downloadName").value || "document.json";
-
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    } catch (e) {
-        alert("Invalid JSON format. Please check your input.");
-        console.error("JSON Download Error:", e);
-    }
-}
 export function CalculateSegmentation(type) {
     showLoading();
 
