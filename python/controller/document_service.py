@@ -353,8 +353,7 @@ class DocumentService:
             raise Exception("No items found for this document")
         item: Item = doc.items[-1]
         if not item.processing_results:
-            raise Exception("No processing results found for this item")
-        
+            raise Exception(f"No processing results found for this item{item.processing_results}{item.status}")
         keys = self.get_all_keys_for_user(user)
         if not keys:
             raise Exception("No keys found for this user")
