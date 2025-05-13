@@ -1,14 +1,4 @@
-import { version } from './version.js';
 
-let hideLoading;
-
-import(`./image-handlers.js${version}`)
-    .then(module => {
-        hideLoading = module.hideLoading;
-    })
-    .catch(error => {
-        console.error("Error loading image-handlers.js:", error);
-    });
 
 
 let lastScrollTop = 0; 
@@ -183,4 +173,45 @@ export function showSystemMessage() {
 
 export function hideSystemMessage() {
     document.getElementById('SystemMessage').style.display = 'none';
+}
+
+export function setStep(index) {
+    const steps = document.querySelectorAll('.step');
+    const lines = document.querySelectorAll('.line');
+
+    steps.forEach((step, i) => {
+        if (i <= index) {
+            step.classList.add('active');
+        } else {
+            step.classList.remove('active');
+        }
+    });
+
+    lines.forEach((line, i) => {
+        if (i < index) {
+            line.style.backgroundColor = '#bfa97a';
+        } else {
+            line.style.backgroundColor = '#cdbf9b';
+        }
+    });
+}
+
+export function checkToasts() {
+    if (window.toastData) {
+        toastr[window.toastData.type](window.toastData.message);
+    }
+}
+
+export function hideLoading() {
+    let loadings = document.getElementsByClassName('loading-cont');
+    for (let loading of loadings) {
+        loading.style.display = 'none';
+    }
+}
+
+export function showLoading() {
+    let loadings = document.getElementsByClassName('loading-cont');
+    for (let loading of loadings) {
+        loading.style.display = 'flex';
+    }
 }

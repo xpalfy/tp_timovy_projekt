@@ -4,6 +4,21 @@ export let itemsData = [];
 export let selectedItemId = null;
 export let selectedItemImagePath = null;
 
+import { version } from './version.js';
+
+import(`./ui-animation-handler.js${version}`)
+    .then(module => {
+        const { hideLoading, showLoading, handleError, handleWarning } = module;
+
+        window.hideLoading = hideLoading;
+        window.showLoading = showLoading;
+        window.handleError = handleError;
+        window.handleWarning = handleWarning;
+    })
+    .catch(error => {
+        console.error("Error loading ui-animation-handler module:", error);
+    });
+
 export function goToAnalyzation(doc_id, item_id) {
     window.location.href = 'analyzeModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
@@ -16,8 +31,8 @@ export function goToJsonEdit(doc_id, item_id) {
     window.location.href = 'editJsonModule.php?document_id=' + doc_id + '&item_id=' + item_id;
 }
 
-export function addNewRect() {
-    const parent = document.getElementById('previewContainerSegment');
+export function addNewRect(parentName) {
+    const parent = document.getElementById(parentName);
     const newRect = document.createElement('segment-rect');
     newRect.setAttribute('x1', 100);
     newRect.setAttribute('y1', 100);
@@ -55,7 +70,7 @@ export function saveSegmentionData() {
         user_id: userData.id,
         status: 'SEGMENTED',
         polygons: polygons,
-        token: '<?php echo $_SESSION["token"]; ?>'
+        token: window.phpToken
     };
 
     console.log('Data to be sent:', data);
@@ -84,6 +99,58 @@ export function saveSegmentionData() {
         });
 }
 
+export function saveAnalysisData() {
+    showLoading();
+
+    let rects = document.querySelectorAll('segment-rect');
+    let polygons = [];
+
+    rects.forEach(rect => {
+        let polygon = [
+            { x: rect.getAttribute('x1'), y: rect.getAttribute('y1') },
+            { x: rect.getAttribute('x2'), y: rect.getAttribute('y2') },
+            { x: rect.getAttribute('x3'), y: rect.getAttribute('y3') },
+            { x: rect.getAttribute('x4'), y: rect.getAttribute('y4') },
+            { type: rect.getAttribute('type') }
+        ];
+        polygons.push(polygon);
+    });
+
+    let data = {
+        document_id: selectedDocumentId,
+        item_id: selectedItemId,
+        user_id: userData.id,
+        status: 'CLASSIFIED',
+        polygons: polygons,
+        token: window.phpToken
+    };
+
+    console.log('Data to be sent:', data);
+
+    fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.success) {
+                toastr.success('Analysis data saved successfully.');
+                goToLetterSegmentation(selectedDocumentId, selectedItemId);
+            } else {
+                toastr.error('Failed to save segmentation data.');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            toastr.error('Error saving segmentation data.');
+            console.error('Error:', error);
+        });
+}
+
 function getUrlParams() {
     const params = {};
     const queryString = window.location.search.substring(1);
@@ -97,13 +164,13 @@ function getUrlParams() {
     return params;
 }
 
-export function fetchDocuments() {
+export function fetchDocuments(status) {
     showLoading();
 
     let data = {
         token: window.phpToken,
         user_id: userData.id,
-        status: 'UPLOADED'
+        status: status
     };
 
     fetch('https://python.tptimovyprojekt.software/get_documents_by_user_and_status', {
@@ -128,7 +195,7 @@ export function fetchDocuments() {
                     $("#itemSelector").prop("disabled", false);
                     $("#itemSelector").empty();
                     $("#itemSelector").append('<option value="" disabled selected>Select an item</option>');
-                    fetchItems(selectedDocumentId, params.item_id);
+                    fetchItems(selectedDocumentId, params.item_id, status);
                 }
             }
         })
@@ -139,7 +206,7 @@ export function fetchDocuments() {
         });
 }
 
-export function fetchItems(documentId, preselectItemId = null) {
+export function fetchItems(documentId, preselectItemId = null, status) {
     disableDocumentSearch();
     showItemSelector();
 
@@ -147,7 +214,7 @@ export function fetchItems(documentId, preselectItemId = null) {
         token: window.phpToken,
         user_id: userData.id,
         document_id: documentId,
-        status: 'UPLOADED'
+        status: status
     };
 
     console.log('Requesting items with:', data);
@@ -164,7 +231,6 @@ export function fetchItems(documentId, preselectItemId = null) {
         .then(response => response.json())
         .then(items => {
             hideLoading();
-            console.log('Fetched items:', items);
 
             $("#itemSelector").empty();
             $("#itemSelector").append('<option value="" disabled selected>Select an item</option>');
@@ -177,7 +243,6 @@ export function fetchItems(documentId, preselectItemId = null) {
             });
 
             itemsData = items;
-            console.log('Items data:', itemsData);
 
             if (preselectItemId) {
                 $("#itemSelector").val(preselectItemId).trigger('change');
@@ -231,8 +296,8 @@ function showItemSelector() {
     document.getElementById('itemSelector').style.display = 'block';
 }
 
-export function deletePolygons() {
-    const parent = document.getElementById('previewContainerSegment');
+export function deletePolygons(parentName) {
+    const parent = document.getElementById(parentName);
     const polygons = parent.querySelectorAll('segment-rect');
     polygons.forEach(polygon => {
         parent.removeChild(polygon);
@@ -245,24 +310,16 @@ export function showSegmentor() {
     document.getElementById('addRectButton').style.display = 'block';
 }
 
+export function showAnalyzer() {
+    document.getElementById('imageAnalyzer').style.display = 'block';
+    document.getElementById('loadItemButton').style.display = 'block';
+    document.getElementById('addRectButton').style.display = 'block';
+}
+
 export function updateImagePreview() {
     const previewImage = document.querySelector('.imagePreview');
     previewImage.src = '../..' + selectedItemImagePath;
     previewImage.style.display = 'block';
-}
-
-export function hideLoading() {
-    let loadings = document.getElementsByClassName('loading-cont');
-    for (let loading of loadings) {
-        loading.style.display = 'none';
-    }
-}
-
-export function showLoading() {
-    let loadings = document.getElementsByClassName('loading-cont');
-    for (let loading of loadings) {
-        loading.style.display = 'flex';
-    }
 }
 
 export function CalculateSegmentation(imagePath) {
@@ -282,7 +339,7 @@ export function CalculateSegmentation(imagePath) {
             if (Array.isArray(data)) {
                 data.forEach(segment => {
                     if (segment.polygon && Array.isArray(segment.polygon)) {
-                        appendSegmentedRect(segment.polygon, segment.type);
+                        appendRects('previewContainerSegment',[segment]);
                     } else {
                         console.warn('Skipping invalid segment:', segment);
                     }
@@ -297,29 +354,65 @@ export function CalculateSegmentation(imagePath) {
         });
 }
 
-function appendSegmentedRect(polygon, type) {
-    if (polygon.length < 4) {
-        console.error('Invalid polygon:', polygon);
+export function CalculateAnalysis(imagePath) {
+    showLoading();
+
+    fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ path: imagePath })
+    })
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+
+            if (data && Array.isArray(data.polygons)) {
+                appendRects('previewContainerAnalyze', data.polygons); // Access the polygons array
+            } else {
+                console.error('Invalid response from server:', data);
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            console.error('Error detecting page edges:', error);
+        });
+}
+
+function appendRects(parentName, segments) {
+    const parent = document.getElementById(parentName);
+
+    if (!parent) {
+        console.error(`Container with ID "${parentName}" not found.`);
         return;
     }
 
-    const parent = document.getElementById('previewContainerSegment');
+    for (let segment of segments) {
+        const polygon = segment.polygon;
+        const type = segment.type || 'unknown';
 
-    const x1 = polygon[0], y1 = polygon[1];
-    const x3 = polygon[2], y3 = polygon[3];
-    const x2 = x1, y2 = y3;
-    const x4 = x3, y4 = y1;
+        if (!polygon || polygon.length < 4) {
+            console.error('Invalid polygon:', segment);
+            continue;
+        }
 
-    let newRect = document.createElement('segment-rect');
-    newRect.setAttribute('x1', x1);
-    newRect.setAttribute('y1', y1);
-    newRect.setAttribute('x2', x2);
-    newRect.setAttribute('y2', y2);
-    newRect.setAttribute('x3', x3);
-    newRect.setAttribute('y3', y3);
-    newRect.setAttribute('x4', x4);
-    newRect.setAttribute('y4', y4);
-    newRect.setAttribute('type', type || 'unknown');
+        const x1 = polygon[0], y1 = polygon[1];
+        const x3 = polygon[2], y3 = polygon[3];
+        const x2 = x1, y2 = y3;
+        const x4 = x3, y4 = y1;
 
-    parent.appendChild(newRect);
+        let newRect = document.createElement('segment-rect');
+        newRect.setAttribute('x1', x1);
+        newRect.setAttribute('y1', y1);
+        newRect.setAttribute('x2', x2);
+        newRect.setAttribute('y2', y2);
+        newRect.setAttribute('x3', x3);
+        newRect.setAttribute('y3', y3);
+        newRect.setAttribute('x4', x4);
+        newRect.setAttribute('y4', y4);
+        newRect.setAttribute('type', type);
+
+        parent.appendChild(newRect);
+    }
 }
