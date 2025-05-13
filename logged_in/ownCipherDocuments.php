@@ -84,7 +84,7 @@ try {
                     <div class="relative flex items-center">
                         <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
                                 class="hover:underline flex items-center">
-                            Documents
+                            Library
                             <img src="../img/document.png" alt="document" class="w-6 h-6 ml-2 mb-1"
                                  style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
                             <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -97,12 +97,11 @@ try {
                              class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
                             <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="dropdownDocumentsButton">
                                 <li>
-                                    <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Key
-                                        Documents</a>
+                                    <a href="ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Keys</a>
                                 </li>
                                 <li>
                                     <a href="ownCipherDocuments.php"
-                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher Documents</a>
+                                       class="block px-4 py-2 hover:bg-[#cbbd99]">Encrypted Documents</a>
                                 </li>
                             </ul>
                         </div>
@@ -191,7 +190,7 @@ try {
             <!-- Documents Grid + Pagination -->
             <div class="flex-1 flex flex-col justify-between mt-4">
                 <div>
-                    <h2 class="text-4xl font-bold text-center text-papyrus mb-10">🧾 My Cipher Document</h2>
+                    <h2 class="text-4xl font-bold text-center text-papyrus mb-10">🧾 My Encrypted Documents</h2>
                     <div id="my-documents-grid"
                          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Document cards will be inserted here -->
