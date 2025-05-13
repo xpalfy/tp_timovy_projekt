@@ -1,5 +1,6 @@
 const maxSelectItemSize = 10;
-let DocumentsData = [];
+let keyDocumentsData = [];
+let cipherDocumentsData = [];
 let selectedKeyDocumentId = null;
 let selectedCipherDocumentId = null;
 let itemsDataKey = [];
@@ -11,12 +12,14 @@ let selectedItemImagePath = null;
 import { hideLoading, showLoading } from './ui-animation-handler.js';
 import { getUrlParams } from './modules-helper.js';
 
-export function fetchDocuments() {
+export function fetchDocuments(type = 'CIPHER') {
+
+    let status = type === 'KEY' ? 'SAVED' : 'EXTRACTED';
 
     let data = {
         token: window.phpToken,
         user_id: userData.id,
-        status: 'EXTRACTED'
+        status: status
     };
 
     showLoading();
@@ -30,12 +33,17 @@ export function fetchDocuments() {
         .then(response => response.json())
         .then(docs => {
 
+            if (type === 'KEY') {
+                keyDocumentsData = docs;
+            } else if (type === 'CIPHER') {
+                cipherDocumentsData = docs;
+            }
+
             hideLoading();
-            DocumentsData = docs;
             console.log('Fetched documents:', docs);
             const params = getUrlParams();
-            if (params.cipher_doc_id) {
-                const selectedDoc = DocumentsData.find(doc => doc.id == params.cipher_doc_id);
+            if (params.cipher_doc_id && type === 'CIPHER') {
+                const selectedDoc = cipherDocumentsData.find(doc => doc.id == params.cipher_doc_id);
                 if (selectedDoc) {
                     selectedCipherDocumentId = selectedDoc.id;
                     $("#documentSearchCipher").val(selectedDoc.title);
@@ -57,11 +65,13 @@ export function fetchItems(documentId, preselectItemId = null, type) {
     disableDocumentSearch(type);
     showItemSelector(type);
 
+    let status = type === 'KEY' ? 'SAVED' : 'EXTRACTED';
+
     let data = {
         token: window.phpToken,
         user_id: userData.id,
         document_id: documentId,
-        status: 'EXTRACTED'
+        status: status
     };
 
     console.log('Requesting items with:', data);
@@ -89,12 +99,13 @@ export function fetchItems(documentId, preselectItemId = null, type) {
                 if (item.type == type) {
                     if (type == 'KEY') {
                         document.getElementById('itemSelectorKey').appendChild(option);
+                        itemsDataKey.push(item);
                     } else {
                         document.getElementById('itemSelectorCipher').appendChild(option);
+                        itemsDataCipher.push(item);
                     }
                 }
             });
-            itemsDataCipher = items;
 
             if (preselectItemId) {
                 if (type == 'KEY') {
@@ -146,8 +157,6 @@ export function fetchKeys() {
         .then(response => response.json())
         .then(items => {
             hideLoading();
-            itemsDataKey = items;
-            console.log('Fetched keys:', items);
             const keySelector = document.getElementById('KeySelector');
             keySelector.innerHTML = ''; // Clear previous options
             items.forEach(item => {
@@ -181,7 +190,12 @@ export function fetchKeys() {
 }
 
 export function showSelectedItem(type) {
-    const selectedItem = itemsDataCipher.find(item => item.id == (type === "KEY" ? selectedKeyItemId : selectedCipherItemId));
+    let selectedItem = null;
+    if (type === "KEY") {
+        selectedItem = itemsDataKey.find(item => item.id == selectedKeyItemId);
+    } else {
+        selectedItem = itemsDataCipher.find(item => item.id == selectedCipherItemId);
+    }
     if (selectedItem) {
         selectedItemImagePath = '../..' + selectedItem.image_path;
         if (type === "KEY") {
@@ -324,6 +338,10 @@ export function getSelectedCipherItemId() {
     return selectedCipherItemId;
 }
 
-export function getDocumentsData() {
-    return DocumentsData;
+export function getKeyDocumentsData() {
+    return keyDocumentsData;
+}
+
+export function getCipherDocumentsData() {
+    return cipherDocumentsData;
 }
