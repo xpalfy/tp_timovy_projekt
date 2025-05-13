@@ -177,27 +177,27 @@ try {
                 <div class="step-progress-container not-copyable not-draggable">
                     <div class="step-group">
                         <div class="step active">1</div>
-                        <h3 class="step-info text-papyrus">Upload</h3>
+                        <h3 class="step-info text-papyrus">Upload Image</h3>
                     </div>
                     <div class="line" style="background-color: #bfa97a;"></div>
                     <div class="step-group">
                         <div class="step active">2</div>
-                        <h3 class="step-info text-papyrus">Segment</h3>
+                        <h3 class="step-info text-papyrus">Segment Page</h3>
                     </div>
                     <div class="line"></div>
                     <div class="step-group">
                         <div class="step">3</div>
-                        <h3 class="step-info text-papyrus">Analyze</h3>
+                        <h3 class="step-info text-papyrus">Segment Sections</h3>
                     </div>
                     <div class="line"></div>
                     <div class="step-group">
                         <div class="step">4</div>
-                        <h3 class="step-info text-papyrus">Letters</h3>
+                        <h3 class="step-info text-papyrus">Segment Letters</h3>
                     </div>
                     <div class="line"></div>
                     <div class="step-group">
                         <div class="step">5</div>
-                        <h3 class="step-info text-papyrus">Save</h3>
+                        <h3 class="step-info text-papyrus">Save Document</h3>
                     </div>
                 </div>
             </div>
@@ -208,6 +208,12 @@ try {
             <p id="ProcessInfoMini" class="text-center text-gray-600 mb-4 pr-10 pl-10">
                 The uploaded image has been analyzed, and the document's position is detected. Adjust the boundaries and
                 position of the extracted document to ensure accurate content capture and further processing.
+            </p>
+
+            <p id="noDocs"
+                class="text-center text-gray-600 mt-4 pr-10 pl-10"
+                style="display: none; transition: transform 0.5s ease;">
+                No documents found. Please upload a document first.
             </p>
 
             <!-- Document Selector -->
@@ -223,7 +229,7 @@ try {
                 </select>
             </div>
 
-            <div class="flex justify-center items-center mt-4">
+            <div id="helpBtnCont" class="flex justify-center items-center mt-4" style="display: none;">
                 <button id="helpToggleButton" class="btn-papyrus text-papyrus rounded-lg p-2 transition duration-300">
                     Show Polygon Help
                 </button>

@@ -418,8 +418,21 @@ export function fetchDocuments(status) {
         })
         .catch(error => {
             hideLoading();
+            showNoDocs();
             toastr.error(error || 'Failed to load documents.');
         });
+}
+
+function showNoDocs() {
+    document.getElementById('noDocs').style.display = 'block';
+    document.getElementById('ProcessInfo').style.display = 'none';
+    document.getElementById('ProcessInfoMini').style.display = 'none';
+    document.getElementById('documentSearch').style.display = 'none';
+    document.getElementById('itemSelector').style.display = 'none';
+    document.getElementById('helpBtnCont').style.display = 'none';
+    document.getElementById('helpContent').style.display = 'none';
+    document.getElementById('loadItemButton').style.display = 'none';
+    document.getElementById('addRectButton').style.display = 'none';
 }
 
 export function fetchItems(documentId, preselectItemId = null, status) {
@@ -523,6 +536,7 @@ export function deletePolygons(parentName) {
 }
 
 export function showProcessingZone(elementId) {
+    document.getElementById('helpBtnCont').style.display = 'flex';
     document.getElementById(elementId).style.display = 'block';
     document.getElementById('loadItemButton').style.display = 'block';
     document.getElementById('addRectButton').style.display = 'block';
