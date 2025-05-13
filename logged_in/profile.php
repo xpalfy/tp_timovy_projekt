@@ -172,28 +172,28 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
 
                 <div>
                     <label class="block text-papyrus mb-1 font-semibold">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Username" oninput="isValidInput(this)"
-                           class="w-full border rounded px-4 py-3"/>
+                    <input type="text" name="username" id="username" placeholder=<?php echo $userData['username']; ?>
+                    oninput="isValidInput(this)" class="w-full border rounded px-4 py-3"/>
                 </div>
 
                 <div>
                     <label class="block text-papyrus mb-1 font-semibold">Email</label>
-                    <input type="email" name="email" id="email" placeholder="Email" oninput="isValidEmail(this)"
-                           class="w-full border rounded px-4 py-3"/>
+                    <input type="email" name="email" id="email" placeholder="<?php echo $userData['email']; ?>"
+                    oninput="isValidEmail(this)" class="w-full border rounded px-4 py-3"/>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-papyrus mb-1 font-semibold">New Password</label>
-                        <input type="password" name="password" id="password" oninput="isValidPassword(this)"
-                               autocomplete="off" placeholder="New Password"
-                               class="w-full border rounded px-4 py-3"/>
+                        <input type="password" name="password" id="password" 
+                        oninput="isValidPassword(this)" autocomplete="off" placeholder="********"
+                        class="w-full border rounded px-4 py-3"/>
                     </div>
                     <div>
                         <label class="block text-papyrus mb-1 font-semibold">Repeat New Password</label>
-                        <input type="password" name="password_confirm" id="password_confirm" oninput="isValidPassword(this)"
-                               autocomplete="off" placeholder="New Password Again"
-                               class="w-full border rounded px-4 py-3"/>
+                        <input type="password" name="password_confirm" id="password_confirm" 
+                        oninput="isValidPassword(this)" autocomplete="off" placeholder="********"
+                        class="w-full border rounded px-4 py-3"/>
                     </div>
                 </div>
 
@@ -220,11 +220,11 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 <h2 class="text-3xl font-bold text-papyrus">📄 Profile Overview</h2>
 
                 <div class="grid grid-cols-2 gap-x-4 w-full text-papyrus">
-                    <p class="font-semibold mt-2">Username:</p>
-                    <p id="currentUsername"><?php echo $userData['username']; ?></p>
+                    <p class="font-semibold mt-4">Username:</p>
+                    <p id="currentUsername" class="mt-4"><?php echo $userData['username']; ?></p>
 
-                    <p class="font-semibold mt-2">Email:</p>
-                    <p id="currentEmail"><?php echo $userData['email']; ?></p>
+                    <p class="font-semibold mt-4">Email:</p>
+                    <p id="currentEmail" class="mt-4"><?php echo $userData['email']; ?></p>
                 </div>
             </div>
 

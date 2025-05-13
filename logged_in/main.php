@@ -283,7 +283,7 @@ try {
 
     <hr style="border: 1px solid #bfa97a;">
     <a onclick="scrollToBookmark('bookmark')"
-        class="mt-10 mb-10 animate-top-fade text-papyrus not-copyable not-draggable"
+        class="mt-20 mb-10 animate-top-fade text-papyrus not-copyable not-draggable"
         style="display: flex; align-items: center; flex-direction: column; ">
         <h1 style="font-size: x-large; cursor: pointer;">Start Uploading</h1>
         <img src="../img/arrow_down.png" alt="Try now"
@@ -294,7 +294,7 @@ try {
 
     <!-- Process Area -->
     <div id="bookmark"></div>
-    <main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-5 mb-10">
+    <main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-5 mb-20">
         <div class="glass max-w-4xl mx-auto animate-fade-in-slow border-yellow-300 border">
             <!-- Progress Steps -->
             <div
