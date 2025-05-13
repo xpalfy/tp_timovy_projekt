@@ -6,7 +6,7 @@ Promise.all([
 ]).then(([uiAnimationHandlers, modulesHelper]) => {
     const {
         goToAnalyzation, addNewRect, saveAnalysisData, fetchItems,
-        fetchDocuments, showAnalyzer, updateImagePreview, deletePolygons, CalculateAnalysis,
+        fetchDocuments, showProcessingZone, updateImagePreview, deletePolygons, CalculateAnalysis,
         getItemsData, setSelectedItemImagePath, getSelectedItemImagePath,
         getDocumentsData, setSelectedDocumentId, getSelectedDocumentId, setSelectedItemId,
         getSelectedItemId
@@ -56,7 +56,7 @@ Promise.all([
             showLoading();
             setSelectedItemId($(this).val());
             setSelectedItemImagePath(getItemsData().find(item => item.id == getSelectedItemId()).image_path);
-            showAnalyzer();
+            showProcessingZone('imageAnalyzer');
             updateImagePreview();
             deletePolygons('previewContainerAnalyze');
             CalculateAnalysis(getSelectedItemImagePath());

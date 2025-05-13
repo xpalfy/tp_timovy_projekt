@@ -5,8 +5,8 @@ Promise.all([
     import(`./modules-helper.js${version}`)
 ]).then(([uiAnimationHandlers, modulesHelper]) => {
     const {
-        addNewRect, saveSegmentionData, fetchItems,
-        fetchDocuments, showProcessingZone, updateImagePreview, deletePolygons, CalculateSegmentation,
+        goToEditJson, addNewRect, saveLetterData, fetchItems,
+        fetchDocuments, showProcessingZone, updateImagePreview, deletePolygons, CalculateLetters,
         getItemsData, setSelectedItemImagePath, getSelectedItemImagePath,
         getDocumentsData, setSelectedDocumentId, getSelectedDocumentId, setSelectedItemId,
         getSelectedItemId
@@ -19,8 +19,9 @@ Promise.all([
 
 
     // Expose functions to the global scope
+    window.goToEditJson = goToEditJson; // Expose goToAnalyzation
     window.addNewRect = addNewRect; // Expose addNewRect
-    window.saveSegmentionData = saveSegmentionData; // Expose saveSegmentionData
+    window.saveLetterData = saveLetterData; // Expose saveSegmentionData
     window.showLoading = showLoading; // Expose showLoading
 
     if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -30,7 +31,7 @@ Promise.all([
     }
 
     function initializePage() {
-        fetchDocuments('UPLOADED');
+        fetchDocuments('CLASSIFIED');
         $("#documentSearch").autocomplete({
             source: function (request, response) {
                 const term = request.term.toLowerCase();
@@ -46,7 +47,7 @@ Promise.all([
                 $("#itemSelector").prop("disabled", false);
                 $("#itemSelector").empty();
                 $("#itemSelector").append('<option value="" disabled selected>Select an item</option>');
-                fetchItems(getSelectedDocumentId(), null, 'UPLOADED');
+                fetchItems(getSelectedDocumentId(), null, 'CLASSIFIED');
             },
             minLength: 1
         });
@@ -55,16 +56,16 @@ Promise.all([
             showLoading();
             setSelectedItemId($(this).val());
             setSelectedItemImagePath(getItemsData().find(item => item.id == getSelectedItemId()).image_path);
-            showProcessingZone('imageSegmentor');
+            showProcessingZone('imageLetter');
             updateImagePreview();
-            deletePolygons('previewContainerSegment');
-            CalculateSegmentation(getSelectedItemImagePath());
+            deletePolygons('previewContainerLetter');
+            CalculateLetters(getSelectedItemImagePath());
             hideLoading();
         });
         setupNavbarToggle();
         setupGSAPAnimations();
         hideLoading();
-        setStep(1);
+        setStep(3);
         checkToasts();
     }
 }).catch(error => {
