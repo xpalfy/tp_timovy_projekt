@@ -542,11 +542,6 @@ export function showProcessingZone(elementId) {
     document.getElementById('addRectButton').style.display = 'block';
 }
 
-export function showJsonEditor() {
-    document.getElementById('imageJson').style.display = 'block';
-    document.getElementById('DownloadJSONBtn').style.display = 'flex';
-}
-
 export function updateImagePreview() {
     const previewImage = document.querySelector('.imagePreview');
     previewImage.src = '../..' + selectedItemImagePath;

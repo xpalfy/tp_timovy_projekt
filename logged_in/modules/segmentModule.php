@@ -176,10 +176,10 @@ try {
                 style="display: flex; flex-direction: column; justify-content: center; border: #bfa97a4a 1px solid; border-radius: 20px 20px 0 0 ; padding: 10px 10px 5px 10px;">
                 <div class="step-progress-container not-copyable not-draggable">
                     <div class="step-group">
-                        <div class="step active">1</div>
+                        <div class="step">1</div>
                         <h3 class="step-info text-papyrus">Upload Image</h3>
                     </div>
-                    <div class="line" style="background-color: #bfa97a;"></div>
+                    <div class="line"></div>
                     <div class="step-group">
                         <div class="step active">2</div>
                         <h3 class="step-info text-papyrus">Segment Page</h3>

@@ -5,7 +5,7 @@ Promise.all([
     import(`./modules-helper.js${version}`)
 ]).then(([uiAnimationHandlers, modulesHelper]) => {
     const {
-        goToEditJson, addNewRect, saveLetterData, fetchItems,
+        addNewRect, saveLetterData, fetchItems,
         fetchDocuments, showProcessingZone, updateImagePreview, deletePolygons, CalculateLetters,
         getItemsData, setSelectedItemImagePath, getSelectedItemImagePath,
         getDocumentsData, setSelectedDocumentId, getSelectedDocumentId, setSelectedItemId,
@@ -19,7 +19,6 @@ Promise.all([
 
 
     // Expose functions to the global scope
-    window.goToEditJson = goToEditJson; // Expose goToAnalyzation
     window.addNewRect = addNewRect; // Expose addNewRect
     window.saveLetterData = saveLetterData; // Expose saveSegmentionData
     window.showLoading = showLoading; // Expose showLoading
@@ -31,6 +30,14 @@ Promise.all([
     }
 
     function initializePage() {
+        const helpContent = document.getElementById("helpContent");
+        const imageZone = document.getElementById("imageLetter");
+        const bnts = document.getElementById("btns");
+        const glass = document.querySelector(".glass");
+
+        imageZone.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+        bnts.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+
         fetchDocuments('CLASSIFIED');
         $("#documentSearch").autocomplete({
             source: function (request, response) {
@@ -60,8 +67,37 @@ Promise.all([
             updateImagePreview();
             deletePolygons('previewContainerLetter');
             CalculateLetters(getSelectedItemImagePath());
+            setTimeout(() => {
+                glass.style.height = glass.scrollHeight - helpContent.scrollHeight + "px"; 
+            }, 100);
             hideLoading();
         });
+
+        document.getElementById("helpToggleButton").addEventListener("click", function () {
+            this.disabled = true;
+            setTimeout(() => {
+                this.disabled = false;
+            }, 600);
+            let fixedHeight = glass.scrollHeight;
+            if (helpContent.style.visibility === "hidden" || helpContent.style.visibility === "") {
+                helpContent.style.visibility = "visible";
+                helpContent.style.animation = "slide-in 0.5s forwards";
+                imageZone.style.transform = "translateY(0)";
+                bnts.style.transform = "translateY(0)";
+                glass.style.height = fixedHeight + helpContent.scrollHeight + 8 + "px";
+                this.textContent = "Hide Polygon Help";
+            } else {
+                helpContent.style.animation = "slide-out 0.5s forwards";
+                imageZone.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+                bnts.style.transform = "translateY(-" + helpContent.scrollHeight + "px)";
+                glass.style.height = fixedHeight - helpContent.scrollHeight + "px";
+                setTimeout(() => {
+                    helpContent.style.visibility = "hidden";
+                }, 500);
+                this.textContent = "Show Polygon Help";
+            }
+        });
+
         setupNavbarToggle();
         setupGSAPAnimations();
         hideLoading();
