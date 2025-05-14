@@ -1,4 +1,4 @@
-const maxSelectItemSize = 10;
+const maxSelectItemSize = 4;
 let keyDocumentsData = [];
 let cipherDocumentsData = [];
 let selectedKeyDocumentId = null;
@@ -59,9 +59,29 @@ export function fetchDocuments(type = 'CIPHER') {
         })
         .catch(error => {
             hideLoading();
+            if (type === 'KEY') {
+                showNoKeyDocs();
+            } else {
+                showNoCipherDocs();
+            }
             toastr.error(error || 'Failed to load documents.');
             console.error('Error fetching documents:', error);
         });
+}
+
+function showNoCipherDocs() {
+    document.getElementById('noCipherDocs').style.display = 'block';
+    document.getElementById('ProcessInfo').style.display = 'none';
+    document.getElementById('ProcessInfoMini').style.display = 'none';
+    document.getElementById('leftSide').style.display = 'none';
+}
+
+function showNoKeyDocs() {
+    document.getElementById('noKeyDocs').style.display = 'block';
+    document.getElementById('ProcessInfo').style.display = 'none';
+    document.getElementById('ProcessInfoMini').style.display = 'none';
+    document.getElementById('leftSide').style.display = 'none';
+    document.getElementById('rightSide').style.display = 'none';
 }
 
 export function fetchItems(documentId, preselectItemId = null, type) {
@@ -123,6 +143,11 @@ export function fetchItems(documentId, preselectItemId = null, type) {
         })
         .catch(error => {
             hideLoading();
+            if (type === 'KEY') {
+                showNoKeyDocs();
+            } else {
+                showNoCipherDocs();
+            }
             toastr.error(error || 'Failed to load items.');
             console.error('Error fetching items:', error);
         });
@@ -169,32 +194,32 @@ export function fetchKeys() {
             hideLoading();
             const keySelector = document.getElementById('KeySelector');
             keySelector.innerHTML = ''; // Clear previous options
+            const maxMatchScore = Math.max(...items.map(item => item.match_score));
             items.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-4 m-2 flex flex-col items-center w-48 h-64';
-
+                card.className = 'bg-[#d7c7a5] text-papyrus rounded-lg p-4 m-2 flex flex-col items-center w-48 h-64';
                 card.innerHTML = `
         <div class="w-full h-36 flex justify-center items-center overflow-hidden bg-[#f0e7d5] rounded-lg">
             <img src="../..${item.image_path}" alt="${item.title}" class="w-full h-full object-cover">
         </div>
         <p class="mt-2 text-center font-semibold">${item.title}</p>
+        <p class="text-sm text-gray-500">Match Score: ${item.match_score * 100}%</p>
         <button class="bg-[#d7c7a5] text-[#4b4b4b] border border-[#4b4b4b] rounded-lg p-2 mt-2 transition duration-300 hover:bg-[#c4b59d] hover:text-[#2d2d2d]" onclick="selectKey(${item.document_id})">Select</button>
     `;
 
+                if (item.match_score === maxMatchScore) {
+                    card.style.border = '2px solid #4CAF50'; // Highlight the best match
+                } else {
+                    card.style.border = '2px solid #d7c7a5'; // Default border color
+                }
+                card.style.overflow = 'hidden';
+                card.style.flexWrap = 'nowrap';
                 keySelector.appendChild(card);
             });
-
-
-            if (items.length > maxSelectItemSize) {
-                keySelector.style.overflowY = 'scroll';
-                keySelector.style.maxHeight = '300px';
-            } else {
-                keySelector.style.overflowY = 'hidden';
-                keySelector.style.maxHeight = 'none';
-            }
         })
         .catch(error => {
             hideLoading();
+            showNoKeyDocs();
             toastr.error(error || 'Failed to load keys.');
             console.error('Error fetching keys:', error);
         });
