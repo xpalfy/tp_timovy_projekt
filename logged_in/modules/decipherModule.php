@@ -168,6 +168,21 @@ try {
             <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">
                 Decrypt your Cipher Documents
             </h3>
+            <p id="ProcessInfoMini" class="text-center text-gray-600 mb-4 pr-10 pl-10">
+                The uploaded image has been analyzed, and the document's position is detected. Adjust the boundaries and
+                position of the extracted document to ensure accurate content capture and further processing.
+            </p>
+
+            <p id="noCipherDocs" class="text-center text-gray-600 mt-4 pr-10 pl-10"
+                style="display: none; transition: transform 0.5s ease;">
+                No processed Cipher documents found. Please upload a Cipher document first and process it.
+            </p>
+
+            <p id="noKeyDocs" class="text-center text-gray-600 mt-4 pr-10 pl-10"
+                style="display: none; transition: transform 0.5s ease;">
+                No processed Key documents found. Please upload a Key document first and process it.
+            </p>
+
             <div class="flex flex-col items-center justify-center gap-4">
                 <div id="leftSide" class="flex flex-col items-center justify-center p-6 max-w-4xl mx-auto">
                     <p>Please choose the Document you want to decrypt</p>
@@ -223,7 +238,7 @@ try {
                     <h1 id="recommendMessage" style="font-size: x-large;">Our AI is recommending the following keys for
                         your cipher document:</h1>
 
-                    <div id="KeySelector" class="flex justify-center items-center mt-5">
+                    <div id="KeySelector" class="flex justify-center items-center mt-5 flex-wrap gap-4">
                         <!-- Here comes the Keys from the fetch -->
                     </div>
                 </div>
