@@ -574,6 +574,17 @@ export function fetchJson() {
     });
 }
 
+function calculateImageScale() {
+    const previewImage = document.querySelector('.imagePreview');
+    const imageWidth = previewImage.naturalWidth;
+    const imageHeight = previewImage.naturalHeight;
+    const containerWidth = previewImage.clientWidth;
+    const containerHeight = previewImage.clientHeight;
+    const scaleX = containerWidth / imageWidth;
+    const scaleY = containerHeight / imageHeight;
+    return [scaleX, scaleY];
+}
+
 export function CalculateSegmentation(imagePath) {
     showLoading();
 
@@ -594,7 +605,7 @@ export function CalculateSegmentation(imagePath) {
             if (Array.isArray(data)) {
                 data.forEach(segment => {
                     if (segment.polygon && Array.isArray(segment.polygon)) {
-                        appendRects('previewContainerSegment', [segment]);
+                        appendRects('previewContainerSegment', [segment], 'segment-rect', calculateImageScale());
                     } else {
                         console.warn('Skipping invalid segment:', segment);
                     }
@@ -627,7 +638,7 @@ export function CalculateAnalysis(imagePath) {
             hideLoading();
 
             if (data && Array.isArray(data.polygons)) {
-                appendRects('previewContainerAnalyze', data.polygons); // Access the polygons array
+                appendRects('previewContainerAnalyze', data.polygons, 'segment-rect', calculateImageScale());
             } else {
                 console.error('Invalid response from server:', data);
             }
@@ -679,7 +690,7 @@ export function CalculateLetters(imagePath) {
             hideLoading();
 
             if (data && Array.isArray(data.polygons)) {
-                appendRects('previewContainerLetter', data.polygons, 'letter-rect'); // Process the polygons array
+                appendRects('previewContainerLetter', data.polygons, 'letter-rect', calculateImageScale());
             } else {
                 console.error('Invalid response from server:', data);
             }
@@ -690,7 +701,7 @@ export function CalculateLetters(imagePath) {
         });
 }
 
-function appendRects(parentName, segments, rect_type = 'segment-rect') {
+function appendRects(parentName, segments, rect_type = 'segment-rect', scale = [1, 1]) {
     const parent = document.getElementById(parentName);
 
     if (!parent) {
@@ -707,8 +718,8 @@ function appendRects(parentName, segments, rect_type = 'segment-rect') {
             continue;
         }
 
-        const x1 = polygon[0], y1 = polygon[1];
-        const x3 = polygon[2], y3 = polygon[3];
+        const x1 = polygon[0] * scale[0], y1 = polygon[1] * scale[1];
+        const x3 = polygon[2] * scale[0], y3 = polygon[3] * scale[1];
         const x2 = x1, y2 = y3;
         const x4 = x3, y4 = y1;
 
