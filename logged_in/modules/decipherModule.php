@@ -42,116 +42,116 @@ try {
 </head>
 
 <body class="min-h-screen flex flex-col not-copyable not-draggable text-papyrus">
-    
-<!-- Navbar -->
-<nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
-     id="navbar">
-    <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
-        <a href="../main.php"
-           class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
-            <img src="../../img/avatars/avatar_<?php echo $userData['avatarId']; ?>.png" alt="Logo"
-                 class="w-10 h-10 mr-6 mb-2">
-            Dashboard
-        </a>
-        <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-        </button>
 
-        <div class="w-full lg:flex lg:items-center lg:w-auto hidden lg:mt-1" id="navbarNav">
-            <ul class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right gap-x-6">
-                <li class="flex items-center">
-                    <a href="../../index.php" class="nav-link flex items-center hover:underline">
-                        Home
-                        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" alt="home"
-                             class="w-6 h-6 ml-2 mr-1"
-                             style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                    </a>
-                </li>
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#d7c7a5] border-b border-yellow-300 shadow-md not-copyable not-draggable"
+        id="navbar">
+        <div class="container mx-auto flex flex-wrap items-center justify-between py-3 px-4">
+            <a href="../main.php"
+                class="flex items-center text-papyrus text-2xl font-bold hover:underline animate-slide-left">
+                <img src="../../img/avatars/avatar_<?php echo $userData['avatarId']; ?>.png" alt="Logo"
+                    class="w-10 h-10 mr-6 mb-2">
+                Dashboard
+            </a>
+            <button class="lg:hidden text-papyrus focus:outline-none" id="navbarToggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
 
-                <li class="flex items-center">
-                    <a href="../profile.php" class="nav-link flex items-center hover:underline">
-                        Profile
-                        <img src="../../img/account.png" alt="profile" class="w-6 h-6 ml-2 mr-1"
-                             style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                    </a>
-                </li>
+            <div class="w-full lg:flex lg:items-center lg:w-auto hidden lg:mt-1" id="navbarNav">
+                <ul
+                    class="flex flex-col lg:flex-row w-full text-lg font-medium text-papyrus animate-slide-right gap-x-6">
+                    <li class="flex items-center">
+                        <a href="../../index.php" class="nav-link flex items-center hover:underline">
+                            Home
+                            <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" alt="home"
+                                class="w-6 h-6 ml-2 mr-1"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
 
-                <li class="flex items-center">
-                    <div class="relative flex items-center">
-                        <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
+                    <li class="flex items-center">
+                        <a href="../profile.php" class="nav-link flex items-center hover:underline">
+                            Profile
+                            <img src="../../img/account.png" alt="profile" class="w-6 h-6 ml-2 mr-1"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+
+                    <li class="flex items-center">
+                        <div class="relative flex items-center">
+                            <button id="dropdownDocumentsButton" data-dropdown-toggle="dropdownDocuments"
                                 class="hover:underline flex items-center">
-                            Library
-                            <img src="../../img/document.png" alt="document" class="w-6 h-6 ml-2 mb-1"
-                                 style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                            <svg class="w-2.5 h-2.5 ml-2.5" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                      stroke-width="2" d="M1 1l4 4 4-4"/>
-                            </svg>
-                        </button>
-                        <div id="dropdownDocuments"
-                             class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                            <ul class="py-2 text-sm text-[#3b2f1d]">
-                                <li><a href="../ownKeyDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher
-                                        Keys</a></li>
-                                <li><a href="../ownCipherDocuments.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Encrypted
-                                        Documents</a></li>
-                            </ul>
+                                Library
+                                <img src="../../img/document.png" alt="document" class="w-6 h-6 ml-2 mb-1"
+                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                                <svg class="w-2.5 h-2.5 ml-2.5" fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 1l4 4 4-4" />
+                                </svg>
+                            </button>
+                            <div id="dropdownDocuments"
+                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                                <ul class="py-2 text-sm text-[#3b2f1d]">
+                                    <li><a href="../ownKeyDocuments.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Cipher
+                                            Keys</a></li>
+                                    <li><a href="../ownCipherDocuments.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Encrypted
+                                            Documents</a></li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
 
-                <li class="flex items-center">
-                    <div class="relative flex items-center">
-                        <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
+                    <li class="flex items-center">
+                        <div class="relative flex items-center">
+                            <button id="dropdownToolsButton" data-dropdown-toggle="dropdownTools"
                                 class="hover:underline flex items-center">
-                            Tools
-                            <img src="../../img/tools.png" alt="tools" class="w-6 h-6 ml-2 mb-1"
-                                 style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                            <svg class="w-2.5 h-2.5 ml-2.5" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                      stroke-width="2" d="M1 1l4 4 4-4"/>
-                            </svg>
-                        </button>
-                        <div id="dropdownTools"
-                             class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
-                            <ul class="py-2 text-sm text-[#3b2f1d]">
-                                <li><a href="./segmentModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
-                                </li>
-                                <li><a href="./analyzeModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
-                                </li>
-                                <li><a href="./lettersModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
-                                </li>
-                                <li><a href="./editJsonModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Edit
-                                        Json</a></li>
-                                <li><a href="./decipherModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
-                                </li>
-                            </ul>
+                                Tools
+                                <img src="../../img/tools.png" alt="tools" class="w-6 h-6 ml-2 mb-1"
+                                    style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                                <svg class="w-2.5 h-2.5 ml-2.5" fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 1l4 4 4-4" />
+                                </svg>
+                            </button>
+                            <div id="dropdownTools"
+                                class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-full mt-2">
+                                <ul class="py-2 text-sm text-[#3b2f1d]">
+                                    <li><a href="./segmentModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Segment</a>
+                                    </li>
+                                    <li><a href="./analyzeModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Analyze</a>
+                                    </li>
+                                    <li><a href="./lettersModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Letters</a>
+                                    </li>
+                                    <li><a href="./editJsonModule.php" class="block px-4 py-2 hover:bg-[#cbbd99]">Edit
+                                            Json</a></li>
+                                    <li><a href="./decipherModule.php"
+                                            class="block px-4 py-2 hover:bg-[#cbbd99]">Decipher</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
 
-                <li class="flex items-center">
-                    <a href="../../logout.php" class="nav-link flex items-center hover:underline">
-                        Logout
-                        <img src="../../img/logout.png" alt="logout" class="w-6 h-6 ml-2 mb-1"
-                             style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
-                    </a>
-                </li>
-            </ul>
+                    <li class="flex items-center">
+                        <a href="../../logout.php" class="nav-link flex items-center hover:underline">
+                            Logout
+                            <img src="../../img/logout.png" alt="logout" class="w-6 h-6 ml-2 mb-1"
+                                style="filter: brightness(0) saturate(100%) invert(15%) sepia(56%) saturate(366%) hue-rotate(357deg) brightness(98%) contrast(93%);">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
-
-    </div>
-</nav>
-
-    <div id="polygonModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close" onclick="document.getElementById('polygonModal').style.display='none'">&times;</span>
-            <div id="polygonModalContent"></div>
-        </div>
-    </div>
+    </nav>
 
     <!-- Process Area -->
     <main id="ProcessArea" class="flex-grow container mx-auto px-4 mt-10">
@@ -169,8 +169,13 @@ try {
                 Decrypt your Cipher Documents
             </h3>
             <p id="ProcessInfoMini" class="text-center text-gray-600 mb-4 pr-10 pl-10">
-                The uploaded image has been analyzed, and the document's position is detected. Adjust the boundaries and
-                position of the extracted document to ensure accurate content capture and further processing.
+                This module allows you to decrypt your previously processed Cipher documents using Key documents. 
+                To use it, first search for and select the encrypted Cipher document you want to decrypt, then preview the document to confirm your selection. 
+                Next, search for and select the appropriate Key document; our AI will recommend the best matching keys for your chosen Cipher document. 
+                Once both documents are selected, click the "Start Decipher" button to begin the decryption process. 
+                The decrypted result will be displayed below, and you can copy the text to your clipboard or navigate to your documents library. 
+                <br><b>Note:</b> Only processed Cipher and Key documents will appear in the selectors. If you do not see your files, please upload and process them first.
+                <br>Need help? Check our <a href="../../faq.php"><b><u>FAQ</u></b></a> page.
             </p>
 
             <p id="noCipherDocs" class="text-center text-gray-600 mt-4 pr-10 pl-10"
@@ -184,12 +189,12 @@ try {
             </p>
 
             <div class="flex flex-col items-center justify-center gap-4">
-                <div id="leftSide" class="flex flex-col items-center justify-center p-6 max-w-4xl mx-auto">
+                <div id="leftSide" class="flex flex-col items-center justify-center p-6 max-w-8xl mx-auto">
                     <p>Please choose the Document you want to decrypt</p>
                     <!-- Document Selector -->
                     <div class="flex justify-center items-center mt-5">
                         <input type="text" placeholder="Search for a document"
-                            class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2 w-1/2"
+                            class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
                             id="documentSearchCipher">
 
 
@@ -210,13 +215,13 @@ try {
                             alt="Image Preview" style="display: none;">
                     </div>
                 </div>
-                <div id="rightSide" class="flex flex-col items-center justify-center p-6 max-w-4xl mx-auto"
+                <div id="rightSide" class="flex flex-col items-center justify-center p-6 max-w-8xl mx-auto"
                     style="display: none;">
-                    <p>Please choose the Key you want to use for dechiper</p>
+                    <p>Please choose the Key you want to use for decryption</p>
                     <!-- Document Selector -->
                     <div class="flex justify-center items-center mt-5">
                         <input type="text" placeholder="Search for a document"
-                            class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2 w-1/2"
+                            class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-2"
                             id="documentSearchKey">
                     </div>
                     <!-- Item selector -->
