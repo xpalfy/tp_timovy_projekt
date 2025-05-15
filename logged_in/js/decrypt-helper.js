@@ -4,6 +4,7 @@ let cipherDocumentsData = [];
 let selectedKeyDocumentId = null;
 let selectedCipherDocumentId = null;
 let itemsDataKey = [];
+let recommendedKeyDocumentsData = [];
 let itemsDataCipher = [];
 let selectedKeyItemId = null;
 let selectedCipherItemId = null;
@@ -191,6 +192,7 @@ export function fetchKeys() {
             if (items.error) {
                 throw new Error(items.error);
             }
+            recommendedKeyDocumentsData = items;
             hideLoading();
             const keySelector = document.getElementById('KeySelector');
             keySelector.innerHTML = ''; // Clear previous options
@@ -250,7 +252,10 @@ export function showSelectedItem(type) {
 
 export function selectKey(keyId) {
     selectedKeyDocumentId = keyId;
-    const selectedKey = itemsDataKey.find(item => item.document_id == selectedKeyDocumentId);
+    console.log('Selected key document ID:', selectedKeyDocumentId);
+    const selectedKey = recommendedKeyDocumentsData.find(item => item.document_id == selectedKeyDocumentId);
+    console.log('Selected key:', recommendedKeyDocumentsData);
+    console.log('Selected key:', selectedKey);
     if (selectedKey) {
         selectedItemImagePath = '../..' + selectedKey.image_path;
         document.getElementById('imagePreviewKey').src = selectedItemImagePath;
