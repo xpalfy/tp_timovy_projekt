@@ -174,39 +174,41 @@ try {
             <div
                 style="display: flex; flex-direction: column; justify-content: center; border: #bfa97a4a 1px solid; border-radius: 20px 20px 0 0 ; padding: 10px 10px 5px 10px;">
                 <div class="step-progress-container not-copyable not-draggable">
-                    <div class="step-group">
-                        <div class="step ">1</div>
+                    <a class="step-group" href="../main.php#bookmark">
+                        <div class="step">1</div>
                         <h3 class="step-info text-papyrus">Upload Image</h3>
-                    </div>
+                    </a>
                     <div class="line"></div>
-                    <div class="step-group">
-                        <div class="step">2</div>
+                    <a class="step-group" href="segmentModule.php">
+                        <div class="step active">2</div>
                         <h3 class="step-info text-papyrus">Segment Page</h3>
-                    </div>
+                    </a>
                     <div class="line"></div>
-                    <div class="step-group">
+                    <a class="step-group" href="#">
                         <div class="step">3</div>
                         <h3 class="step-info text-papyrus">Segment Sections</h3>
-                    </div>
+                    </a>
                     <div class="line"></div>
-                    <div class="step-group">
+                    <a class="step-group" href="lettersModule.php">
                         <div class="step">4</div>
                         <h3 class="step-info text-papyrus">Segment Letters</h3>
-                    </div>
+                    </a>
                     <div class="line"></div>
-                    <div class="step-group">
+                    <a class="step-group" href="editJsonModule.php">
                         <div class="step">5</div>
                         <h3 class="step-info text-papyrus">Save Document</h3>
-                    </div>
+                    </a>
                 </div>
             </div>
             <!-- Process Info -->
             <h3 id="ProcessInfo" class="not-copyable text-2xl mt-4 font-bold text-center text-papyrus mb-6">
-                Document Position Adjustment
+                Section position adjustment
             </h3>
             <p id="ProcessInfoMini" class="text-center text-gray-600 mb-4 pr-10 pl-10">
-                The uploaded image has been analyzed, and the document's position is detected. Adjust the boundaries and
-                position of the extracted document to ensure accurate content capture and further processing.
+                On this page, you can review and adjust the detected section boundaries of your uploaded document. 
+                Move or resize the highlighted areas to match the actual sections, and change their type if needed. 
+                When you are satisfied with the segmentation, save your changes to continue processing the document. 
+                <br>Need help? Click "Show Polygon Help" for detailed instructions or check our <a href="../../faq.php"><b><u>FAQ</u></b></a> page.
             </p>
 
             <p id="noDocs" class="text-center text-gray-600 mt-4 pr-10 pl-10"
