@@ -99,7 +99,7 @@ body {
         transform: translateY(0);
         opacity: 1;
     }
-    
+
 }
 
 @keyframes slide-out {
@@ -208,5 +208,13 @@ body {
     top: 8px;
     right: 12px;
     font-size: 24px;
+    cursor: pointer;
+}
+
+#warningText .close {
+    position: absolute;
+    top: 0px;
+    right: 15px;
+    font-size: 30px;
     cursor: pointer;
 }

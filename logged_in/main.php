@@ -160,6 +160,19 @@ try {
             like an ancient scroll.</p>
     </section>
 
+    <div id="warningText"
+        class="text-center mt-10 max-w-4xl mx-auto px-8 pt-3 border border-yellow-300 rounded-lg bg-[#e5d9b6] shadow-lg animate-top-fade">
+        <span class="close" onclick="document.getElementById('warningText').style.display='none'">&times;</span>
+        <h3 class="text-2xl font-bold text-papyrus mb-4">⚠️ Important Notice</h3>
+        <p class="text-lg text-gray-800 mb-4">
+            HandScript is a school project simulating a decryption website for handwritten coded messages.
+            Please note that the data presented is fictional, and the modules are non-functional.
+            If you encounter any issues or have suggestions, feel free to reach out to our team.
+            Your feedback is invaluable as we work to improve the platform.
+            Thank you for being a part of the HandScript community and for supporting our educational journey!
+        </p>
+    </div>
+
     <!-- Tutorial Section -->
     <div id="tutorial-carousel" class="relative w-full max-w-4xl mx-auto mt-16 mb-24 animate-top-fade"
         data-carousel="static">
@@ -284,7 +297,6 @@ try {
             </span>
         </button>
     </div>
-
 
     <hr style="border: 1px solid #bfa97a;">
     <a onclick="scrollToBookmark('bookmark')"
