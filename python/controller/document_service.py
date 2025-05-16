@@ -58,6 +58,23 @@ class DocumentService:
             query = query.filter(Document.id != exclude_id)
         return self.db.query(query.exists()).scalar()
 
+    def create_document(self, data):
+        data = json.loads(data)
+        title = data.get('title')
+        doc_type = data.get('doc_type')
+        author_id = data.get('author_id')
+        description = data.get('description')
+        
+        document = Document(
+            title=title,
+            doc_type=DocumentType[doc_type],
+            author_id=author_id,
+            description=description
+        )
+        self.db.add(document)
+        self.db.commit()
+        return document.id
+    
     def update_document_title(self, document: Document, new_title: str, user_id: int, folder:str = None):
         user = self.db.query(User).filter_by(id=user_id).first() 
         if not user:

@@ -75,7 +75,7 @@ export function saveSegmentionData() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -130,7 +130,7 @@ export function saveAnalysisData() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -185,7 +185,7 @@ export function saveLetterData() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -200,9 +200,9 @@ export function saveLetterData() {
             if (data.success) {
                 hideLoading();
                 toastr.success('Letter segmentation data saved successfully.');
-                // call /encode_letters ?? Ez elmenti mint EXTRACTED ami nekunk meg nem kell
+                // call /modules/encode_letters ?? Ez elmenti mint EXTRACTED ami nekunk meg nem kell
                 /*
-                fetch('https://python.tptimovyprojekt.software/encode_letters', {
+                fetch('https://python.tptimovyprojekt.software/modules/encode_letters', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -335,7 +335,7 @@ export function saveJson() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -388,7 +388,7 @@ export function fetchDocuments(status) {
         status: status
     };
 
-    fetch('https://python.tptimovyprojekt.software/get_documents_by_user_and_status', {
+    fetch('https://python.tptimovyprojekt.software/documents/get_documents_by_user_and_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -450,7 +450,7 @@ export function fetchItems(documentId, preselectItemId = null, status) {
 
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/get_items_by_doc_and_status', {
+    fetch('https://python.tptimovyprojekt.software/documents/get_items_by_doc_and_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -556,7 +556,7 @@ export function fetchJson() {
             };
 
     $.ajax({
-        url: 'https://python.tptimovyprojekt.software/get_json',
+        url: 'https://python.tptimovyprojekt.software/documents/get_json',
         type: 'POST',
         data: JSON.stringify(formData),
         contentType: 'application/json',
@@ -588,7 +588,7 @@ function calculateImageScale() {
 export function CalculateSegmentation(imagePath) {
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/segmentate_page', {
+    fetch('https://python.tptimovyprojekt.software/modules/segmentate_page', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -623,7 +623,7 @@ export function CalculateSegmentation(imagePath) {
 export function CalculateAnalysis(imagePath) {
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
+    fetch('https://python.tptimovyprojekt.software/modules/segmentate_sections', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

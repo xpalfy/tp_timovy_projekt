@@ -534,7 +534,7 @@ try {
                 };
 
                 $.ajax({
-                    url: 'https://python.tptimovyprojekt.software/remove_shared_user',
+                    url: 'https://python.tptimovyprojekt.software/documents/remove_shared_user',
                     type: 'POST',
                     data: JSON.stringify(formData),
                     contentType: 'application/json',

@@ -343,7 +343,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/get_processing_result_status',
+            url: 'https://python.tptimovyprojekt.software/documents/get_processing_result_status',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -399,7 +399,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/get_json',
+            url: 'https://python.tptimovyprojekt.software/documents/get_json',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -453,7 +453,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/update_document_title',
+            url: 'https://python.tptimovyprojekt.software/documents/update_document_title',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -489,7 +489,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/add_shared_user',
+            url: 'https://python.tptimovyprojekt.software/documents/add_shared_user',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -518,7 +518,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/remove_shared_user',
+            url: 'https://python.tptimovyprojekt.software/documents/remove_shared_user',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -682,7 +682,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             };
 
             $.ajax({
-                url: 'https://python.tptimovyprojekt.software/update_doc_public',
+                url: 'https://python.tptimovyprojekt.software/documents/update_doc_public',
                 type: 'POST',
                 data: JSON.stringify(formData),
                 contentType: 'application/json',

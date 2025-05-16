@@ -240,7 +240,7 @@ function saveClassification(doc_id, item_id) {
 
             console.log('Data to be sent:', data);
 
-            fetch('https://python.tptimovyprojekt.software/save_processing_result', {
+            fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -339,7 +339,7 @@ export function deleteUnsavedImage(imageId) {
 }
 
 export async function classifyPicture(path) {
-    const url = 'https://python.tptimovyprojekt.software/classify';
+    const url = 'https://python.tptimovyprojekt.software/modules/classify';
     console.log("Sending request to Flask server...");
 
     try {
@@ -456,7 +456,7 @@ export function CalculateSegmentation(type) {
 
     const imagePath = 'path/to/your/image.jpg';
 
-    fetch('https://python.tptimovyprojekt.software/segmentate_page', {
+    fetch('https://python.tptimovyprojekt.software/modules/segmentate_page', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -527,7 +527,7 @@ export function CalculateAnalization(type) {
 
     const imagePath = 'path/to/your/image.jpg';
 
-    fetch('https://python.tptimovyprojekt.software/segmentate_sections', {
+    fetch('https://python.tptimovyprojekt.software/modules/segmentate_sections', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
