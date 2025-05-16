@@ -181,10 +181,37 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     </div>
                 </div>
 
+                                <!-- Row 3: Historical Author + Historical Date -->
+                <div class="flex flex-col md:flex-row gap-4 mt-4">
+                    <div class="w-full md:w-1/2">
+                        <label for="historical_author" class="block font-semibold mb-1">Historical Author</label>
+                        <input type="text" name="historical_author" id="historical_author"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label for="historical_date" class="block font-semibold mb-1">Historical Date</label>
+                        <input type="text" name="historical_date" id="historical_date"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                </div>
+
+                <!-- Row 4: Country + Language -->
+                <div class="flex flex-col md:flex-row gap-4 mt-4">
+                    <div class="w-full md:w-1/2">
+                        <label for="country" class="block font-semibold mb-1">Country</label>
+                        <input type="text" name="country" id="country"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label for="language" class="block font-semibold mb-1">Language</label>
+                        <input type="text" name="language" id="language"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                </div>
 
                 <!-- Document Name -->
                 <div>
-                    <label for="name" class="block font-semibold mb-1 mt-2">Document Name</label>
+                    <label for="name" class="block font-semibold mb-1 mt-4">Document Name</label>
                     <div class="flex items-center gap-2">
                         <input type="text" name="name" id="name" placeholder="Enter document name"
                                class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
@@ -635,10 +662,17 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                     $('#owner').val(data.author_name);
                     $('#name').val(data.title);
                     $('#date').val(data.publish_date);
+                    $('#historical_author').val(data.historical_author);
+                    $('#historical_date').val(data.historical_date);
+                    $('#country').val(data.country);
+                    $('#language').val(data.language);
                     $('#isPublic').prop('checked', data.ispublic === true);
                     $('#date').prop('disabled', true);
                     $('#owner').prop('disabled', true);
-
+                    $('#historical_author').prop('disabled', true);
+                    $('#historical_date').prop('disabled', true);
+                    $('#country').prop('disabled', true);
+                    $('#language').prop('disabled', true);
 
                     if (data.imagePaths) {
                         $('#docImage').attr('src', '../../' + data.imagePaths);
