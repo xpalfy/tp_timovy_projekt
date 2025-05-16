@@ -238,8 +238,11 @@ def get_document():
                 'imagePaths': image_paths,
                 'sharedUsers': shared_users,
                 'publish_date': publish_date,
-                'itemId': document.items[-1].id
-                
+                'itemId': document.items[-1].id,
+                'historical_author': document.historical_author,
+                'historical_date': document.historical_date,
+                'country': document.country,
+                'language': document.language 
             }), 200
 
         except Exception as e:
