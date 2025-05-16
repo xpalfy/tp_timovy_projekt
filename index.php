@@ -204,6 +204,7 @@ try {
     </div>
 </section>
 
+<?php if ($userData === null): ?>
 <!-- Login/Register CTA -->
 <section class="max-w-3xl mx-auto px-6 mb-24 text-center" data-aos="fade-up">
     <div class="glass p-8 rounded-2xl border border-yellow-300 shadow-md card-hover">
@@ -218,6 +219,7 @@ try {
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <!-- Footer -->
 <footer class="bg-[#d7c7a5] border-t border-yellow-300 text-[#3b2f1d] py-6">
