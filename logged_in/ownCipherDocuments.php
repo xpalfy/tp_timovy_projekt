@@ -183,6 +183,51 @@ try {
                             <option value="PUBLIC">Public Documents</option>
                         </select>
                     </div>
+
+                    <!-- Language Filter, will be added later -->
+                    <div>
+                        <label for="language-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">🌐
+                            Language</label>
+                        <select id="language-select"
+                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                            <option value="all" selected>All Languages</option>
+                        </select>
+                    </div>
+
+                    <!-- Historical Author Filter, will be added later -->
+                    <div>
+                        <label for="author-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">👤
+                            Historical
+                            Author</label>
+                        <select id="author-select"
+                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                            <option value="all" selected>All Authors</option>
+                        </select>
+                    </div>
+
+                    <!-- Historical Date Filter, interval from 1400-1500, 1501-1600, 1601-1700 -->
+                    <div>
+                        <label for="date-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">📅 Historical
+                            Date</label>
+                        <select id="date-select"
+                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                            <option value="all" selected>All Dates</option>
+                            <option value="1400-1500">1400-1500</option>
+                            <option value="1501-1600">1501-1600</option>
+                            <option value="1601-1700">1601-1700</option>
+                        </select>
+                    </div>
+
+                    <!-- Country Filter, will be added later -->
+                    <div>
+                        <label for="country-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">🌍
+                            Country</label>
+                        <select id="country-select"
+                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                            <option value="all" selected>All Countries</option>
+                        </select>
+                    </div>
+
                 </div>
             </aside>
 
@@ -311,6 +356,16 @@ try {
         pagination.appendChild(next);
     }
 
+    function updateSelectOptions(selectId, options) {
+        const select = document.getElementById(selectId);
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.textContent = option;
+            select.appendChild(opt);
+        });
+    }
+
     function fetchSharedDocumentsAndImages() {
         Promise.all([
             fetch('documents/fetchSharedDocuments.php?key=CIPHER').then(res => res.json()),
@@ -319,6 +374,10 @@ try {
             .then(([docs, imgs]) => {
                 documentsData = docs;
                 imagesData = imgs;
+
+                updateSelectOptions('language-select', [...new Set(documentsData.map(doc => doc.language))]);
+                updateSelectOptions('author-select', [...new Set(documentsData.map(doc => doc.historical_author))]);
+                updateSelectOptions('country-select', [...new Set(documentsData.map(doc => doc.country))]);
 
                 Object.values(imagesData).forEach(imgPath => {
                     if (imgPath) {
@@ -345,6 +404,10 @@ try {
                 documentsData = docs;
                 imagesData = imgs;
 
+                updateSelectOptions('language-select', [...new Set(documentsData.map(doc => doc.language))]);
+                updateSelectOptions('author-select', [...new Set(documentsData.map(doc => doc.historical_author))]);
+                updateSelectOptions('country-select', [...new Set(documentsData.map(doc => doc.country))]);
+
                 Object.values(imagesData).forEach(imgPath => {
                     if (imgPath) {
                         const fullPath = '..' + imgPath;
@@ -369,6 +432,10 @@ try {
             .then(([docs, imgs]) => {
                 documentsData = docs;
                 imagesData = imgs;
+
+                updateSelectOptions('language-select', [...new Set(documentsData.map(doc => doc.language))]);
+                updateSelectOptions('author-select', [...new Set(documentsData.map(doc => doc.historical_author))]);
+                updateSelectOptions('country-select', [...new Set(documentsData.map(doc => doc.country))]);
 
                 Object.values(imagesData).forEach(imgPath => {
                     if (imgPath) {

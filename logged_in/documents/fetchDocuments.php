@@ -28,12 +28,24 @@ if (!isset($_GET['key']) || empty($_GET['key'])) {
 $key = $_GET['key'];
 $public = isset($_GET['public']) && $_GET['public'] === 'true';
 
+// SQL with non-null and non-empty field filters
+$filterConditions = "
+    language IS NOT NULL AND TRIM(language) != '' AND
+    historical_author IS NOT NULL AND TRIM(historical_author) != '' AND
+    historical_date IS NOT NULL AND TRIM(historical_date) != '' AND
+    country IS NOT NULL AND TRIM(country) != ''
+";
+
 if ($public) {
-    $sql = "SELECT id, title FROM documents WHERE is_public = 1 AND doc_type = ?";
+    $sql = "SELECT id, title, language, historical_author, historical_date, country
+            FROM documents
+            WHERE is_public = 1 AND doc_type = ? AND $filterConditions";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $key);
 } else {
-    $sql = "SELECT id, title FROM documents WHERE author_id = ? AND doc_type = ?";
+    $sql = "SELECT id, title, language, historical_author, historical_date, country
+            FROM documents
+            WHERE author_id = ? AND doc_type = ? AND $filterConditions";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("is", $userData['id'], $key);
 }

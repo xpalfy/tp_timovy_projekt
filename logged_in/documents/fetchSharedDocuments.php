@@ -27,11 +27,19 @@ if (!isset($_GET['key']) || empty($_GET['key'])) {
 
 $key = $_GET['key'];
 
+// Add filtering to exclude null or empty values
+$filterConditions = "
+    d.language IS NOT NULL AND TRIM(d.language) != '' AND
+    d.historical_author IS NOT NULL AND TRIM(d.historical_author) != '' AND
+    d.historical_date IS NOT NULL AND TRIM(d.historical_date) != '' AND
+    d.country IS NOT NULL AND TRIM(d.country) != ''
+";
+
 $sql = "
-    SELECT d.id, d.title
+    SELECT d.id, d.title, d.language, d.historical_author, d.historical_date, d.country
     FROM document_user_association dua
     JOIN documents d ON dua.document_id = d.id
-    WHERE dua.user_id = ? AND d.doc_type = ?
+    WHERE dua.user_id = ? AND d.doc_type = ? AND $filterConditions
 ";
 
 $stmt = $conn->prepare($sql);
