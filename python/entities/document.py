@@ -39,13 +39,17 @@ class DocumentStatus(enum.Enum):
 class Document(Base):
     __tablename__ = 'documents'
     id: int = Column(Integer, primary_key=True, autoincrement=True)
-    author_id: int = Column(Integer, ForeignKey('users.id'))
+    author_id: int = Column(Integer, ForeignKey('users.id'), nullable=True)
     author: User = relationship("User", back_populates="documents")
     
-    title: str = Column(String(255))
-    doc_type: DocumentType = Column(Enum(DocumentType, name='document_types'))
-    status: DocumentStatus = Column(Enum(DocumentStatus, name='document_status'))
-    description: str = Column(String(255))
+    title: str = Column(String(255), nullable=True)
+    doc_type: DocumentType = Column(Enum(DocumentType, name='document_types'), nullable=True)
+    status: DocumentStatus = Column(Enum(DocumentStatus, name='document_status'), nullable=True)
+    description: str = Column(String(255), nullable=True)
+    language: str = Column(String(255), nullable=True)
+    historical_author: str = Column(String(255), nullable=True)
+    historical_date: str = Column(String(255), nullable=True)
+    country: str = Column(String(255), nullable=True)
     
     shared_with: List["User"] = relationship("User", secondary=document_user_association, back_populates="shared_documents")
     
