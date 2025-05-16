@@ -174,7 +174,8 @@ try {
 
                     <!-- Document Type Filter -->
                     <div>
-                        <label for="filter-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">🗂️ Document
+                        <label for="filter-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">🗂️
+                            Document
                             Access Type</label>
                         <select id="filter-select"
                                 class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
@@ -223,9 +224,23 @@ try {
                         <label for="country-select" class="block mb-2 mt-8 text-lg font-medium text-[#3b2f1d]">🌍
                             Country</label>
                         <select id="country-select"
-                                class="w-full px-4 py-3 pr-10 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
+                                class="w-full px-4 py-3 pr-10 mb-6 rounded-md border border-[#3b2f1d] bg-[#ede1c3] text-[#3b2f1d] cursor-pointer appearance-none bg-[url('data:image/svg+xml;utf8,<svg fill=\'%233b2f1d\' height=\'20\' viewBox=\'0 0 24 24\' width=\'20\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>')] bg-no-repeat bg-[right_0.75rem_center] focus:ring-2 focus:ring-[#cdbf9b] focus:outline-none transition duration-300">
                             <option value="all" selected>All Countries</option>
                         </select>
+                    </div>
+
+                    <!-- Reset Filters Button -->
+                    <div class="text-center">
+                        <button id="reset-filters-btn"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#ede1c3] text-[#3b2f1d] border border-[#3b2f1d] rounded-xl shadow hover:bg-[#e0d3ac] hover:text-black hover:shadow-md transition-all duration-200">
+                            <svg class="w-5 h-5 transform transition-transform duration-300 group-hover:rotate-180" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M4 4v5h.582m0 0A7.978 7.978 0 0112 4c4.418 0 8 3.582 8 8a8 8 0 01-13.418 5.418M4.582 9H9"/>
+                            </svg>
+                            Reset Filters
+                        </button>
                     </div>
 
                 </div>
@@ -358,7 +373,16 @@ try {
 
     function updateSelectOptions(selectId, options) {
         const select = document.getElementById(selectId);
-        options.forEach(option => {
+
+        const allOption = select.options[0];
+        const allValue = allOption.value;
+
+        select.innerHTML = '';
+        select.appendChild(allOption);
+
+        const uniqueOptions = new Set(options.filter(opt => opt && opt.trim() !== '' && opt !== allValue));
+
+        uniqueOptions.forEach(option => {
             const opt = document.createElement('option');
             opt.value = option;
             opt.textContent = option;
@@ -366,7 +390,7 @@ try {
         });
     }
 
-    function fetchSharedDocumentsAndImages() {
+    function fetchSharedDocumentsAndImages(filters) {
         Promise.all([
             fetch('documents/fetchSharedDocuments.php?key=CIPHER').then(res => res.json()),
             fetch('items/fetchSharedItems.php?key=CIPHER').then(res => res.json())
@@ -387,7 +411,8 @@ try {
                     }
                 });
 
-                renderDocuments(documentsData, imagesData, currentPageSize, 'SHARED', 1);
+                applyFiltersAndRender();
+
             })
             .catch(error => {
                 toastr.error('Failed to load documents.');
@@ -395,7 +420,7 @@ try {
             });
     }
 
-    function fetchPublicDocumentsAndImages() {
+    function fetchPublicDocumentsAndImages(filters) {
         Promise.all([
             fetch('documents/fetchDocuments.php?key=CIPHER&public=true').then(res => res.json()),
             fetch('items/fetchItems.php?key=CIPHER&public=true').then(res => res.json())
@@ -416,7 +441,8 @@ try {
                     }
                 });
 
-                renderDocuments(documentsData, imagesData, currentPageSize, 'PUBLIC', 1);
+                applyFiltersAndRender();
+
             })
             .catch(error => {
                 toastr.error('Failed to load documents.');
@@ -424,7 +450,7 @@ try {
             });
     }
 
-    function fetchDocumentsAndImages() {
+    function fetchDocumentsAndImages(filters) {
         Promise.all([
             fetch('documents/fetchDocuments.php?key=CIPHER&public=false').then(res => res.json()),
             fetch('items/fetchItems.php?key=CIPHER&public=false').then(res => res.json())
@@ -445,7 +471,8 @@ try {
                     }
                 });
 
-                renderDocuments(documentsData, imagesData, currentPageSize, 'OWN', 1);
+                applyFiltersAndRender();
+
             })
             .catch(error => {
                 toastr.error('Failed to load documents.');
@@ -528,16 +555,60 @@ try {
         });
     }
 
+    function getActiveFilters() {
+        return {
+            language: $('#language-select').val(),
+            author: $('#author-select').val(),
+            date: $('#date-select').val(),
+            country: $('#country-select').val(),
+            search: $('#search-input').val().toLowerCase()
+        };
+    }
+
+    function applyFiltersAndRender() {
+        const filters = getActiveFilters();
+
+        const filteredDocs = documentsData.filter(doc => {
+            const matchesLanguage = filters.language === 'all' || doc.language === filters.language;
+            const matchesAuthor = filters.author === 'all' || doc.historical_author === filters.author;
+            const matchesCountry = filters.country === 'all' || doc.country === filters.country;
+
+            const year = parseInt(doc.historical_date?.substring(0, 4));
+            let matchesDate = true;
+            if (filters.date !== 'all') {
+                const [start, end] = filters.date.split('-').map(Number);
+                matchesDate = year >= start && year <= end;
+            }
+
+            const matchesSearch = !filters.search || doc.title.toLowerCase().includes(filters.search);
+
+            return matchesLanguage && matchesAuthor && matchesCountry && matchesDate && matchesSearch;
+        });
+
+        const filterValue = $('#filter-select').val();
+        renderDocuments(filteredDocs, imagesData, currentPageSize, filterValue, 1);
+    }
 
     $(document).ready(function () {
         fetchDocumentsAndImages();
     });
 
+    $('#language-select, #author-select, #date-select, #country-select').on('change', function () {
+        applyFiltersAndRender();
+    });
+
     $('#search-input').on('input', function () {
-        const searchTerm = $(this).val().toLowerCase();
-        const filteredDocs = documentsData.filter(doc => doc.title.toLowerCase().includes(searchTerm));
-        const filterValue = $('#filter-select').val();
-        renderDocuments(filteredDocs, imagesData, currentPageSize, filterValue, 1);
+        applyFiltersAndRender();
+    });
+
+    $('#reset-filters-btn').on('click', function () {
+        $('#language-select').val('all');
+        $('#author-select').val('all');
+        $('#date-select').val('all');
+        $('#country-select').val('all');
+        $('#search-input').val('');
+
+        applyFiltersAndRender();
     });
 
     $('#filter-select').on('change', function () {
