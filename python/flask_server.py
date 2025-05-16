@@ -22,13 +22,14 @@ swagger = Swagger(app)
 @app.route('/modules/classify', methods=['POST'])
 def classify():
     """
-    Classify an image/document
+    Classify a document image.
     ---
     tags:
-      - Classification
+      - Modules
     parameters:
       - in: body
         name: body
+        required: true
         schema:
           type: object
           required:
@@ -36,7 +37,7 @@ def classify():
           properties:
             path:
               type: string
-              description: File path of the document/image
+              description: Path to the image file
     responses:
       200:
         description: Classification result
@@ -45,6 +46,8 @@ def classify():
           properties:
             classification:
               type: string
+      400:
+        description: Invalid input
     """
     path = request.json['path']
     print(path)
@@ -53,13 +56,14 @@ def classify():
 @app.route('/modules/segmentate_page', methods=['POST'])
 def segmentate_page():
     """
-    Segmentate a page into main polygon
+    Segmentate a page image.
     ---
     tags:
-      - Segmentation
+      - Modules
     parameters:
       - in: body
         name: body
+        required: true
         schema:
           type: object
           required:
@@ -67,17 +71,14 @@ def segmentate_page():
           properties:
             path:
               type: string
-              description: File path of the document/image
+              description: Path to the image file
     responses:
       200:
-        description: Page segmentation result
+        description: Segmentation result
         schema:
           type: object
-          properties:
-            polygon:
-              type: array
-              items:
-                type: number
+      400:
+        description: Invalid input
     """
     path = request.json['path']
     folder = get_folder_from_referer()
@@ -88,13 +89,14 @@ def segmentate_page():
 @app.route('/modules/segmentate_sections', methods=['POST'])
 def segmentate_sections():
     """
-    Segmentate a page into text blocks
+    Segmentate sections in a page image.
     ---
     tags:
-      - Segmentation
+      - Modules
     parameters:
       - in: body
         name: body
+        required: true
         schema:
           type: object
           required:
@@ -102,18 +104,19 @@ def segmentate_sections():
           properties:
             path:
               type: string
+              description: Path to the image file
     responses:
       200:
-        description: Text block segmentation result
+        description: Segmentation polygons
         schema:
           type: object
           properties:
             polygons:
               type: array
               items:
-                type: array
-                items:
-                  type: number
+                type: object
+      400:
+        description: Invalid input
     """
     path = request.json['path']
     print(path)
@@ -122,13 +125,49 @@ def segmentate_sections():
 @app.route('/segmentate_text', methods=['POST'])
 def segmentate_text():
     """
-    Crop a polygon from the image
+    Segmentate text in a page image.
     ---
     tags:
-      - Segmentation
+      - Modules
     parameters:
       - in: body
         name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - path
+          properties:
+            path:
+              type: string
+              description: Path to the image file
+    responses:
+      200:
+        description: Segmentation polygons
+        schema:
+          type: object
+          properties:
+            polygons:
+              type: array
+              items:
+                type: object
+      400:
+        description: Invalid input
+    """
+    path = request.json['path']
+    return jsonify({"polygons": segmentator.segmentate_text(path)})
+
+@app.route('/crop_polygon', methods=['POST'])
+def crop_polygon():
+    """
+    Crop a polygon from an image.
+    ---
+    tags:
+      - Modules
+    parameters:
+      - in: body
+        name: body
+        required: true
         schema:
           type: object
           required:
@@ -137,10 +176,10 @@ def segmentate_text():
           properties:
             path:
               type: string
+              description: Path to the image file
             polygon:
-              type: array
-              items:
-                type: number
+              type: object
+              description: Polygon coordinates
     responses:
       200:
         description: Cropped image result
@@ -149,26 +188,8 @@ def segmentate_text():
           properties:
             cropped_image:
               type: string
-    """
-    path = request.json['path']
-    
-    return jsonify({"polygons": segmentator.segmentate_text(path)})
-
-
-@app.route('/crop_polygon', methods=['POST'])
-def crop_polygon():
-    """
-    Get example JSON structure from Encoder
-    ---
-    tags:
-      - Encoder
-    responses:
-      200:
-        description: Example JSON structure
-        schema:
-          type: object
-      500:
-        description: Internal Server Error
+      400:
+        description: Invalid input
     """
     path = request.json['path']
     polygon = request.json['polygon']
@@ -178,17 +199,17 @@ def crop_polygon():
 @app.route('/modules/get_cipher_json', methods=['POST'])
 def get_cipher_json():
     """
-    Get example JSON structure from Encoder
+    Get cipher JSON data.
     ---
     tags:
-      - Encoder
+      - Modules
     responses:
       200:
-        description: Example JSON structure
+        description: Cipher JSON data
         schema:
           type: object
       500:
-        description: Internal Server Error
+        description: Server error
     """
     try:
         data = encoder.get_cipher_json()
@@ -198,6 +219,35 @@ def get_cipher_json():
 
 @app.route('/documents/get_document', methods=['POST'])
 def get_document():
+    """
+    Get a document and its metadata.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, document_id, user_id]
+          properties:
+            token:
+              type: string
+            document_id:
+              type: integer
+            user_id:
+              type: integer
+    responses:
+      200:
+        description: Document data
+        schema:
+          type: object
+      400:
+        description: Invalid input
+      404:
+        description: Document not found
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         
@@ -251,21 +301,17 @@ def get_document():
 @app.route('/documents/update_document_title', methods=['POST'])
 def update_document_title():
     """
-    Update the title of a document
+    Update the title of a document.
     ---
     tags:
-      - Document Management
+      - Documents
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - author_id
-            - document_id
-            - new_title
+          required: [token, author_id, document_id, new_title]
           properties:
             token:
               type: string
@@ -277,18 +323,15 @@ def update_document_title():
               type: string
     responses:
       200:
-        description: Document title updated successfully
-        schema:
-          type: object
-          properties:
-            success:
-              type: boolean
+        description: Title updated
       400:
-        description: Invalid input or unauthorized
+        description: Invalid input
+      403:
+        description: Unauthorized
       404:
         description: Document not found
       500:
-        description: Server error
+        description: Database error
     """
     with get_db_session() as db:
         service = DocumentService(db)
@@ -328,21 +371,17 @@ def update_document_title():
 @app.route('/documents/update_doc_public', methods=['POST'])
 def update_doc_public():
     """
-    Change public visibility of a document
+    Update the public status of a document.
     ---
     tags:
-      - Document Management
+      - Documents
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - author_id
-            - document_id
-            - is_public
+          required: [token, author_id, document_id, is_public]
           properties:
             token:
               type: string
@@ -354,7 +393,7 @@ def update_doc_public():
               type: boolean
     responses:
       200:
-        description: Visibility updated successfully
+        description: Public status updated
       400:
         description: Invalid input
       403:
@@ -362,7 +401,7 @@ def update_doc_public():
       404:
         description: Document not found
       500:
-        description: Server error
+        description: Database error
     """
     with get_db_session() as db:
         service = DocumentService(db)
@@ -396,20 +435,17 @@ def update_doc_public():
 @app.route('/documents/delete_document', methods=['DELETE'])
 def delete_document():
     """
-    Delete a document by ID
+    Delete a document.
     ---
     tags:
-      - Document Management
+      - Documents
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - id
-            - doc_id
+          required: [token, id, doc_id]
           properties:
             token:
               type: string
@@ -419,19 +455,13 @@ def delete_document():
               type: integer
     responses:
       200:
-        description: Document deleted successfully
-        schema:
-          type: object
-          properties:
-            success:
-              type: boolean
-            message:
-              type: string
+        description: Document deleted
       400:
         description: Invalid input
       500:
-        description: Server error
+        description: Database error
     """
+    
     with get_db_session() as db:
         service = DocumentService(db)
         folder = get_folder_from_referer()
@@ -460,20 +490,17 @@ def delete_document():
 @app.route('/documents/add_shared_user', methods=['POST'])
 def add_shared_users():
     """
-    Add a shared user to a document
+    Add a shared user to a document.
     ---
     tags:
-      - Document Sharing
+      - Documents
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - document_id
-            - username
+          required: [token, document_id, username]
           properties:
             token:
               type: string
@@ -483,19 +510,13 @@ def add_shared_users():
               type: string
     responses:
       200:
-        description: Shared user added successfully
-        schema:
-          type: object
-          properties:
-            success:
-              type: boolean
-            message:
-              type: string
+        description: Shared user added
       400:
         description: Invalid input
       500:
-        description: Server error
+        description: Database error
     """
+    
     with get_db_session() as db:
         service = DocumentService(db)
 
@@ -518,20 +539,17 @@ def add_shared_users():
 @app.route('/documents/remove_shared_user', methods=['POST'])
 def remove_shared_users():
     """
-    Remove a shared user from a document
+    Remove a shared user from a document.
     ---
     tags:
-      - Document Sharing
+      - Documents
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - document_id
-            - username
+          required: [token, document_id, username]
           properties:
             token:
               type: string
@@ -541,19 +559,13 @@ def remove_shared_users():
               type: string
     responses:
       200:
-        description: Shared user removed successfully
-        schema:
-          type: object
-          properties:
-            success:
-              type: boolean
-            message:
-              type: string
+        description: Shared user removed
       400:
         description: Invalid input
       500:
-        description: Server error
+        description: Database error
     """
+    
     with get_db_session() as db:
         service = DocumentService(db)
 
@@ -575,56 +587,33 @@ def remove_shared_users():
 @app.route('/documents/get_json', methods=['POST'])
 def get_json_from_db():
     """
-    Get JSON from a document
+    Get JSON data for a document.
     ---
     tags:
-      - Document Management
+      - Documents
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - document_id
-            - user_id
+          required: [token, document_id, user_id]
           properties:
             token:
               type: string
-              description: Authentication token
             document_id:
               type: integer
-              description: ID of the document to process
             user_id:
               type: integer
-              description: ID of the user making the request
     responses:
       200:
-        description: Key JSON extracted successfully
-        schema:
-          type: object
-          properties:
-            key_data:
-              type: object
-              description: The extracted key JSON data
+        description: JSON data
       400:
         description: Invalid input
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              description: Error message
       500:
         description: Server error
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              description: Error message
     """
+    
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -647,60 +636,35 @@ def get_json_from_db():
 @app.route('/documents/save_json', methods=['POST'])
 def save_json_to_db():
     """
-    Save updated key JSON to a document
+    Save JSON data for a document.
     ---
     tags:
-      - Document Management
+      - Documents
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - document_id
-            - user_id
-            - json_data
+          required: [token, document_id, user_id, json_data]
           properties:
             token:
               type: string
-              description: Authentication token
             document_id:
               type: integer
-              description: ID of the document to update
             user_id:
               type: integer
-              description: ID of the user making the request
             json_data:
               type: object
-              description: The JSON data to be saved
     responses:
       200:
-        description: JSON data saved successfully
-        schema:
-          type: object
-          properties:
-            success:
-              type: boolean
-              example: true
+        description: JSON saved
       400:
         description: Invalid input
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              example: "Document ID is required"
       500:
         description: Server error
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              example: "Error message describing the issue"
     """
+    
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -726,6 +690,37 @@ def save_json_to_db():
 
 @app.route('/documents/save_processing_result', methods=['POST'])
 def save_processing_result():
+    """
+    Save processing result for a document item.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, document_id, item_id, user_id, status]
+          properties:
+            token:
+              type: string
+            document_id:
+              type: integer
+            item_id:
+              type: integer
+            user_id:
+              type: integer
+            status:
+              type: string
+    responses:
+      200:
+        description: Processing result saved
+      400:
+        description: Invalid input
+      500:
+        description: Database error
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -746,6 +741,33 @@ def save_processing_result():
 
 @app.route('/documents/get_documents_by_user_and_status', methods=['POST'])
 def get_documents_by_user_and_status():
+    """
+    Get documents by user and status.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, user_id, status]
+          properties:
+            token:
+              type: string
+            user_id:
+              type: integer
+            status:
+              type: string
+    responses:
+      200:
+        description: List of documents
+      400:
+        description: Invalid input
+      500:
+        description: Server error
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -774,6 +796,35 @@ def get_documents_by_user_and_status():
 
 @app.route('/documents/get_items_by_doc_and_status', methods=['POST'])
 def get_items_by_doc_and_status():
+    """
+    Get items by document and status.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, document_id, user_id, status]
+          properties:
+            token:
+              type: string
+            document_id:
+              type: integer
+            user_id:
+              type: integer
+            status:
+              type: string
+    responses:
+      200:
+        description: List of items
+      400:
+        description: Invalid input
+      500:
+        description: Server error
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -811,6 +862,31 @@ def get_items_by_doc_and_status():
 
 @app.route('/users/delete_user', methods=['DELETE'])
 def delete_user():
+    """
+    Delete a user and all their documents.
+    ---
+    tags:
+      - Users
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, user_id]
+          properties:
+            token:
+              type: string
+            user_id:
+              type: integer
+    responses:
+      200:
+        description: User deleted
+      400:
+        description: Invalid input
+      500:
+        description: Database error
+    """
     with get_db_session() as db:
         u_service = UserService(db)
         db_service = DocumentService(db)
@@ -835,6 +911,33 @@ def delete_user():
 
 @app.route('/modules/encode_letters', methods=['POST'])
 def encode_letters():
+    """
+    Encode letters for a document.
+    ---
+    tags:
+      - Modules
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, document_id, user_id]
+          properties:
+            token:
+              type: string
+            document_id:
+              type: integer
+            user_id:
+              type: integer
+    responses:
+      200:
+        description: Encoded letters
+      400:
+        description: Invalid input
+      500:
+        description: Server error
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -855,6 +958,33 @@ def encode_letters():
 
 @app.route('/documents/get_processing_result_status', methods=['POST'])
 def get_processing_result_status():
+    """
+    Get processing result status for a document.
+    ---
+    tags:
+      - Documents
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, document_id, user_id]
+          properties:
+            token:
+              type: string
+            document_id:
+              type: integer
+            user_id:
+              type: integer
+    responses:
+      200:
+        description: Processing result status
+      400:
+        description: Invalid input
+      500:
+        description: Server error
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -876,64 +1006,32 @@ def get_processing_result_status():
 @app.route('/modules/get_processing_result_status', methods=['POST'])
 def get_keys_for_cipher():
     """
-    Get key matches for a document
+    Get keys for cipher document.
     ---
     tags:
-      - Key Matching
+      - Modules
     parameters:
       - in: body
         name: body
         required: true
         schema:
           type: object
-          required:
-            - token
-            - document_id
-            - user_id
+          required: [token, document_id, user_id]
           properties:
             token:
               type: string
-              description: Authentication token
             document_id:
               type: integer
-              description: ID of the document to process
             user_id:
               type: integer
-              description: ID of the user making the request
     responses:
       200:
-        description: Key matches retrieved successfully
-        schema:
-          type: object
-          properties:
-            key_matches:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  title:
-                    type: string
-                  match_score:
-                    type: number
+        description: Keys for cipher
       400:
         description: Invalid input
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              description: Error message
       500:
         description: Server error
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              description: Error message
-    """ 
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         try:
@@ -954,6 +1052,35 @@ def get_keys_for_cipher():
 
 @app.route('/modules/decrypt_cipher_with_key', methods=['POST'])
 def decrypt_cipher_With_key():
+    """
+    Decrypt a cipher document with a key document.
+    ---
+    tags:
+      - Modules
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [token, cipher_document_id, key_document_id, user_id]
+          properties:
+            token:
+              type: string
+            cipher_document_id:
+              type: integer
+            key_document_id:
+              type: integer
+            user_id:
+              type: integer
+    responses:
+      200:
+        description: Decryption result
+      400:
+        description: Invalid input
+      500:
+        description: Server error
+    """
     with get_db_session() as db:
         service = DocumentService(db)
         try:
