@@ -163,32 +163,61 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 <input type="hidden" name="id" id="docId">
                 <input type="hidden" name="user" id="userId">
 
-                <!-- Document Name -->
-                <div>
-                    <label for="name" class="block font-semibold mb-1">Document Name</label>
-                    <div class="flex items-center gap-2 mb-2">
+                <!-- Row 1: Document Name + Owner -->
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="w-full md:w-1/2">
+                        <label for="name" class="block font-semibold mb-1">Document Name</label>
                         <input type="text" name="name" id="name"
-                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
                     </div>
-                </div>
-
-                <div>
-                    <label for="owner" class="block font-semibold mb-1 mt-6">Owner</label>
-                    <div class="flex items-center gap-2 mb-2">
+                    <div class="w-full md:w-1/2">
+                        <label for="owner" class="block font-semibold mb-1">Owner</label>
                         <input type="text" name="owner" id="owner"
-                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
                     </div>
                 </div>
 
-                <div>
-                    <label for="date" class="block font-semibold mb-1 mt-6">Publish Date</label>
-                    <div class="flex items-center gap-2 mb-2">
+                <!-- Row 2: Publish Date + Applied Key -->
+                <div class="flex flex-col md:flex-row gap-4 mt-4">
+                    <div class="w-full md:w-1/2">
+                        <label for="date" class="block font-semibold mb-1">Publish Date</label>
                         <input type="text" name="date" id="date"
-                               class="flex-grow border border-yellow-400 rounded px-4 py-2"/>
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label for="historical_date" class="block font-semibold mb-1">Historical Date</label>
+                        <input type="text" name="historical_date" id="historical_date"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
                     </div>
                 </div>
+
+                <!-- Row 4: Country + Language -->
+                <div class="flex flex-col md:flex-row gap-4 mt-4">
+                    <div class="w-full md:w-1/2">
+                        <label for="country" class="block font-semibold mb-1">Country</label>
+                        <input type="text" name="country" id="country"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label for="language" class="block font-semibold mb-1">Language</label>
+                        <input type="text" name="language" id="language"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                </div>
+
+                <!-- Row 3: Historical Author + Historical Date -->
+                <div class="flex flex-col md:flex-row gap-4 mt-4">
+                    <div class="w-full md:w-1/2">
+                        <label for="historical_author" class="block font-semibold mb-1">Historical Author</label>
+                        <input type="text" name="historical_author" id="historical_author"
+                            class="w-full border border-yellow-400 rounded px-4 py-2 mb-2"/>
+                    </div>
+                </div>
+
             </div>
         </div>
+
+    </div>
 
     </div>
     <div class="flex flex-col lg:flex-row gap-10 items-stretch mt-10">
@@ -339,10 +368,18 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
                 $('#date').val(data.publishDate);
                 $('#owner').val(data.document.author_name);
                 $('#docTitle').text(data.document.name);
+                $('#historical_author').val(data.document.historical_author);
+                $('#historical_date').val(data.document.historical_date);
+                $('#country').val(data.document.country);
+                $('#language').val(data.document.language);
                 $('#isPublic').prop('checked', data.document.is_public);
                 $('#name').prop('disabled', true);
                 $('#owner').prop('disabled', true);
                 $('#date').prop('disabled', true);
+                $('#historical_author').prop('disabled', true);
+                $('#historical_date').prop('disabled', true);
+                $('#country').prop('disabled', true);
+                $('#language').prop('disabled', true);
 
                 if (data.imagePaths && data.imagePaths.length > 0) {
                     $('#docImage').attr('src', '../../' + data.imagePaths[0]);
