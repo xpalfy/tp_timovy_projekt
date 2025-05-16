@@ -390,7 +390,7 @@ try {
         });
     }
 
-    function fetchSharedDocumentsAndImages(filters) {
+    function fetchSharedDocumentsAndImages() {
         Promise.all([
             fetch('documents/fetchSharedDocuments.php?key=CIPHER').then(res => res.json()),
             fetch('items/fetchSharedItems.php?key=CIPHER').then(res => res.json())
@@ -420,7 +420,7 @@ try {
             });
     }
 
-    function fetchPublicDocumentsAndImages(filters) {
+    function fetchPublicDocumentsAndImages() {
         Promise.all([
             fetch('documents/fetchDocuments.php?key=CIPHER&public=true').then(res => res.json()),
             fetch('items/fetchItems.php?key=CIPHER&public=true').then(res => res.json())
@@ -450,7 +450,7 @@ try {
             });
     }
 
-    function fetchDocumentsAndImages(filters) {
+    function fetchDocumentsAndImages() {
         Promise.all([
             fetch('documents/fetchDocuments.php?key=CIPHER&public=false').then(res => res.json()),
             fetch('items/fetchItems.php?key=CIPHER&public=false').then(res => res.json())
