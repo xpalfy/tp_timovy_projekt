@@ -1,6 +1,6 @@
 <?php
 
-$url = "http://127.0.0.1:5000/classify"; // Flask server URL
+$url = "http://127.0.0.1:5000/modules/classify"; // Flask server URL
 $data = json_encode(["path" => "/path/to/your/file"]); // JSON payload
 
 $ch = curl_init($url);

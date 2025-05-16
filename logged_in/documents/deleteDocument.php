@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         exit;
     }
 
-    $flask_url = "https://python.tptimovyprojekt.software/delete_document";
+    $flask_url = "https://python.tptimovyprojekt.software/documents/delete_document";
     $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") .
                      "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 

@@ -19,7 +19,7 @@ app = Flask(__name__)
 CORS(app)
 swagger = Swagger(app)
 
-@app.route('/classify', methods=['POST'])
+@app.route('/modules/classify', methods=['POST'])
 def classify():
     """
     Classify an image/document
@@ -50,7 +50,7 @@ def classify():
     print(path)
     return jsonify({"classification": classifier.classify(path)})
 
-@app.route('/segmentate_page', methods=['POST'])
+@app.route('/modules/segmentate_page', methods=['POST'])
 def segmentate_page():
     """
     Segmentate a page into main polygon
@@ -85,7 +85,7 @@ def segmentate_page():
     result:dict = segmentator.segmentate_page(path)
     return jsonify(result)
 
-@app.route('/segmentate_sections', methods=['POST'])
+@app.route('/modules/segmentate_sections', methods=['POST'])
 def segmentate_sections():
     """
     Segmentate a page into text blocks
@@ -175,7 +175,7 @@ def crop_polygon():
     print(path)
     return jsonify({"cropped_image": segmentator.crop_polygon(path, polygon)})
 
-@app.route('/get_cipher_json', methods=['POST'])
+@app.route('/modules/get_cipher_json', methods=['POST'])
 def get_cipher_json():
     """
     Get example JSON structure from Encoder
@@ -196,7 +196,7 @@ def get_cipher_json():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/get_document', methods=['POST'])
+@app.route('/documents/get_document', methods=['POST'])
 def get_document():
     with get_db_session() as db:
         service = DocumentService(db)
@@ -245,7 +245,7 @@ def get_document():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-@app.route('/update_document_title', methods=['POST'])
+@app.route('/documents/update_document_title', methods=['POST'])
 def update_document_title():
     """
     Update the title of a document
@@ -322,7 +322,7 @@ def update_document_title():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-@app.route('/update_doc_public', methods=['POST'])
+@app.route('/documents/update_doc_public', methods=['POST'])
 def update_doc_public():
     """
     Change public visibility of a document
@@ -390,7 +390,7 @@ def update_doc_public():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-@app.route('/delete_document', methods=['DELETE'])
+@app.route('/documents/delete_document', methods=['DELETE'])
 def delete_document():
     """
     Delete a document by ID
@@ -454,7 +454,7 @@ def delete_document():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-@app.route('/add_shared_user', methods=['POST'])
+@app.route('/documents/add_shared_user', methods=['POST'])
 def add_shared_users():
     """
     Add a shared user to a document
@@ -512,7 +512,7 @@ def add_shared_users():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-@app.route('/remove_shared_user', methods=['POST'])
+@app.route('/documents/remove_shared_user', methods=['POST'])
 def remove_shared_users():
     """
     Remove a shared user from a document
@@ -569,7 +569,7 @@ def remove_shared_users():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-@app.route('/get_json', methods=['POST'])
+@app.route('/documents/get_json', methods=['POST'])
 def get_json_from_db():
     """
     Get JSON from a document
@@ -641,7 +641,7 @@ def get_json_from_db():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-@app.route('/save_json', methods=['POST'])
+@app.route('/documents/save_json', methods=['POST'])
 def save_json_to_db():
     """
     Save updated key JSON to a document
@@ -721,7 +721,7 @@ def save_json_to_db():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-@app.route('/save_processing_result', methods=['POST'])
+@app.route('/documents/save_processing_result', methods=['POST'])
 def save_processing_result():
     with get_db_session() as db:
         service = DocumentService(db)
@@ -741,7 +741,7 @@ def save_processing_result():
             return jsonify({'error': str(e)}), 400
         return jsonify({'success': True}), 200
 
-@app.route('/get_documents_by_user_and_status', methods=['POST'])
+@app.route('/documents/get_documents_by_user_and_status', methods=['POST'])
 def get_documents_by_user_and_status():
     with get_db_session() as db:
         service = DocumentService(db)
@@ -769,7 +769,7 @@ def get_documents_by_user_and_status():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-@app.route('/get_items_by_doc_and_status', methods=['POST'])
+@app.route('/documents/get_items_by_doc_and_status', methods=['POST'])
 def get_items_by_doc_and_status():
     with get_db_session() as db:
         service = DocumentService(db)
@@ -806,7 +806,7 @@ def get_items_by_doc_and_status():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-@app.route('/delete_user', methods=['DELETE'])
+@app.route('/users/delete_user', methods=['DELETE'])
 def delete_user():
     with get_db_session() as db:
         u_service = UserService(db)
@@ -830,7 +830,7 @@ def delete_user():
         except Exception as e:
             return jsonify({'error': str(e)}), 400
 
-@app.route('/encode_letters', methods=['POST'])
+@app.route('/modules/encode_letters', methods=['POST'])
 def encode_letters():
     with get_db_session() as db:
         service = DocumentService(db)
@@ -850,7 +850,7 @@ def encode_letters():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-@app.route('/get_processing_result_status', methods=['POST'])
+@app.route('/documents/get_processing_result_status', methods=['POST'])
 def get_processing_result_status():
     with get_db_session() as db:
         service = DocumentService(db)
@@ -870,7 +870,7 @@ def get_processing_result_status():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-@app.route('/get_keys_for_cipher', methods=['POST'])
+@app.route('/modules/get_processing_result_status', methods=['POST'])
 def get_keys_for_cipher():
     """
     Get key matches for a document
@@ -949,7 +949,7 @@ def get_keys_for_cipher():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-@app.route('/decrypt_cipher_with_key', methods=['POST'])
+@app.route('/modules/decrypt_cipher_with_key', methods=['POST'])
 def decrypt_cipher_With_key():
     with get_db_session() as db:
         service = DocumentService(db)
