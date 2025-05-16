@@ -2,12 +2,19 @@ from random import randint
 import cv2
 import numpy as np
 from PIL import Image
+#from processor import CipherKeyProcessor
 
 class Segmentator:
+    
+    def __init__(self):
+        #self.preprocess = CipherKeyProcessor
+        self.preprocess = None  # Placeholder for the preprocessor
 
     def segmentate_page(self, path):
-        # TODO: based on image
         img_size = get_image_size(path)
+        # image = cv2.imread(path)
+        # raw_yolo_output = self.preprocess().segment_page(image)
+        
         image_width, image_height = img_size if img_size else (400, 600)
         raw_yolo_output = "0 0.99 0.037941176470588236 0.06102272727272727 0.047058823529411764 0.10704545454545454"  # Example YOLO output
         class_names = ["page"]
