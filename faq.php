@@ -116,6 +116,7 @@ try {
       <?php else: ?>
         <!-- Dashboard Link -->
         <a href="./logged_in/main.php" class="hover:underline">Dashboard</a>
+        <a href="./logout.php" class="hover:underline">Logout</a>
       <?php endif; ?>
 
     </div>
