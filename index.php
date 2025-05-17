@@ -186,6 +186,23 @@ try {
     </div>
 </section>
 
+<?php if ($userData === null): ?>
+<!-- Login/Register CTA -->
+<section class="max-w-3xl mx-auto px-6 mb-24 text-center" data-aos="fade-up">
+    <div class="glass p-8 rounded-2xl border border-yellow-300 shadow-md card-hover">
+        <h2 class="text-3xl font-bold mb-4">Start Your Decryption Journey</h2>
+        <p class="mb-6 text-lg">Log in or create an account to unlock full access: upload, analyze, and preserve your
+            historical documents.</p>
+        <div class="flex justify-center gap-6">
+            <a href="./login.php" class="btn-papyrus px-6 py-2 text-lg rounded-lg shadow hover:scale-105 transition">🔐
+                Login</a>
+            <a href="./register.php" class="btn-papyrus px-6 py-2 text-lg rounded-lg shadow hover:scale-105 transition">📝
+                Register</a>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <!-- How It Works -->
 <section class="max-w-5xl mx-auto px-6 mb-24 text-center" data-aos="fade-up">
     <h2 class="text-3xl font-bold mb-10">How It Works</h2>
@@ -204,23 +221,6 @@ try {
         </div>
     </div>
 </section>
-
-<?php if ($userData === null): ?>
-<!-- Login/Register CTA -->
-<section class="max-w-3xl mx-auto px-6 mb-24 text-center" data-aos="fade-up">
-    <div class="glass p-8 rounded-2xl border border-yellow-300 shadow-md card-hover">
-        <h2 class="text-3xl font-bold mb-4">Start Your Decryption Journey</h2>
-        <p class="mb-6 text-lg">Log in or create an account to unlock full access: upload, analyze, and preserve your
-            historical documents.</p>
-        <div class="flex justify-center gap-6">
-            <a href="./login.php" class="btn-papyrus px-6 py-2 text-lg rounded-lg shadow hover:scale-105 transition">🔐
-                Login</a>
-            <a href="./register.php" class="btn-papyrus px-6 py-2 text-lg rounded-lg shadow hover:scale-105 transition">📝
-                Register</a>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
 
 <!-- Footer -->
 <footer class="bg-[#d7c7a5] border-t border-yellow-300 text-[#3b2f1d] py-6">
