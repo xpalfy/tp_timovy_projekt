@@ -189,7 +189,7 @@ try {
                 is here to help.
             </p>
             <div class="flex justify-center overflow-hidden max-h-[400px]">
-                <img src="../img/main_10.png" alt="Handwriting decryption preview"
+                <img src="../img/main_11.png" alt="Handwriting decryption preview"
                      class="rounded-xl shadow-lg max-h-[400px] object-contain mb-10">
             </div>
         </div>
