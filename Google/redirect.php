@@ -63,7 +63,7 @@ if (isset($_GET['code'])) {
                     $userId = $insert->insert_id;
                     $insert->close();
                 } else {
-                    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Nepodarilo sa vytvoriť nový účet.'];
+                    $_SESSION['toast'] = ['type' => 'error', 'message' => 'There was an error while creating your account.'];
                     header('Location: ../login.php');
                     exit();
                 }
@@ -75,18 +75,18 @@ if (isset($_GET['code'])) {
             $jwt = generateToken($userId, $username, $g_email);
             $_SESSION['token'] = $jwt;
 
-            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Prihlásenie cez Google bolo úspešné.'];
+            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Login through Google was successful.'];
             header('Location: ../logged_in/main.php');
             exit();
         }
 
     } catch (Exception $e) {
-        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Chyba pri prihlasovaní cez Google: ' . $e->getMessage()];
+        $_SESSION['toast'] = ['type' => 'error', 'message' => 'Google login error: ' . $e->getMessage()];
         header('Location: ../login.php');
         exit();
     }
 } else {
-    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Chýba kód z Google prihlasovania.'];
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'No code received from Google.'];
     header('Location: ../login.php');
     exit();
 }
