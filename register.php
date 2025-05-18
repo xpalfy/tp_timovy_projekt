@@ -1,23 +1,3 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require './checkType.php';
-
-try {
-    $userData = validateToken();
-    if ($userData) {
-        header("Location: ./logged_in/main.php");
-        exit();
-    }
-} catch (Exception $e) {
-    $userData = null;
-    session_unset();
-    session_destroy();
-}
-?>
-
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
