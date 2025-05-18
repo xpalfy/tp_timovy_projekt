@@ -16,15 +16,17 @@ import { getUrlParams } from './modules-helper.js';
 export function fetchDocuments(type = 'CIPHER') {
 
     let status = type === 'KEY' ? 'SAVED' : 'EXTRACTED';
+    let not_public = type === 'KEY' ? false : true;
 
     let data = {
         token: window.phpToken,
         user_id: userData.id,
-        status: status
+        status: status,
+        not_public: not_public
     };
 
     showLoading();
-    fetch('https://python.tptimovyprojekt.software/documents/get_documents_by_user_and_status', { // Itt kéne a public is 
+    fetch('https://python.tptimovyprojekt.software/documents/get_documents_by_user_and_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -200,9 +202,9 @@ export function fetchKeys() {
             items.forEach(item => {
                 const card = document.createElement('div');
                 let pageType = 'editOwnKeyDocument';
-                if (item.ownership === 'PUBLIC') {
+                if (item.ownership === 'public') {
                     pageType = 'viewPublicKeyDocument';
-                } else if (item.ownership === 'SHARED') {
+                } else if (item.ownership === 'shared') {
                     pageType = 'editSharedKeyDocument';
                 }
                 card.className = 'bg-[#d7c7a5] text-papyrus rounded-lg p-4 m-2 flex flex-col items-center w-48 h-64';
