@@ -200,15 +200,12 @@ export function saveLetterData() {
             if (data.success) {
                 hideLoading();
                 toastr.success('Letter segmentation data saved successfully.');
-                // call /modules/encode_letters ?? Ez elmenti mint EXTRACTED ami nekunk meg nem kell
-                /*
                 fetch('https://python.tptimovyprojekt.software/modules/encode_letters', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ document_id: selectedDocumentId, user_id: userData.id, token: '<?php echo $_SESSION["token"]; ?>' })
-
+                    body: JSON.stringify({ document_id: selectedDocumentId, user_id: userData.id, token: window.phpToken })
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -225,8 +222,6 @@ export function saveLetterData() {
                         toastr.error('Error encoding letters.');
                         console.error('Error:', error);
                     });
-                    */
-                goToJsonEdit(selectedDocumentId, selectedItemId);
             } else {
                 toastr.error('Failed to save segmentation data.');
             }
@@ -565,9 +560,10 @@ export function CalculateSegmentation(imagePath) {
     fetch('https://python.tptimovyprojekt.software/modules/segmentate_page', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-Caller-Url': window.fullCallerUrl,
         },
-        body: JSON.stringify({ path: imagePath })
+        body: JSON.stringify({ path: imagePath})
     })
         .then(response => response.json())
         .then(data => {
@@ -612,7 +608,7 @@ export function CalculateAnalysis(imagePath) {
             hideLoading();
 
             if (data && Array.isArray(data.polygons)) {
-                appendRects('previewContainerAnalyze', data.polygons, 'segment-rect', calculateImageScale());
+                appendRects('previewContainerAnalyze', data.polygons, 'segment-rect'); // TODO: add scale if Yolo model is used
             } else {
                 console.error('Invalid response from server:', data);
             }
@@ -664,7 +660,7 @@ export function CalculateLetters(imagePath) {
             hideLoading();
 
             if (data && Array.isArray(data.polygons)) {
-                appendRects('previewContainerLetter', data.polygons, 'letter-rect', calculateImageScale());
+                appendRects('previewContainerLetter', data.polygons, 'letter-rect'); // TODO: add scale if Yolo model is used
             } else {
                 console.error('Invalid response from server:', data);
             }
