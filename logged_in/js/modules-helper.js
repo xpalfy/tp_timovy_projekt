@@ -242,68 +242,42 @@ export function saveJson() {
     showLoading();
 
     let fixedJson = {
-        "alphabet": {
-            "a": { "codes": [0, 1, 2] },
-            "b": { "codes": [3, 4] },
-            "c": { "codes": [5, 6] },
-            "d": { "codes": [7, 8] },
-            "e": { "codes": [9, 10, 11] },
-            "f": { "codes": [12, 13] },
-            "g": { "codes": [14, 15] },
-            "h": { "codes": [16, 17] },
-            "i": { "codes": [18, 19, 20] },
-            "k": { "codes": [21, 22] },
-            "l": { "codes": [23, 24] },
-            "m": { "codes": [25, 26] },
-            "n": { "codes": [27, 28] },
-            "o": { "codes": [29, 30, 31] },
-            "p": { "codes": [32, 33] },
-            "q": { "codes": [34, 35] },
-            "r": { "codes": [36, 37] },
-            "s": { "codes": [38, 39] },
-            "t": { "codes": [40, 41] },
-            "u": { "codes": [42, 43, 44] },
-            "x": { "codes": [45, 46] },
-            "y": { "codes": [47, 48] },
-            "zeros": { "codes": [49, 50, 51, 52] }
-        },
-        "doubles": {
-            "bb": { "code": 53 },
-            "ff": { "code": 54 },
-            "ll": { "code": 55 },
-            "pp": { "code": 56 },
-            "mm": { "code": 57 },
-            "nn": { "code": 58 },
-            "rr": { "code": 59 },
-            "ss": { "code": 60 },
-            "tt": { "code": 61 }
-        },
-        "words": {
-            "Papa": { "code": 62 },
-            "Rex Ferdinandus": { "code": 63 },
-            "Veneti": { "code": 64 },
-            "Florentini": { "code": 65 },
-            "Dux uh": { "code": 66 },
-            "Dux ferrarie": { "code": 67 },
-            "Dux urbini": { "code": 68 },
-            "Comes bier": { "code": 69 },
-            "Cardinales": { "code": 70 },
-            "Concilium": { "code": 71 },
-            "Genuinfes": { "code": 72 },
-            "Maschio mantue": { "code": 73 },
-            "Impator": { "code": 74 },
-            "Rex hungarie": { "code": 75 },
-            "Rex boemie": { "code": 76 },
-            "Rex Pollane": { "code": 77 },
-            "Dux Saxonie": { "code": 78 },
-            "Maschio brandinburgi": { "code": 79 },
-            "Dux Sygimundus": { "code": 80 },
-            "Dux Burgundie": { "code": 81 },
-            "Comes pallatimus": { "code": 82 },
-            "Dux baurtie": { "code": 83 },
-            "Suyati": { "code": 84 },
-            "Soldai": { "code": 85 },
-            "La. Na. Os.": { "code": 86 }
+        "keys": {
+            "alphabet": {
+            "/x54321098": "b",
+            "/x98765410": "t",
+            "/x20098721": "n",
+            "/x15043176": "k",
+            "/x12019843": "x"
+            },
+            "doubles": {
+            "/x32109876": "ff",
+            "/x76543210": "ll",
+            "/x32919854": "ss",
+            "/x65943187": "zz"
+            },
+            "words": {
+            "/x21098765": "Aurelix",
+            "/x43210987": "Zenithor",
+            "/x65432109": "Tarnum Rex",
+            "/x87654300": "Quantoris",
+            "/x09876521": "zeros",
+            "/x10987632": "Dux Silvestris",
+            "/x21908743": "Virellum",
+            "/x43920965": "Papa Oranus",
+            "/x54932076": "Nostrix",
+            "/x76954298": "Florani",
+            "/x98976510": "Umbrax",
+            "/x09987621": "Velentor",
+            "/x11098732": "Dux Aquarum",
+            "/x13020954": "Zentauri",
+            "/x14032065": "Ortanum",
+            "/x16054287": "Lunaris",
+            "/x17065398": "umel",
+            "/x18076509": "Cestria",
+            "/x19087610": "Quorvus",
+            "/x21109832": "Praetor Nova"
+            }
         }
     };
 
