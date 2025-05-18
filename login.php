@@ -38,8 +38,6 @@
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <a href="./index.php" class="text-2xl font-bold hover:underline">HandScript</a>
     <div class="hidden md:flex space-x-6 text-lg items-center">
-      <a href="./index.php" class="hover:underline">Home</a>
-
       <!-- Docs Dropdown -->
       <div class="relative">
         <button id="docsDropdownButton" data-dropdown-toggle="docsDropdown"
