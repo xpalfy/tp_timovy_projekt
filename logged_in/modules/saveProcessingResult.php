@@ -17,7 +17,7 @@ try {
     $userData = validateToken();
 } catch (Exception $e) {
     http_response_code(500);
-    $_SESSION['toast'] = ['type' => 'error', 'message' => 'Token validation failed'];
+    $_SESSION['toast'] = ['type' => 'error', 'message' => 'You have to log in first!'];
     header('Location: ../../login.php');
     exit();
 }
