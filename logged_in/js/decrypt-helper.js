@@ -199,6 +199,12 @@ export function fetchKeys() {
             const maxMatchScore = Math.max(...items.map(item => item.match_score));
             items.forEach(item => {
                 const card = document.createElement('div');
+                let pageType = 'editOwnKeyDocument';
+                if (item.ownership === 'PUBLIC') {
+                    pageType = 'viewPublicKeyDocument';
+                } else if (item.ownership === 'SHARED') {
+                    pageType = 'editSharedKeyDocument';
+                }
                 card.className = 'bg-[#d7c7a5] text-papyrus rounded-lg p-4 m-2 flex flex-col items-center w-48 h-64';
                 card.innerHTML = `
         <div class="w-full h-36 flex justify-center items-center overflow-hidden bg-[#f0e7d5] rounded-lg">
@@ -206,8 +212,11 @@ export function fetchKeys() {
         </div>
         <p class="mt-2 text-center font-semibold">${item.title}</p>
         <p class="text-sm text-gray-500">Match Score: ${item.match_score * 100}%</p>
-        <button class="bg-[#d7c7a5] text-[#4b4b4b] border border-[#4b4b4b] rounded-lg p-2 mt-2 transition duration-300 hover:bg-[#c4b59d] hover:text-[#2d2d2d]" onclick="selectKey(${item.document_id})">Select</button>
-    `;
+        <div>
+            <button class="bg-[#d7c7a5] text-[#18681b] border border-[#18681b] rounded-lg p-2 mt-2 transition duration-300 hover:bg-[#c4c89d] hover:text-[#045207]" onclick="selectKey(${item.document_id})">Select</button>
+            <button class="bg-[#d7c7a5] text-[#4b4b4b] border border-[#4b4b4b] rounded-lg p-2 mt-2 transition duration-300 hover:bg-[#c4b59d] hover:text-[#2d2d2d]" onclick="window.location.href='../edit_key/${pageType}.php?id=${item.document_id}&user=${userData.id}'">View <img src="../../img/view.png" alt="View" class="w-5 h-5 inline-block"></button>
+        </div>
+        `;
 
                 if (item.match_score === maxMatchScore) {
                     card.style.border = '2px solid #4CAF50'; // Highlight the best match
