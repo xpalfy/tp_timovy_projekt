@@ -777,11 +777,12 @@ def get_documents_by_user_and_status():
             validate_token(data.get('token'))
             user_id = data.get('user_id')
             status = data.get('status')
+            not_public = bool(data.get('not_public'))
             if not user_id:
                 return jsonify({'error': 'User ID is required'}), 400
             if not status:
                 return jsonify({'error': 'Status is required'}), 400
-            documents = service.get_documents_by_user_id_and_status(user_id, status)
+            documents = service.get_documents_by_user_id_and_status(user_id, status, not_public)
             result = [
                 {
                     'id': doc.id,
