@@ -53,6 +53,12 @@ class PolygonElement extends HTMLElement {
 
         if (point.tagName === 'circle') {
             this.draggingPoint = point;
+            this.draggingPointIndex = Array.from(this.shadowRoot.querySelectorAll('circle')).indexOf(point);
+            // Store initial positions of all points
+            this.initialPoints = Array.from(this.shadowRoot.querySelectorAll('circle')).map(circle => ({
+                x: parseFloat(circle.getAttribute('cx')),
+                y: parseFloat(circle.getAttribute('cy'))
+            }));
             return;
         }
 
@@ -108,8 +114,33 @@ class PolygonElement extends HTMLElement {
                 const clampedX = Math.min(Math.max(x, 3), parentRect.width - 3);
                 const clampedY = Math.min(Math.max(y, 3), parentRect.height - 3);
 
+                 // Update the dragged point
                 this.draggingPoint.setAttribute('cx', clampedX);
                 this.draggingPoint.setAttribute('cy', clampedY);
+
+                // Get all circles
+                const circles = Array.from(this.shadowRoot.querySelectorAll('circle'));
+
+                // Calculate which points need to move to maintain rectangle shape
+                switch (this.draggingPointIndex) {
+                    case 0: // Top-left corner
+                        circles[3].setAttribute('cy', clampedY); // Top-right (same Y)
+                        circles[1].setAttribute('cx', clampedX); // Bottom-left (same X)
+                        break;
+                    case 3: // Top-right corner
+                        circles[0].setAttribute('cy', clampedY); // Top-left (same Y)
+                        circles[2].setAttribute('cx', clampedX); // Bottom-right (same X)
+                        break;
+                    case 2: // Bottom-right corner
+                        circles[1].setAttribute('cy', clampedY); // Bottom-left (same Y)
+                        circles[3].setAttribute('cx', clampedX); // Top-right (same X)
+                        break;
+                    case 1: // Bottom-left corner
+                        circles[2].setAttribute('cy', clampedY); // Bottom-right (same Y)
+                        circles[0].setAttribute('cx', clampedX); // Top-left (same X)
+                        break;
+                }
+
                 this.updatePolygonPoints();
             } else if (this.draggingPolygon) {
                 // Calculate how far we've moved
