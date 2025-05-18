@@ -258,7 +258,7 @@ try {
                     style="display: none;">
                     <h3 class="text-2xl font-bold text-center text-papyrus mb-6">Decrypted Result</h3>
                     <div class="bg-[#d7c7a5] text-papyrus border border-yellow-300 rounded-lg p-4 mr-5 ml-5">
-                        <textarea id="resultText" class="w-full h-auto"
+                        <textarea id="resultText" class="w-full h-auto resize-none" rows="15"
                             style="padding: 5px; padding-right: 25px; min-height: 60px;">Decrypted text will be shown here.</textarea>
                         <button id="copyToClipboardBtn"
                             class="rounded-lg p-1 transition duration-300 hover:bg-gray-100 absolute"
