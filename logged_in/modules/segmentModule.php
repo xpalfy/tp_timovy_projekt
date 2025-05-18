@@ -14,6 +14,9 @@ try {
     exit();
 }
 
+$fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') .
+    '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
 ?>
 
 <!DOCTYPE html>
@@ -292,6 +295,8 @@ try {
             id: <?= json_encode($userData['id']) ?>
         };
         window.phpToken = '<?php echo $_SESSION["token"]; ?>';
+
+        window.fullCallerUrl = '<?php echo $fullCallerUrl; ?>';
     </script>
     <script type="module" src="../js/segmentModule.js?v=<?= time() ?>"></script>
 </body>
