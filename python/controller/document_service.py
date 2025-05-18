@@ -448,15 +448,16 @@ class DocumentService:
             raise Exception("No items found for this document")
         doc_type = doc.doc_type
         if doc_type == DocumentType.CIPHER:
-            json = Encoder.get_cipher_json(doc)
+            json = Encoder.get_cipher_json()
         else:
-            json = Encoder.get_key_json(doc)
+            json = Encoder.get_key_json()
         self.save_processing_result({
             'document_id': document_id,
             'item_id': doc.items[-1].id,
-            'status': ProcessingStatus.EXTRACTED,
+            'status': doc.items[-1].status.name,
             'user_id': user_id,
             'json_data': json
         })
+        return {"status": "success", "message": "Letters encoded successfully"}
             
 
