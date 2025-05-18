@@ -283,17 +283,23 @@ class DocumentService:
         self.db.add(proc_result)
         self.db.commit()   
     
-    def get_documents_by_user_id_and_status(self, user_id: int, status: ProcessingStatus) -> list[Document] | None:
+    def get_documents_by_user_id_and_status(self, user_id: int, status: ProcessingStatus, not_public: bool) -> list[Document] | None:
         user = self.db.query(User).filter_by(id=user_id).first()
         if not user:
             raise Exception("User not found")
-        documents = self.db.query(Document).filter((Document.author_id == user_id) | (Document.shared_with.any(id=user_id))).all()
+        documents: List[Document] = self.db.query(Document).filter((Document.author_id == user_id) | (Document.shared_with.any(id=user_id)) | (Document.is_public)).all()
         if not documents:
             raise Exception("No documents found for this user")
         filtered_documents = []
         for doc in documents:
-            if doc.author_id != user_id and user not in doc.shared_with:
-                continue
+            if doc.doc_type == DocumentType.CIPHER:
+                if doc.author_id != user_id and user not in doc.shared_with:
+                    continue
+            else :
+                if not doc.is_public and doc.author_id != user_id and user not in doc.shared_with:
+                    continue
+                if not_public and doc.is_public and doc.author_id != user_id and user not in doc.shared_with:
+                    continue
             if doc.items:
                 for item in doc.items:
                     if item.status.name == status:
