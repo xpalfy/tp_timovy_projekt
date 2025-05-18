@@ -142,7 +142,7 @@ try {
 <section class="max-w-4xl mx-auto px-6 mb-16" data-aos="fade-up">
     <h2 class="text-3xl font-bold mb-10 text-center">Tutorial Video</h2>
     <div class="rounded-xl overflow-hidden shadow-lg">
-        <iframe class="w-full h-96" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Tutorial" frameborder="0"
+        <iframe class="w-full h-96" src="https://www.youtube.com/embed/__1OdarLK2Q" title="Tutorial" frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
     </div>
