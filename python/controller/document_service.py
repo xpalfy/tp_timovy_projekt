@@ -458,6 +458,3 @@ class DocumentService:
             'user_id': user_id,
             'json_data': json
         })
-        return {"status": "success", "message": "Letters encoded successfully"}
-            
-

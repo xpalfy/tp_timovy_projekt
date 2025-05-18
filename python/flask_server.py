@@ -952,8 +952,8 @@ def encode_letters():
                 return jsonify({'error': 'Document ID is required'}), 400
             if not user_id:
                 return jsonify({'error': 'User ID is required'}), 400
-            result = service.encode_letters(document_id, user_id)
-            return jsonify(result), 200
+            service.encode_letters(document_id, user_id)
+            return jsonify({'success': True, 'message': 'Letters encoded successfully'}), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
