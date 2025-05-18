@@ -353,8 +353,9 @@ class DocumentService:
                 item: Item = doc.items[-1]
                 if not item.processing_results or item.status != ProcessingStatus.SAVED:
                     raise Exception("No processing results found for this item")
+                ownership = "author" if doc.author_id == user.id else "shared" if user in doc.shared_with else "public" if doc.is_public else "none"
                 keys.append({'document_id': doc.id, 'title': doc.title, 'key': item.processing_results[-1].result, 
-                             'image_path': item.image_path, 'status': item.status.name})
+                             'image_path': item.image_path, 'status': item.status.name, 'ownership': ownership})
         
         return keys
         
