@@ -6,6 +6,11 @@ from PIL import Image
 
 class Segmentator:
     
+    example_cipher_page = "0 0.99 0.50137941176470588236 0.50102272727272727 0.737058823529411764 0.87704545454545454"
+    example_key_pages = ["0 0.99 0.3022058823529412 0.4931818181818182 0.387058823529411764 0.840704545454545454",
+                        "0 0.98 0.7122058823529412 0.4931818181818182 0.367058823529411764 0.840704545454545454"]
+    
+    
     def __init__(self):
         #self.preprocess = CipherKeyProcessor
         self.preprocess = None  # Placeholder for the preprocessor
@@ -16,7 +21,9 @@ class Segmentator:
         # raw_yolo_output = self.preprocess().segment_page(image)
         
         image_width, image_height = img_size if img_size else (400, 600)
-        raw_yolo_output = "0 0.99 0.037941176470588236 0.06102272727272727 0.047058823529411764 0.10704545454545454"  # Example YOLO output
+
+        raw_yolo_output = self.example_cipher_page if 'cipher' in path.lower() else self.example_key_pages
+
         class_names = ["page"]
         
         yolo_result = self.yolo_to_dict_list(raw_yolo_output, image_width, image_height, class_names)
@@ -37,8 +44,8 @@ class Segmentator:
                                   {'polygon': [455, 132, 573, 237], 'type': 'word'},
                                   {'polygon': [595, 140, 742, 174], 'type': 'default'}]
         
-        example_output_for_cipher = [{'polygon': [131, 143, 243, 389], 'type': 'word'},
-                                  {'polygon': [133, 62, 402, 108], 'type': 'alphabet'}]
+        example_output_for_cipher = [{'polygon': [160, 170, 690, 220], 'type': 'word'},
+                                  {'polygon': [157, 225, 680, 300], 'type': 'default'}]
         if 'cipher' not in path:
             return example_output_for_key
         else:
@@ -46,6 +53,38 @@ class Segmentator:
 
     def segmentate_text(self, path):
         # TODO: based on yolo output like in segmentate_page and segmentate_sections
+        letters = self.get_example_key_letters() if 'key' in path else self.get_example_cipher_letters()
+        
+
+        dict_list = [{"polygon": item[:4], "type": item[4]} for item in letters if letters]
+        return dict_list
+    
+    def get_example_cipher_letters(self):
+        letters = []
+        for i in range(9):
+            letter = [166+(i*40), 173, 203+(i*40), 225, 'word']
+            letters.append(letter)
+        for i in range(3):
+            letter = [547+(i*48), 175, 594+(i*40), 227, 'null']
+            letters.append(letter)
+
+        for i in range(2):
+            letter = [167+(i*60), 227, 220+(i*60), 268, 'double']
+            letters.append(letter)
+        for i in range(10):
+            letter = [280+(i*40), 227, 320+(i*40), 268, 'default']
+            letters.append(letter)
+        
+        for i in range(3):
+            letter = [166+(i*40), 263, 203+(i*40), 304, 'word']
+            letters.append(letter)
+        for i in range(9):
+            letter = [302+(i*43), 263, 349+(i*43), 304, 'double']
+            letters.append(letter)
+        
+        return letters
+    
+    def get_example_key_letters(self):
         letters = []
         for i in range(25):
             letter = [131, 149 + i * 9, 237, 149 + (i + 1) * 9, 'word']
@@ -84,9 +123,7 @@ class Segmentator:
         letters.append([685, 140, 705, 175 , 'default'])
         letters.append([710, 140, 740, 175 , 'default'])
 
-        dict_list = [{"polygon": item[:4], "type": item[4]} for item in letters]
-        return dict_list
-    
+        return letters
     #def generate_codes(self, path):
     def yolo_to_dict_list(self, raw_yolo_output, image_width, image_height, class_names):
         """
@@ -102,7 +139,7 @@ class Segmentator:
                 list: List of dictionaries in the format {"polygon": [x1,y1,x2,y2], "type": class_name}.
             """
         detections = []
-        lines = raw_yolo_output.strip().split('\n')
+        lines = raw_yolo_output.strip().split('\n') if isinstance(raw_yolo_output, str) else raw_yolo_output
         
         for line in lines:
             parts = line.split()
