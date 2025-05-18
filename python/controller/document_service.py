@@ -429,9 +429,7 @@ class DocumentService:
         # Decrypt the cipher with the key
         decrypted_data = {
             "decrypted": (
-                "Nelle profondità dell’ombra, parole antiche furono incise dal sapere dimenticato. "
-                "I custodi del silenzio hanno nascosto la verità per secoli, ma ora la luce della ragione la svela. "
-                "Ciò che il mondo ha perduto, la memoria lo conserva; ciò che era nascosto, ora risplende."
+                "Papa oppressit cardianles scripsit massa terris. "
             ),
             "used_key_title": key_doc.title
         }
