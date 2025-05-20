@@ -157,7 +157,7 @@ try {
         <p class="mb-4 text-gray-800">
           Get the technical documentation of the HandScript web app, including setup, features, and usage notes.
         </p>
-        <a href="./docs/pdf/documentation_timovy_projekt.pdf" download
+        <a href="./docs/pdf/TP_2025_documentation.pdf" download
           class="btn-papyrus px-6 py-2 text-lg rounded-lg shadow hover:scale-105 transition inline-block">
           📘 Download Docs (PDF)
         </a>
