@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 use Firebase\JWT\JWT;
+
 use Firebase\JWT\Key;
 
 require 'vendor/autoload.php';
