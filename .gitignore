@@ -2,3 +2,4 @@ temp/
 DOCS/
 KEYS/
 python/**/__pycache__/
+Google/credentials.json
