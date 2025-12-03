@@ -17,7 +17,7 @@ try {
     exit();
 }
 
-$client->setRedirectUri("https://test.tptimovyprojekt.software/tp_timovy_projekt/Google/redirect.php");
+$client->setRedirectUri("https://test.egytolnyolcig.uk/tp_timovy_projekt/Google/redirect.php");
 $client->addScope("email");
 $client->addScope("profile");
 

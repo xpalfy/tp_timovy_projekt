@@ -268,7 +268,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: 'https://python.tptimovyprojekt.software/users/delete_user',
+                    url: 'https://python.egytolnyolcig.uk/users/delete_user',
                     type: 'DELETE',
                     contentType: 'application/json',
                     data: JSON.stringify({

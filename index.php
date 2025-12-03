@@ -53,7 +53,7 @@ try {
               <a href="https://tptimovyprojekt.ddns.net/" class="block px-4 py-2 hover:bg-[#cbbd99]">Minutes</a>
             </li>
             <li>
-              <a href="https://python.tptimovyprojekt.software/apidocs/" class="block px-4 py-2 hover:bg-[#cbbd99]">Swagger</a>
+              <a href="https://python.egytolnyolcig.uk/apidocs/" class="block px-4 py-2 hover:bg-[#cbbd99]">Swagger</a>
             </li>
           </ul>
         </div>

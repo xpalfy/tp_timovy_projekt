@@ -318,7 +318,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/documents/get_json',
+            url: 'https://python.egytolnyolcig.uk/documents/get_json',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',

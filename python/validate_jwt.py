@@ -23,10 +23,10 @@ def validate_token(token=None):
         return response
 
     secret = get_jwt_secret_from_php()
-    decoded = jwt.decode(token, secret, algorithms=['HS256'], issuer='https://test.tptimovyprojekt.software/tp_timovy_projekt', options={"verify_aud": False})
+    decoded = jwt.decode(token, secret, algorithms=['HS256'], issuer='https://test.egytolnyolcig.uk/tp_timovy_projekt', options={"verify_aud": False})
 
-    if (decoded.get('iss') != 'https://test.tptimovyprojekt.software/tp_timovy_projekt' or
-            decoded.get('aud') != 'https://test.tptimovyprojekt.software/tp_timovy_projekt'):
+    if (decoded.get('iss') != 'https://test.egytolnyolcig.uk/tp_timovy_projekt' or
+            decoded.get('aud') != 'https://test.egytolnyolcig.uk/tp_timovy_projekt'):
         raise InvalidTokenError('Invalid issuer or audience')
 
     return decoded.get('data', {})

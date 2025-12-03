@@ -26,7 +26,7 @@ export function fetchDocuments(type = 'CIPHER') {
     };
 
     showLoading();
-    fetch('https://python.tptimovyprojekt.software/documents/get_documents_by_user_and_status', {
+    fetch('https://python.egytolnyolcig.uk/documents/get_documents_by_user_and_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -103,7 +103,7 @@ export function fetchItems(documentId, preselectItemId = null, type) {
     console.log('Requesting items with:', data);
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/documents/get_items_by_doc_and_status', {
+    fetch('https://python.egytolnyolcig.uk/documents/get_items_by_doc_and_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -182,7 +182,7 @@ export function fetchKeys() {
     };
 
     showLoading();
-    fetch('https://python.tptimovyprojekt.software/modules/get_processing_result_status', {
+    fetch('https://python.egytolnyolcig.uk/modules/get_processing_result_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -290,7 +290,7 @@ export function startDecipher() {
     console.log('Requesting items with:', data);
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/modules/decrypt_cipher_with_key', {
+    fetch('https://python.egytolnyolcig.uk/modules/decrypt_cipher_with_key', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -329,7 +329,7 @@ function saveResult(decryptResult) {
     console.log('Requesting items with:', data);
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
+    fetch('https://python.egytolnyolcig.uk/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

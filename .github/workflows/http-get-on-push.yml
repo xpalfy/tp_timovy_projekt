@@ -11,4 +11,4 @@ jobs:
 
     steps:
       - name: Send GET request
-        run: curl https://auto_pull.tptimovyprojekt.software/
+        run: curl https://auto_pull.egytolnyolcig.uk/

@@ -368,7 +368,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/documents/get_processing_result_status',
+            url: 'https://python.egytolnyolcig.uk/documents/get_processing_result_status',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -424,7 +424,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/documents/get_json',
+            url: 'https://python.egytolnyolcig.uk/documents/get_json',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -459,7 +459,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/save_key_json',
+            url: 'https://python.egytolnyolcig.uk/save_key_json',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -513,7 +513,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/documents/update_document_title',
+            url: 'https://python.egytolnyolcig.uk/documents/update_document_title',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -549,7 +549,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/documents/add_shared_user',
+            url: 'https://python.egytolnyolcig.uk/documents/add_shared_user',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -578,7 +578,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
         };
 
         $.ajax({
-            url: 'https://python.tptimovyprojekt.software/documents/remove_shared_user',
+            url: 'https://python.egytolnyolcig.uk/documents/remove_shared_user',
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
@@ -644,7 +644,7 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
             user_id: userId
         };
 
-        fetch('https://python.tptimovyprojekt.software/documents/get_document', {
+        fetch('https://python.egytolnyolcig.uk/documents/get_document', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

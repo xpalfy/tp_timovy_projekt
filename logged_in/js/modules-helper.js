@@ -75,7 +75,7 @@ export function saveSegmentionData() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
+    fetch('https://python.egytolnyolcig.uk/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -130,7 +130,7 @@ export function saveAnalysisData() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
+    fetch('https://python.egytolnyolcig.uk/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -185,7 +185,7 @@ export function saveLetterData() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
+    fetch('https://python.egytolnyolcig.uk/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -200,7 +200,7 @@ export function saveLetterData() {
             if (data.success) {
                 hideLoading();
                 toastr.success('Letter segmentation data saved successfully.');
-                fetch('https://python.tptimovyprojekt.software/modules/encode_letters', {
+                fetch('https://python.egytolnyolcig.uk/modules/encode_letters', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -304,7 +304,7 @@ export function saveJson() {
 
     console.log('Data to be sent:', data);
 
-    fetch('https://python.tptimovyprojekt.software/documents/save_processing_result', {
+    fetch('https://python.egytolnyolcig.uk/documents/save_processing_result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -357,7 +357,7 @@ export function fetchDocuments(status) {
         status: status
     };
 
-    fetch('https://python.tptimovyprojekt.software/documents/get_documents_by_user_and_status', {
+    fetch('https://python.egytolnyolcig.uk/documents/get_documents_by_user_and_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -419,7 +419,7 @@ export function fetchItems(documentId, preselectItemId = null, status) {
 
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/documents/get_items_by_doc_and_status', {
+    fetch('https://python.egytolnyolcig.uk/documents/get_items_by_doc_and_status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -525,7 +525,7 @@ export function fetchJson() {
             };
 
     $.ajax({
-        url: 'https://python.tptimovyprojekt.software/documents/get_json',
+        url: 'https://python.egytolnyolcig.uk/documents/get_json',
         type: 'POST',
         data: JSON.stringify(formData),
         contentType: 'application/json',
@@ -557,7 +557,7 @@ function calculateImageScale() {
 export function CalculateSegmentation(imagePath) {
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/modules/segmentate_page', {
+    fetch('https://python.egytolnyolcig.uk/modules/segmentate_page', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -593,7 +593,7 @@ export function CalculateSegmentation(imagePath) {
 export function CalculateAnalysis(imagePath) {
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/modules/segmentate_sections', {
+    fetch('https://python.egytolnyolcig.uk/modules/segmentate_sections', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -645,7 +645,7 @@ export function downloadJSON() {
 export function CalculateLetters(imagePath) {
     showLoading();
 
-    fetch('https://python.tptimovyprojekt.software/segmentate_text', {
+    fetch('https://python.egytolnyolcig.uk/segmentate_text', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
