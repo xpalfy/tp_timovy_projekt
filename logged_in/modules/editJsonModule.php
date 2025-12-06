@@ -269,7 +269,7 @@ try {
 
     <footer
         class="bg-[#d7c7a5] text-papyrus text-center py-4 mt-10 border-t border-yellow-300 not-copyable not-draggable">
-        &copy; 2025 HandScript – <a href="https://tptimovyprojekt.ddns.net/" class="underline">Visit Project Page</a>
+        &copy; 2025 HandScript – All rights reserved.
     </footer>
 
     <script>

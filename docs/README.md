@@ -45,6 +45,3 @@ This project involves the development of a web application designed to process h
 - User manual.
 - Project presentation.
 
-## Project Website
-
-For more information and updates, visit our project website: [Web Application for Historical Documents Processing](https://tptimovyprojekt.ddns.net/)

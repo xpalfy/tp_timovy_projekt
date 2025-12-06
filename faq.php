@@ -52,9 +52,6 @@ try {
           class="z-10 hidden font-normal bg-[#d7c7a5] divide-y divide-gray-100 rounded-lg shadow w-44">
           <ul class="py-2 text-sm text-[#3b2f1d]" aria-labelledby="docsDropdownButton">
             <li>
-              <a href="https://tptimovyprojekt.ddns.net/" class="block px-4 py-2 hover:bg-[#cbbd99]">Minutes</a>
-            </li>
-            <li>
               <a href="https://python.egytolnyolcig.uk/apidocs/" class="block px-4 py-2 hover:bg-[#cbbd99]">Swagger</a>
             </li>
           </ul>
@@ -182,8 +179,6 @@ try {
     <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <p class="text-center md:text-left">&copy; 2025 HandScript</p>
         <div class="flex space-x-4 text-sm">
-            <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
-                Page</a>
             <a href="./faq.php" class="underline hover:text-[#5a452e] transition">FAQ</a>
         </div>
     </div>

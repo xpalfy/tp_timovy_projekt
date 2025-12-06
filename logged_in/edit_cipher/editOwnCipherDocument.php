@@ -344,8 +344,6 @@ $fullCallerUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'http
     <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <p class="text-center md:text-left">&copy; 2025 HandScript</p>
         <div class="flex space-x-4 text-sm">
-            <a href="https://tptimovyprojekt.ddns.net/" class="underline hover:text-[#5a452e] transition">Visit Project
-                Page</a>
             <a href="../../faq.php" class="underline hover:text-[#5a452e] transition">FAQ</a>
         </div>
     </div>

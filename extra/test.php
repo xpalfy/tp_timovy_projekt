@@ -17,7 +17,3 @@ curl_close($ch);
 echo $response;
 
 ?>
-
-<footer class="footer bg-dark">
-    © Proje      ct Site <a href="https://tptimovyprojekt.ddns.net/">tptimovyprojekt.ddns.net</a>
-</footer>
